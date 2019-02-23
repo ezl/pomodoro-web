@@ -1,0 +1,50 @@
+* {
+   font-family: Helvetica, Arial, sans-serif;
+   font-size: 16px;
+}
+
+body {
+    margin: 20px;
+}
+
+.bannerMessage {
+    display: none;
+}
+
+input, button {
+    border: 1px solid #aaa;
+    margin: 0px 0px;
+    padding: 5px 20px;
+}
+button {
+    background-color: #eee;
+}
+input {
+    background-color: white;
+    width: 400px;
+}
+div {
+    border: 1px solid #aaa;
+    margin-bottom: 20px;
+    padding: 0px 20px;
+    font-size: 16px;
+}
+
+#yesWebSocketSupport {
+    border-color: #0A0;
+    background-color: #F0FFF0;
+    color: #0d8900;
+}
+
+#noWebSocketSupport {
+    border-color:#cb0000;
+    background-color: #FFE1E1;
+    color: #800000;
+}
+
+#noWebSocketSupport p {
+    font-size: 16px;
+    line-height: 125%;
+    color: #800000;
+    margin-top: 10px;
+}

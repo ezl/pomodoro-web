@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>WebSocket Test</title>
+    <link rel='stylesheet' href='style.css' type='text/css'/>
+    <script type='text/javascript' src='script.js'></script>
+</head>
+
+<body>
+<h2>WebSocket Test</h2>
+
+<div id="yesWebSocketSupport" class="bannerMessage">
+    <p>This browser supports WebSockets</p>
+</div>
+
+<div id="noWebSocketSupport" class="bannerMessage">
+    <p>This browser does not support WebSockets</p>
+</div>
+
+<div id="output"></div>
+
+<button id="connectButton" onclick="openWebSocket();">Connect</button>
+<button id="disconnectButton" onclick="closeWebSocket();">Disconnect</button>
+<input id="textInput" />
+<button id="sendButton" onclick="sendMessage();">Send</button>
+
+</body>
+</html>
+
+
