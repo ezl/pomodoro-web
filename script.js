@@ -33,13 +33,7 @@ const updateButtons = function() {
     if (websocket.readyState == websocket.OPEN) {
         connectButton.disabled = true;
         disconnectButton.disabled = false;
-        let textInput = document.getElementById('textInput')
-        let message = textInput.value;
-        if (!!message) {
-            sendButton.disabled = false;
-        } else {
-            sendButton.disabled = true;
-        }
+        sendButton.disabled = false;
     } else if (websocket.readyState == websocket.CLOSED) {
         connectButton.disabled = false;
         disconnectButton.disabled = true;
@@ -85,25 +79,19 @@ const writeToScreen = function(message) {
   output.appendChild(pre);
 }
 
-const sendMessage = function() {
-    let textInput = document.getElementById('textInput')
-    let message = textInput.value;
-    textInput.value = '';
-    if (!!message) {
-        doSend(message);
-    }
-}
-const inputChanged = function(event) {
-    if (event.keyCode == 13) {
-        sendMessage();
-    }
-    updateButtons();
+const sendPomodoroState = function() {
+    let secondsRemaining = document.getElementById('secondsRemainingInput').value || 0;
+    let isWorkState = document.getElementById('isWorkStateInput').checked;
+    let isRunning = document.getElementById('isRunningInput').checked;
+    let obj = {
+        'secondsRemaining': secondsRemaining,
+        'isWorkState': isWorkState,
+        'isRunning': isRunning
+    };
+    console.log(secondsRemaining, isWorkState, isRunning);
+    // doSend(JSON.stringify(obj)); TODO TODO
+
+
 }
 
 window.addEventListener("load", init, false);
-document.addEventListener('DOMContentLoaded',function() {
-    document.querySelector('input#textInput').onchange=inputChanged;
-    let textInput = document.getElementById('textInput')
-    textInput.addEventListener('keyup', inputChanged);
-    textInput.addEventListener('keydown', inputChanged);
-}, false);

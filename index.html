@@ -10,7 +10,7 @@
 <body>
 <span>Pomodoro Timer</span>
 <button id="connectButton" onclick="openWebSocket();">Connect</button>
-<button id="disconnectButton" onclick="closeWebSocket();">Disconnect</button>
+<button id="disconnectButton" disabled onclick="closeWebSocket();">Disconnect</button>
 
 <div id="yesWebSocketSupport" class="bannerMessage">
     <p>This browser supports WebSockets</p>
@@ -20,7 +20,9 @@
     <p>This browser does not support WebSockets</p>
 </div>
 
-<div id="output"></div>
+<div id="output">
+    <h2>Messages</h2>
+</div>
 
 <div>
     <h2>State Display</h2>
@@ -31,18 +33,18 @@
 <div>
     <h2>Send New State</h2>
     <p>
-        <input id="secondsRemaining" placeholder="secondsRemaining" />
-        <label for="isRunning">secondsRemaining</label>
+        <input type="number" min="0" step="1" id="secondsRemainingInput" value=60 />
+        <label for="econdsRemainingInput">secondsRemaining</label>
     </p>
     <p>
-        <input type="checkbox" id="isWorkState" />
-        <label for="isWorkState">isWorkState</label>
+        <input type="checkbox" id="isWorkStateInput" />
+        <label for="isWorkStateInput">isWorkState</label>
     </p>
     <p>
-        <input type="checkbox" id="isRunning" />
-        <label for="isRunning">isRunning</label>
+        <input type="checkbox" id="isRunningInput" />
+        <label for="isRunningInput">isRunning</label>
     </p>
-    <button id="sendButton" onclick="sendMessage();">Send State</button>
+    <button id="sendButton" onclick="sendPomodoroState();">Send State</button>
 </div>
 
 
