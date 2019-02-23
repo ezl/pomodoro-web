@@ -1,4 +1,5 @@
-const wsUri = "wss://echo.websocket.org/";
+const wsUri = "wss://l0rodnqh6l.execute-api.us-east-1.amazonaws.com/dev";
+
 var output;
 
 const doesWebSocketExist = function() {
@@ -69,9 +70,14 @@ const onError = function(event) {
   writeToScreen('<p style="color: red;">' + event.data + '</p>');
 }
 
+const formatTextMessage = function(raw) {
+    let obj = {'action':'sendmessage', 'data': raw}
+    return JSON.stringify(obj)
+}
+
 const doSend = function(message) {
   writeToScreen("SENT: " + message);
-  websocket.send(message);
+  websocket.send(formatTextMessage(message));
 }
 
 const writeToScreen = function(message) {
