@@ -8,7 +8,9 @@
 </head>
 
 <body>
-<h2>WebSocket Test</h2>
+<span>Pomodoro Timer</span>
+<button id="connectButton" onclick="openWebSocket();">Connect</button>
+<button id="disconnectButton" onclick="closeWebSocket();">Disconnect</button>
 
 <div id="yesWebSocketSupport" class="bannerMessage">
     <p>This browser supports WebSockets</p>
@@ -20,8 +22,6 @@
 
 <div id="output"></div>
 
-<button id="connectButton" onclick="openWebSocket();">Connect</button>
-<button id="disconnectButton" onclick="closeWebSocket();">Disconnect</button>
 <div>
     <h2>State Display</h2>
     <p><span>secondsRemaining</span> <span id="secondsRemainingValue">10</span></p>

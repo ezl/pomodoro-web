@@ -4,7 +4,7 @@ var output;
 
 const doesWebSocketExist = function() {
     if (window.WebSocket) {
-        document.getElementById('yesWebSocketSupport').style.display = 'block';
+        // document.getElementById('yesWebSocketSupport').style.display = 'block';
     }
     else {
         document.getElementById('noWebSocketSupport').style.display = 'block';
