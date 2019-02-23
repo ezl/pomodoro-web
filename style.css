@@ -13,7 +13,7 @@ body {
 
 input, button {
     border: 1px solid #aaa;
-    margin: 0px 0px;
+    margin: 0px 0px 20px;
     padding: 5px 20px;
 }
 button {
@@ -21,7 +21,6 @@ button {
 }
 input {
     background-color: white;
-    width: 400px;
 }
 div {
     border: 1px solid #aaa;

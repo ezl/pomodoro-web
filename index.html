@@ -22,8 +22,29 @@
 
 <button id="connectButton" onclick="openWebSocket();">Connect</button>
 <button id="disconnectButton" onclick="closeWebSocket();">Disconnect</button>
-<input id="textInput" />
-<button id="sendButton" onclick="sendMessage();">Send</button>
+<div>
+    <h2>State Display</h2>
+    <p><span>secondsRemaining</span> <span id="secondsRemainingValue">10</span></p>
+    <p><span>isWorkState</span> <span id="isWorkStateValue">10</span></p>
+    <p><span>isRunning</span> <span id="isRunningValue">10</span></p>
+</div>
+<div>
+    <h2>Send New State</h2>
+    <p>
+        <input id="secondsRemaining" placeholder="secondsRemaining" />
+        <label for="isRunning">secondsRemaining</label>
+    </p>
+    <p>
+        <input type="checkbox" id="isWorkState" />
+        <label for="isWorkState">isWorkState</label>
+    </p>
+    <p>
+        <input type="checkbox" id="isRunning" />
+        <label for="isRunning">isRunning</label>
+    </p>
+    <button id="sendButton" onclick="sendMessage();">Send State</button>
+</div>
+
 
 </body>
 </html>
