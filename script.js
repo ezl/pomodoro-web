@@ -35,7 +35,6 @@ const updateButtons = function() {
         disconnectButton.disabled = false;
         let textInput = document.getElementById('textInput')
         let message = textInput.value;
-        console.log('message', !!message, message)
         if (!!message) {
             sendButton.disabled = false;
         } else {
@@ -53,7 +52,6 @@ const closeWebSocket = function() {
 
 const onOpen = function(event) {
   writeToScreen("CONNECTED");
-  doSend("WebSocket rocks");
   updateButtons();
 }
 
@@ -91,7 +89,6 @@ const sendMessage = function() {
     let textInput = document.getElementById('textInput')
     let message = textInput.value;
     textInput.value = '';
-    console.log(message);
     if (!!message) {
         doSend(message);
     }
