@@ -1,16 +1,20 @@
+const SECONDS_PER_MINUTE = 60;
+
 var PomodoroTimer = function(settings) {
 
     // Setup stuff
 
     const defaults = {
-        duration: 1 * 60 * 1000,
+        workDuration: 25 * 1000 * SECONDS_PER_MINUTE,
+        restDuration: 5 * 1000 * SECONDS_PER_MINUTE,
         onStateChange: function() { console.log("Timer state changed"); },
-        onTick: function() { console.log("Tick tick tick"); },
+        onTick: function() { console.log("                       onTick"); },
         onFinish: function() { console.log("Timer has finished"); }
     };
 
     const initialValues = {
         // Sensible initial values for a timer
+        currentDuration: defaults.workDuration,
         startTime: null,
         isWorkState: true,
         ticker: null
@@ -39,7 +43,7 @@ var PomodoroTimer = function(settings) {
         },
 
         getSecondsRemaining: function() {
-            return this.getIsRunning() ? this.duration - this.getElapsedTime() : this.duration;
+            return this.getIsRunning() ? this.currentDuration - this.getElapsedTime() : this.currentDuration;
         },
 
         // Timer operations
@@ -66,10 +70,15 @@ var PomodoroTimer = function(settings) {
         stop: function() {
             clearInterval(this.ticker);
             this.ticker = false;
+            this.startTime = null;
             this.onStateChange();
         },
 
-        set: function() {
+        setDuration: function(duration) {
+            this.stop();
+            this.currentDuration = parseFloat(duration)
+            this.onStateChange();
+
         },
 
         // start
@@ -80,17 +89,18 @@ var PomodoroTimer = function(settings) {
 
         tick: function(self) {
             self.onTick();
+            console.log("Tick", self.getSecondsRemaining());
             if (self.startTime == null) {
                 return;
             }
             if (self.getSecondsRemaining() <= 0) {
+                self.stop()
                 self.onFinish();
             }
         }
     }
 
     init(pomodoroTimer);
-    console.log("did the thing");
     return pomodoroTimer;
 }
 
