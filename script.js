@@ -62,14 +62,9 @@ const onError = function(event) {
   writeToScreen('<p style="color: red;">' + event.data + '</p>');
 }
 
-const formatTextMessage = function(raw) {
-    let obj = {'action':'sendmessage', 'data': raw}
-    return JSON.stringify(obj)
-}
-
 const doSend = function(message) {
   writeToScreen("SENT: " + message);
-  websocket.send(formatTextMessage(message));
+  websocket.send(message);
 }
 
 const writeToScreen = function(message) {
@@ -80,18 +75,25 @@ const writeToScreen = function(message) {
 }
 
 const sendPomodoroState = function() {
-    let secondsRemaining = document.getElementById('secondsRemainingInput').value || 0;
+    let secondsRemaining = parseFloat(document.getElementById('secondsRemainingInput').value || 0);
     let isWorkState = document.getElementById('isWorkStateInput').checked;
     let isRunning = document.getElementById('isRunningInput').checked;
-    let obj = {
+    let pomodoroState = {
         'secondsRemaining': secondsRemaining,
         'isWorkState': isWorkState,
         'isRunning': isRunning
     };
-    console.log(secondsRemaining, isWorkState, isRunning);
-    // doSend(JSON.stringify(obj)); TODO TODO
-
-
+    let payload = {
+        'action': 'sendmessage',
+        'data': pomodoroState
+    };
+    doSend(JSON.stringify(payload));
 }
+
+const xxformatTextMessage = function(raw) {
+    let obj = {'action':'sendmessage', 'data': raw}
+    return JSON.stringify(obj)
+}
+
 
 window.addEventListener("load", init, false);
