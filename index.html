@@ -4,8 +4,8 @@
     <meta charset="utf-8" />
     <title>WebSocket Test</title>
     <link rel='stylesheet' href='style.css' type='text/css'/>
-    <script type='text/javascript' src='script.js'></script>
     <script type='text/javascript' src='timer.js'></script>
+    <script type='text/javascript' src='script.js'></script>
 </head>
 
 <body>
@@ -26,10 +26,14 @@
 </div>
 
 <div>
-    <h2>State Display</h2>
-    <p><span>secondsRemaining</span> <span id="secondsRemainingValue">10</span></p>
-    <p><span>isWorkState</span> <span id="isWorkStateValue">10</span></p>
-    <p><span>isRunning</span> <span id="isRunningValue">10</span></p>
+    <h2>Ceci n'est pas une pomodoro timer</h2>
+    <button id="startTimer">Start</button>
+    <button id="stopTimer" disabled >Stop</button>
+    <table>
+    <tr><td><span>isWorkState</span></td><td><span style="padding-left:15px; color:green; font-weight: bold;" id="isWorkStateValue"></span></td></tr>
+    <tr><td><span>secondsRemaining</span></td><td><span style="padding-left:15px; color:green; font-weight: bold;" id="secondsRemainingValue"></span></td></tr>
+    <tr><td><span>isRunning</span></td><td><span style="padding-left:15px; color:green; font-weight: bold;" id="isRunningValue"></span></td></tr>
+    </table>
 </div>
 <div>
     <h2>Send New State</h2>

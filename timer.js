@@ -76,7 +76,6 @@ var PomodoroTimer = function(settings) {
         },
 
         get state() {
-            console.log("get state");
             return new PomodoroState(
                 this.isWorkState,
                 this.getMillisecondsRemaining(),
@@ -119,9 +118,18 @@ var PomodoroTimer = function(settings) {
         // set time
         // toggle work state
 
-        tick: function(self) {
-            self.onTick();
+        finish: function() {
+            this.stop();
+            this.toggleWorkState();
+            let nextState = new PomodoroState(
+                this.isWorkState,
+                this.isWorkState ? this.workDuration : this.restDuration,
+            );
+            this.state = nextState;
+            this.onFinish();
+        },
 
+        tick: function(self) {
             if (self.startTime == null) {
                 return;
             }
@@ -129,11 +137,10 @@ var PomodoroTimer = function(settings) {
             let now = new Date();
             self.elapsedTime = now - self.startTime;
             console.log("Tick", self.getMillisecondsRemaining());
+            self.onTick();
 
             if (self.getMillisecondsRemaining() <= 0) {
-                self.stop()
-                self.toggleWorkState();
-                self.onFinish();
+                self.finish();
             }
         }
     }

@@ -1,3 +1,5 @@
+// socket stuff
+
 const wsUri = "wss://l0rodnqh6l.execute-api.us-east-1.amazonaws.com/dev";
 
 var output;
@@ -12,7 +14,7 @@ const doesWebSocketExist = function() {
 }
 
 
-const init = function() {
+const initSocket = function() {
   output = document.getElementById("output");
   doesWebSocketExist();
   openWebSocket();
@@ -90,10 +92,63 @@ const sendPomodoroState = function() {
     doSend(JSON.stringify(payload));
 }
 
-const xxformatTextMessage = function(raw) {
-    let obj = {'action':'sendmessage', 'data': raw}
-    return JSON.stringify(obj)
+
+
+// timer client display stuff
+
+const timerStuff = function() {
+    const updateTimerDisplay = function(pomodoroState) {
+        let isWorkState = document.getElementById('isWorkStateValue');
+        let secondsRemaining = document.getElementById('secondsRemainingValue');
+        let isRunning = document.getElementById('isRunningValue');
+        isWorkState.textContent = pomodoroState.isWorkState;
+        secondsRemaining.textContent = pomodoroState.millisecondsRemaining / 1000;
+        isRunning.textContent = pomodoroState.isRunning;
+    }
+
+    const timerSettings = {
+        onStateChange: function() {
+            updateTimerDisplay(timer.state);
+        },
+
+        onTick: function() {
+            updateTimerDisplay(timer.state);
+        },
+
+        onFinish: function() {
+            updateTimerDisplay(timer.state);
+            console.log("hi");
+            updateStartStopButtons();
+        }
+    };
+
+    const startTimer = function() {
+        window.timer.start();
+        updateStartStopButtons();
+    }
+
+    const stopTimer = function() {
+        window.timer.stop();
+        updateStartStopButtons();
+    }
+    const updateStartStopButtons = function() {
+        if (timer.getIsRunning() == true) {
+            document.getElementById("startTimer").disabled = true;
+            document.getElementById("stopTimer").disabled = false;
+        } else {
+            document.getElementById("startTimer").disabled = false;
+            document.getElementById("stopTimer").disabled = true;
+        }
+    }
+
+    document.getElementById("startTimer").onclick = startTimer;
+    document.getElementById("stopTimer").onclick = stopTimer;
+
+
+    const timer = PomodoroTimer(timerSettings);
+    window.timer = timer;
+    updateTimerDisplay(timer.state);
 }
 
-
-window.addEventListener("load", init, false);
+window.addEventListener("load", timerStuff, false);
+window.addEventListener("load", initSocket, false);
