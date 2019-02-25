@@ -7,7 +7,6 @@ var PomodoroTimer = function(settings) {
     const defaults = {
         workDuration: 12 * 1000 * SECONDS_PER_MINUTE,
         restDuration: 5 * 1000 * SECONDS_PER_MINUTE,
-        autostart: true,
 
         onStateChange: function() { console.log("Timer state changed"); },
         onTick: function() { console.log("onTick"); },
@@ -23,6 +22,10 @@ var PomodoroTimer = function(settings) {
         elapsedTime: 0,
         ticker: null
     };
+
+    const preferences = {
+        autostart: true
+    },
 
     const init = function(pomodoroTimer) {
         settings = {...initialValues, ...defaults, ...settings}
@@ -125,7 +128,7 @@ var PomodoroTimer = function(settings) {
             let nextState = new PomodoroState(
                 this.isWorkState,
                 this.isWorkState ? this.workDuration : this.restDuration,
-                this.autostart
+                this.preferences.autostart
             );
             this.state = nextState;
             this.onFinish();
