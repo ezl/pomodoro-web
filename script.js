@@ -120,7 +120,6 @@ const timerStuff = function() {
 
         onFinish: function() {
             updateTimerDisplay(timer.state);
-            console.log("hi");
             updateStartStopButtons();
         }
     };

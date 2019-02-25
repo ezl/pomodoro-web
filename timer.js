@@ -45,7 +45,6 @@ var PomodoroTimer = function(settings) {
         // Timer operations
 
         set state(newPomodoroState) {
-            console.log("hi");
             if (!(newPomodoroState instanceof PomodoroState)) {
                 throw "Expected type PomodoroState";
             }
