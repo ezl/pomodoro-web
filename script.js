@@ -135,9 +135,16 @@ const timerStuff = function() {
         if (timer.getIsRunning() == true) {
             document.getElementById("startTimer").disabled = true;
             document.getElementById("stopTimer").disabled = false;
+
         } else {
             document.getElementById("startTimer").disabled = false;
             document.getElementById("stopTimer").disabled = true;
+        }
+
+        if (timer.isWorkState == true) {
+            document.getElementById("pomodoroTimer").className = "red";
+        } else {
+            document.getElementById("pomodoroTimer").className = "green";
         }
     }
 

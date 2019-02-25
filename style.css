@@ -47,3 +47,20 @@ div {
     color: #800000;
     margin-top: 10px;
 }
+
+
+#isWorkStateValue, #secondsRemainingValue, #isRunningValue {
+    font-weight: bold;
+    padding-left: 15px;
+}
+
+.red {
+    background-color: #ffe2dd;
+    border-color: red;
+    color: red;
+}
+.green {
+    background-color: #e3ffdd;
+    border-color: green;
+    color: green;
+}
