@@ -58,6 +58,9 @@ const onClose =function(event) {
 
 const onMessage = function(event) {
   writeToScreen('<p style="color: blue;">' + event.data + '</p>');
+  const data = JSON.parse(event.data);
+  const pomodoroState = new PomodoroState(data.isWorkState, data.secondsRemaining * 1000, data.isRunning);
+  timer.state = pomodoroState;
 }
 
 const onError = function(event) {
