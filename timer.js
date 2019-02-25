@@ -25,13 +25,15 @@ var PomodoroTimer = function(settings) {
 
     const preferences = {
         autostart: true
-    },
+    };
 
     const init = function(pomodoroTimer) {
         settings = {...initialValues, ...defaults, ...settings}
         for (key in settings) {
             pomodoroTimer[key] = settings[key];
         }
+
+        pomodoroTimer.preferences = preferences;
     };
 
     const pomodoroTimer = {

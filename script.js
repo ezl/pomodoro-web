@@ -4,6 +4,8 @@ const wsUri = "wss://l0rodnqh6l.execute-api.us-east-1.amazonaws.com/dev";
 
 var output;
 
+// first just raw socket stuff
+
 const doesWebSocketExist = function() {
     if (window.WebSocket) {
         // document.getElementById('yesWebSocketSupport').style.display = 'block';
@@ -12,7 +14,6 @@ const doesWebSocketExist = function() {
         document.getElementById('noWebSocketSupport').style.display = 'block';
     }
 }
-
 
 const initSocket = function() {
   output = document.getElementById("output");
@@ -28,20 +29,6 @@ const openWebSocket = function() {
   websocket.onerror = function(event) { onError(event) };
 }
 
-const updateButtons = function() {
-    let connectButton = document.getElementById('connectButton')
-    let disconnectButton = document.getElementById('disconnectButton')
-    let sendButton = document.getElementById('sendButton')
-    if (websocket.readyState == websocket.OPEN) {
-        connectButton.disabled = true;
-        disconnectButton.disabled = false;
-        sendButton.disabled = false;
-    } else if (websocket.readyState == websocket.CLOSED) {
-        connectButton.disabled = false;
-        disconnectButton.disabled = true;
-        sendButton.disabled = true;
-    }
-}
 const closeWebSocket = function() {
   websocket.close();
 }
@@ -72,6 +59,23 @@ const doSend = function(message) {
   websocket.send(message);
 }
 
+// socket + ui + timer stuff
+
+const updateButtons = function() {
+    let connectButton = document.getElementById('connectButton')
+    let disconnectButton = document.getElementById('disconnectButton')
+    let sendButton = document.getElementById('sendButton')
+    if (websocket.readyState == websocket.OPEN) {
+        connectButton.disabled = true;
+        disconnectButton.disabled = false;
+        sendButton.disabled = false;
+    } else if (websocket.readyState == websocket.CLOSED) {
+        connectButton.disabled = false;
+        disconnectButton.disabled = true;
+        sendButton.disabled = true;
+    }
+}
+
 const writeToScreen = function(message) {
   var pre = document.createElement("p");
   pre.style.wordWrap = "break-word";
@@ -95,6 +99,15 @@ const sendPomodoroState = function() {
     doSend(JSON.stringify(payload));
 }
 
+const sendPomodoroPreferences = function() {
+    let preferences = timer.preferences;
+    console.log(preferences);
+    let payload = {
+        'action': 'sendmessage',
+        'data': preferences
+    };
+    doSend(JSON.stringify(payload));
+}
 
 
 // timer client display stuff
