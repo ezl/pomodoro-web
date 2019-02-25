@@ -44,10 +44,22 @@ const onClose =function(event) {
 }
 
 const onMessage = function(event) {
-  writeToScreen('<p style="color: blue;">' + event.data + '</p>');
-  const data = JSON.parse(event.data);
-  const pomodoroState = new PomodoroState(data.isWorkState, data.secondsRemaining * 1000, data.isRunning);
-  timer.state = pomodoroState;
+    writeToScreen('<p style="color: blue;">' + event.data + '</p>');
+    const response = JSON.parse(event.data); // full response payload
+    const data = response.data; // just the data key
+    const messageType = response.messageType;
+    console.log(data);
+    console.log(messageType);
+
+    switch (messageType) {
+        case "state":
+            const pomodoroState = new PomodoroState(data.isWorkState, data.secondsRemaining * 1000, data.isRunning);
+            timer.state = pomodoroState;
+            break;
+        case "potato":
+            console.log("potato")
+            break;
+    }
 }
 
 const onError = function(event) {
@@ -94,6 +106,7 @@ const sendPomodoroState = function() {
     };
     let payload = {
         'action': 'sendmessage',
+        'messageType': 'state',
         'data': pomodoroState
     };
     doSend(JSON.stringify(payload));
