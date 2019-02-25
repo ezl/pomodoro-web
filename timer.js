@@ -1,4 +1,4 @@
-const SECONDS_PER_MINUTE = 60;
+const SECONDS_PER_MINUTE = 1;
 
 var PomodoroTimer = function(settings) {
 
@@ -8,15 +8,17 @@ var PomodoroTimer = function(settings) {
         workDuration: 25 * 1000 * SECONDS_PER_MINUTE,
         restDuration: 5 * 1000 * SECONDS_PER_MINUTE,
         onStateChange: function() { console.log("Timer state changed"); },
-        onTick: function() { console.log("                       onTick"); },
+        onTick: function() { console.log("onTick"); },
         onFinish: function() { console.log("Timer has finished"); }
     };
 
     const initialValues = {
         // Sensible initial values for a timer
-        currentDuration: defaults.workDuration,
-        startTime: null,
         isWorkState: true,
+        currentDuration: defaults.workDuration,
+
+        startTime: null,
+        elapsedTime: 0,
         ticker: null
     };
 
@@ -34,26 +36,52 @@ var PomodoroTimer = function(settings) {
             return this.startTime !== null
         },
 
-        getElapsedTime: function() {
-            if (this.getIsRunning() == true) {
-                const now = new Date();
-                return now - this.startTime;
-            }
-            return 0;
-        },
-
-        getSecondsRemaining: function() {
-            return this.getIsRunning() ? this.currentDuration - this.getElapsedTime() : this.currentDuration;
+        getMillisecondsRemaining: function() {
+            return this.currentDuration - this.elapsedTime;
         },
 
         // Timer operations
 
-        setState: function() {
-            console.log("set state");
+        set state(newPomodoroState) {
+            console.log("hi");
+            if (!(newPomodoroState instanceof PomodoroState)) {
+                throw "Expected type PomodoroState";
+            }
+
+            oldPomodoroState = this.state;
+            let changed = false;
+
+            if (oldPomodoroState.isWorkState != newPomodoroState.isWorkState) {
+                this.isWorkState = newPomodoroState.isWorkState;
+                changed = true;
+            }
+
+            if (oldPomodoroState.millisecondsRemaining != newPomodoroState.millisecondsRemaining) {
+                this.currentDuration = this.isWorkState ? this.workDuration : this.restDuration;
+                this.elapsedTime = this.currentDuration - newPomodoroState.millisecondsRemaining;
+            }
+
+            if (oldPomodoroState.isRunning != newPomodoroState.isRunning) {
+                if (oldPomodoroState.isRunning == true) {
+                    this.stop();
+                } else {
+                    this.start();
+                }
+                changed = true;
+            }
+
+            if (changed == true) {
+                this.onStateChange();
+            }
         },
 
-        getState: function() {
+        get state() {
             console.log("get state");
+            return new PomodoroState(
+                this.isWorkState,
+                this.getMillisecondsRemaining(),
+                this.getIsRunning()
+            )
         },
 
         start: function() {
@@ -61,7 +89,12 @@ var PomodoroTimer = function(settings) {
                 return;
             }
 
-            this.startTime = new Date();
+            if (this.getMillisecondsRemaining() <= 0) {
+                return;
+            }
+
+            let now = new Date();
+            this.startTime = new Date(now - this.elapsedTime);
 
             this.ticker = setInterval(this.tick, 1000, this);
             this.onStateChange();
@@ -69,16 +102,15 @@ var PomodoroTimer = function(settings) {
 
         stop: function() {
             clearInterval(this.ticker);
-            this.ticker = false;
+
             this.startTime = null;
+            this.ticker = null;
+
             this.onStateChange();
         },
 
-        setDuration: function(duration) {
-            this.stop();
-            this.currentDuration = parseFloat(duration)
-            this.onStateChange();
-
+        toggleWorkState: function() {
+            this.isWorkState = !this.isWorkState;
         },
 
         // start
@@ -89,12 +121,18 @@ var PomodoroTimer = function(settings) {
 
         tick: function(self) {
             self.onTick();
-            console.log("Tick", self.getSecondsRemaining());
+
             if (self.startTime == null) {
                 return;
             }
-            if (self.getSecondsRemaining() <= 0) {
+
+            let now = new Date();
+            self.elapsedTime = now - self.startTime;
+            console.log("Tick", self.getMillisecondsRemaining());
+
+            if (self.getMillisecondsRemaining() <= 0) {
                 self.stop()
+                self.toggleWorkState();
                 self.onFinish();
             }
         }
@@ -106,14 +144,24 @@ var PomodoroTimer = function(settings) {
 
 //////////////////////////////////////////////////////////////////////////
 
-const PomodoroState = function(isWorkState, secondsRemaining, isRunning) {
+const PomodoroState = function(isWorkState, millisecondsRemaining, isRunning) {
+    let typesAreValid = (
+        (typeof(isWorkState) == "boolean") &&
+        (parseFloat(millisecondsRemaining) != NaN) &&
+        (typeof(isRunning) == "boolean")
+    );
+
+    if (!typesAreValid) {
+        throw "Expected PomodoroState(isWorkState: Bool, millisecondsRemaining: Float, iRunning: Bool)";
+    }
+
     defaults = {
         isWorkState: true,
-        secondsRemaining: 25 * 60,
+        millisecondsRemaining: 25 * 60,
         isRunning: false
     };
-    this.isWorkState = Boolean(isWorkState) || defaults.isWorkState;
-    this.secondsRemaining = parseFloat(secondsRemaining) || defaults.secondsRemaining;
-    this.isRunning = Boolean(isRunning) || defaults.isRunning;
+    this.isWorkState = Boolean(isWorkState);
+    this.millisecondsRemaining = parseFloat(millisecondsRemaining) || defaults.millisecondsRemaining;
+    this.isRunning = Boolean(isRunning);
 }
 
