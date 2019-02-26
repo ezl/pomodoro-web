@@ -138,32 +138,37 @@ const TimerDisplay = function() {
         document.getElementById("stopTimer").onclick = this.stop;
     };
 
-    self.socket = null;
     self.timerModel = null;
 
     self.start = () => {
         self.timerModel.start();
-        self.updateStartStopButtons();
+        self.render();
     };
+
     self.stop = () => {
         // self, this, etc 
         self.timerModel.stop();
-        self.updateStartStopButtons();
+        self.render();
     };
     self.render = function() {
-        console.log("render");
-    };
-    self.updateTimerDisplay = function() {
+        // do stuff with the actual timer state
         let pomodoroState = self.timerModel.state;
         let isWorkState = document.getElementById('isWorkStateValue');
         let secondsRemaining = document.getElementById('secondsRemainingValue');
         let isRunning = document.getElementById('isRunningValue');
-        isWorkState.textContent = pomodoroState.isWorkState;
         secondsRemaining.textContent = pomodoroState.millisecondsRemaining / 1000;
         isRunning.textContent = pomodoroState.isRunning;
-    };
 
-    self.updateStartStopButtons = function() {
+        // update display based on work or rest state?
+        if (this.timerModel.isWorkState == true) {
+            document.getElementById("pomodoroTimer").className = "red";
+        } else {
+            document.getElementById("pomodoroTimer").className = "green";
+        }
+        isWorkState.textContent = pomodoroState.isWorkState;
+
+        // Update the start and stop buttons based on the timer state
+        // basically, don't allow starting a running timer or stopping a stopped timer
         if (self.timerModel.getIsRunning() == true) {
             document.getElementById("startTimer").disabled = true;
             document.getElementById("stopTimer").disabled = false;
@@ -173,11 +178,6 @@ const TimerDisplay = function() {
             document.getElementById("stopTimer").disabled = true;
         }
 
-        if (this.timerModel.isWorkState == true) {
-            document.getElementById("pomodoroTimer").className = "red";
-        } else {
-            document.getElementById("pomodoroTimer").className = "green";
-        }
     }
     return self;
 }
@@ -194,16 +194,15 @@ window.addEventListener("load", function() {
     // the callbacks need the timerDisplay object
     const timerModelCallbacks = {
         onStateChange: function() {
-            timerDisplay.updateTimerDisplay();
+            timerDisplay.render();
         },
 
         onTick: function() {
-            timerDisplay.updateTimerDisplay();
+            timerDisplay.render();
         },
 
         onFinish: function() {
-            timerDisplay.updateTimerDisplay();
-            timerDisplay.updateStartStopButtons();
+            timerDisplay.render();
         }
     };
 
@@ -215,7 +214,7 @@ window.addEventListener("load", function() {
     timerDisplay.timerModel = timerModel; // <-- assign it
 
     // timerDisplay.socket = websocket;
-    timerDisplay.updateTimerDisplay();
+    timerDisplay.render();
     window.timerDisplay = timerDisplay;
     timerDisplay.init();
 
