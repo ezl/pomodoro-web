@@ -10,8 +10,8 @@
 
 <body>
 <span>Pomodoro Timer</span>
-<button id="connectButton" onclick="openWebSocket();">Connect</button>
-<button id="disconnectButton" disabled onclick="closeWebSocket();">Disconnect</button>
+<button id="connectButton">Connect</button>
+<button id="disconnectButton" disabled>Disconnect</button>
 
 <div id="yesWebSocketSupport" class="bannerMessage">
     <p>This browser supports WebSockets</p>
@@ -37,7 +37,7 @@
 </div>
 <div>
     <h2>Send Preferences</h2>
-    <button id="sendButton" onclick="sendPomodoroPreferences();">Send Preferences</button>
+    <button id="sendPreferencesButton">Send Preferences</button>
 </div>
 <div>
     <h2>Send New State</h2>
@@ -53,7 +53,7 @@
         <input type="checkbox" id="isRunningInput" />
         <label for="isRunningInput">isRunning</label>
     </p>
-    <button id="sendButton" onclick="sendPomodoroState();">Send State</button>
+    <button id="sendStateButton">Send State</button>
 </div>
 
 

@@ -1,131 +1,142 @@
 // socket stuff
 
-const wsUri = "wss://l0rodnqh6l.execute-api.us-east-1.amazonaws.com/dev";
 
 var output;
 
 // first just raw socket stuff
 
-const doesWebSocketExist = function() {
-    if (window.WebSocket) {
-        // document.getElementById('yesWebSocketSupport').style.display = 'block';
-    }
-    else {
+const setupSocket = function() {
+    if (!window.WebSocket) {
         document.getElementById('noWebSocketSupport').style.display = 'block';
+        return;
     }
-}
 
-const initSocket = function() {
-  output = document.getElementById("output");
-  doesWebSocketExist();
-  openWebSocket();
-}
+    const wsUri = "wss://l0rodnqh6l.execute-api.us-east-1.amazonaws.com/dev";
 
-const openWebSocket = function() {
-  websocket = new WebSocket(wsUri);
-  websocket.onopen = function(event) { onOpen(event) };
-  websocket.onclose = function(event) { onClose(event) };
-  websocket.onmessage = function(event) { onMessage(event) };
-  websocket.onerror = function(event) { onError(event) };
-}
+    const output = document.getElementById("output"); // well, if there is a socket, we'll want a place to dump output
 
-const closeWebSocket = function() {
-  websocket.close();
-}
+    let websocket;
 
-const onOpen = function(event) {
-  writeToScreen("CONNECTED");
-  updateButtons();
-}
-
-const onClose =function(event) {
-  writeToScreen("DISCONNECTED");
-  updateButtons();
-}
-
-const onMessage = function(event) {
-    writeToScreen('<p style="color: blue;">' + event.data + '</p>');
-    const response = JSON.parse(event.data); // full response payload
-    const data = response.data; // just the data key
-    const messageType = response.messageType;
-    console.log(data);
-    console.log(messageType);
-
-    switch (messageType) {
-        case "state":
-            const pomodoroState = new PomodoroState(data.isWorkState, data.secondsRemaining * 1000, data.isRunning);
-            timer.state = pomodoroState;
-            break;
-        case "preferences":
-            timer.preferences = data;
-            break;
-        case "potato":
-            console.log("potato")
-            break;
+    const openWebSocket = function() {
+        websocket = new WebSocket(wsUri);
+        websocket.onopen = function(event) { onOpen(event) };
+        websocket.onclose = function(event) { onClose(event) };
+        websocket.onmessage = function(event) { onMessage(event) };
+        websocket.onerror = function(event) { onError(event) };
     }
-}
 
-const onError = function(event) {
-  writeToScreen('<p style="color: red;">' + event.data + '</p>');
-}
-
-const doSend = function(message) {
-  writeToScreen("SENT: " + message);
-  websocket.send(message);
-}
-
-// socket + ui + timer stuff
-
-const updateButtons = function() {
-    let connectButton = document.getElementById('connectButton')
-    let disconnectButton = document.getElementById('disconnectButton')
-    let sendButton = document.getElementById('sendButton')
-    if (websocket.readyState == websocket.OPEN) {
-        connectButton.disabled = true;
-        disconnectButton.disabled = false;
-        sendButton.disabled = false;
-    } else if (websocket.readyState == websocket.CLOSED) {
-        connectButton.disabled = false;
-        disconnectButton.disabled = true;
-        sendButton.disabled = true;
+    const closeWebSocket = function() {
+        websocket.close();
     }
-}
 
-const writeToScreen = function(message) {
-  var pre = document.createElement("p");
-  pre.style.wordWrap = "break-word";
-  pre.innerHTML = message;
-  output.appendChild(pre);
-}
+    // functions to define what to do on socket events
 
-const sendPomodoroState = function() {
-    let secondsRemaining = parseFloat(document.getElementById('secondsRemainingInput').value || 0);
-    let isWorkState = document.getElementById('isWorkStateInput').checked;
-    let isRunning = document.getElementById('isRunningInput').checked;
-    let pomodoroState = {
-        'secondsRemaining': secondsRemaining,
-        'isWorkState': isWorkState,
-        'isRunning': isRunning
-    };
-    let payload = {
-        'action': 'sendmessage',
-        'messageType': 'state',
-        'data': pomodoroState
-    };
-    doSend(JSON.stringify(payload));
-}
+    const onOpen = function(event) {
+        writeToScreen("CONNECTED");
+        updateButtons();
+    }
 
-const sendPomodoroPreferences = function() {
-    let preferences = timer.preferences;
-    console.log(preferences);
-    let payload = {
-        'action': 'sendmessage',
-        'messageType': 'preferences',
-        'data': preferences
-    };
-    doSend(JSON.stringify(payload));
-}
+    const onClose =function(event) {
+        writeToScreen("DISCONNECTED");
+        updateButtons();
+    }
 
+    const onMessage = function(event) {
+        writeToScreen('<p style="color: blue;">' + event.data + '</p>');
+        const response = JSON.parse(event.data); // full response payload
+        const data = response.data; // just the data key
+        const messageType = response.messageType;
+        console.log(data);
+        console.log(messageType);
+
+        switch (messageType) {
+            case "state":
+                const pomodoroState = new PomodoroState(data.isWorkState, data.secondsRemaining * 1000, data.isRunning);
+                timer.state = pomodoroState;
+                break;
+            case "preferences":
+                timer.preferences = data;
+                break;
+            case "potato":
+                console.log("potato")
+                break;
+        }
+    }
+
+    const onError = function(event) {
+      writeToScreen('<p style="color: red;">' + event.data + '</p>');
+    }
+
+    // actual manual socket actions
+
+    const writeToScreen = function(message) {
+      var pre = document.createElement("p");
+      pre.style.wordWrap = "break-word";
+      pre.innerHTML = message;
+      output.appendChild(pre);              // output <-- reference to the dom element
+    }
+
+    const doSend = function(message) {
+      writeToScreen("SENT: " + message);
+      websocket.send(message);
+    }
+
+    // socket + ui + timer stuff
+
+    const updateButtons = function() {
+        let connectButton = document.getElementById('connectButton')
+        let disconnectButton = document.getElementById('disconnectButton')
+        let sendButton = document.getElementById('sendStateButton')
+        if (websocket.readyState == websocket.OPEN) {
+            connectButton.disabled = true;
+            disconnectButton.disabled = false;
+            sendButton.disabled = false;
+        } else if (websocket.readyState == websocket.CLOSED) {
+            connectButton.disabled = false;
+            disconnectButton.disabled = true;
+            sendButton.disabled = true;
+        }
+    }
+
+    const sendPomodoroState = function() {
+        let secondsRemaining = parseFloat(document.getElementById('secondsRemainingInput').value || 0);
+        let isWorkState = document.getElementById('isWorkStateInput').checked;
+        let isRunning = document.getElementById('isRunningInput').checked;
+        let pomodoroState = {
+            'secondsRemaining': secondsRemaining,
+            'isWorkState': isWorkState,
+            'isRunning': isRunning
+        };
+        let payload = {
+            'action': 'sendmessage',
+            'messageType': 'state',
+            'data': pomodoroState
+        };
+        doSend(JSON.stringify(payload));
+    }
+
+    const sendPomodoroPreferences = function() {
+        let preferences = timer.preferences;
+        console.log(preferences);
+        let payload = {
+            'action': 'sendmessage',
+            'messageType': 'preferences',
+            'data': preferences
+        };
+        doSend(JSON.stringify(payload));
+    }
+
+    // bind connect/disconnect
+
+    document.getElementById("connectButton").onclick = () => openWebSocket();
+    document.getElementById("disconnectButton").onclick = () => closeWebSocket();
+
+    // bind state/preference sending buttons
+
+    document.getElementById("sendStateButton").onclick = () => sendPomodoroState();
+    document.getElementById("sendPreferencesButton").onclick = () => sendPomodoroPreferences();
+
+}
 
 // timer client display stuff
 
@@ -150,6 +161,7 @@ const TimerDisplay = function() {
         self.timerModel.stop();
         self.render();
     };
+
     self.render = function() {
         // do stuff with the actual timer state
         let pomodoroState = self.timerModel.state;
@@ -177,7 +189,6 @@ const TimerDisplay = function() {
             document.getElementById("startTimer").disabled = false;
             document.getElementById("stopTimer").disabled = true;
         }
-
     }
     return self;
 }
@@ -186,7 +197,17 @@ const TimerDisplay = function() {
 // window.addEventListener("load", timerStuff, false);
 // window.addEventListener("load", initSocket, false);
 window.addEventListener("load", function() {
-    initSocket();
+    setupSocket();
+
+/*
+1. instantiate the Display thing.
+2. define the callbacks using the display (because the display controls the dom)
+3. instantiate the Model (using the callbacks)
+4. attach the model to the display
+*/
+
+    internalTimer = new PomodoroTimer()
+    displayTimer = new TimerDisplay(internaltimer=internalTimer)
 
     console.log("instantiating timerDisplay")
     const timerDisplay = new TimerDisplay();
