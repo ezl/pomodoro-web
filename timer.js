@@ -1,5 +1,8 @@
 const SECONDS_PER_MINUTE = 1;
 
+
+// Pomodoro Timer model
+
 var PomodoroTimer = function(settings) {
 
     // Setup stuff

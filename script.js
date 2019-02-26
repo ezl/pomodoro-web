@@ -129,42 +129,42 @@ const sendPomodoroPreferences = function() {
 
 // timer client display stuff
 
-const timerStuff = function() {
-    const updateTimerDisplay = function(pomodoroState) {
+const TimerDisplay = function() {
+    let self = {};
+
+    self.init = function() {
+        // Bind UI elements
+        document.getElementById("startTimer").onclick = this.start;
+        document.getElementById("stopTimer").onclick = this.stop;
+    };
+
+    self.socket = null;
+    self.timerModel = null;
+
+    self.start = () => {
+        self.timerModel.start();
+        self.updateStartStopButtons();
+    };
+    self.stop = () => {
+        // self, this, etc 
+        self.timerModel.stop();
+        self.updateStartStopButtons();
+    };
+    self.render = function() {
+        console.log("render");
+    };
+    self.updateTimerDisplay = function() {
+        let pomodoroState = self.timerModel.state;
         let isWorkState = document.getElementById('isWorkStateValue');
         let secondsRemaining = document.getElementById('secondsRemainingValue');
         let isRunning = document.getElementById('isRunningValue');
         isWorkState.textContent = pomodoroState.isWorkState;
         secondsRemaining.textContent = pomodoroState.millisecondsRemaining / 1000;
         isRunning.textContent = pomodoroState.isRunning;
-    }
-
-    const timerSettings = {
-        onStateChange: function() {
-            updateTimerDisplay(timer.state);
-        },
-
-        onTick: function() {
-            updateTimerDisplay(timer.state);
-        },
-
-        onFinish: function() {
-            updateTimerDisplay(timer.state);
-            updateStartStopButtons();
-        }
     };
 
-    const startTimer = function() {
-        window.timer.start();
-        updateStartStopButtons();
-    }
-
-    const stopTimer = function() {
-        window.timer.stop();
-        updateStartStopButtons();
-    }
-    const updateStartStopButtons = function() {
-        if (timer.getIsRunning() == true) {
+    self.updateStartStopButtons = function() {
+        if (self.timerModel.getIsRunning() == true) {
             document.getElementById("startTimer").disabled = true;
             document.getElementById("stopTimer").disabled = false;
 
@@ -173,21 +173,50 @@ const timerStuff = function() {
             document.getElementById("stopTimer").disabled = true;
         }
 
-        if (timer.isWorkState == true) {
+        if (this.timerModel.isWorkState == true) {
             document.getElementById("pomodoroTimer").className = "red";
         } else {
             document.getElementById("pomodoroTimer").className = "green";
         }
     }
-
-    document.getElementById("startTimer").onclick = startTimer;
-    document.getElementById("stopTimer").onclick = stopTimer;
-
-
-    const timer = PomodoroTimer(timerSettings);
-    window.timer = timer;
-    updateTimerDisplay(timer.state);
+    return self;
 }
 
-window.addEventListener("load", timerStuff, false);
-window.addEventListener("load", initSocket, false);
+
+// window.addEventListener("load", timerStuff, false);
+// window.addEventListener("load", initSocket, false);
+window.addEventListener("load", function() {
+    initSocket();
+
+    console.log("instantiating timerDisplay")
+    const timerDisplay = new TimerDisplay();
+
+    // the callbacks need the timerDisplay object
+    const timerModelCallbacks = {
+        onStateChange: function() {
+            timerDisplay.updateTimerDisplay();
+        },
+
+        onTick: function() {
+            timerDisplay.updateTimerDisplay();
+        },
+
+        onFinish: function() {
+            timerDisplay.updateTimerDisplay();
+            timerDisplay.updateStartStopButtons();
+        }
+    };
+
+    // make the internal model with the ui callbacks
+    const timerModel = PomodoroTimer(timerModelCallbacks);
+    window.timerModel = timerModel
+
+    // and now attach that model back to the display
+    timerDisplay.timerModel = timerModel; // <-- assign it
+
+    // timerDisplay.socket = websocket;
+    timerDisplay.updateTimerDisplay();
+    window.timerDisplay = timerDisplay;
+    timerDisplay.init();
+
+}, false);
