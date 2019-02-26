@@ -24,7 +24,7 @@ var PomodoroTimer = function(settings) {
     };
 
     const preferences = {
-        autostart: true
+        autoStartNextSession: true
     };
 
     const init = function(pomodoroTimer) {
@@ -130,7 +130,7 @@ var PomodoroTimer = function(settings) {
             let nextState = new PomodoroState(
                 this.isWorkState,
                 this.isWorkState ? this.workDuration : this.restDuration,
-                this.preferences.autostart
+                this.preferences.autoStartNextSession
             );
             this.state = nextState;
             this.onFinish();

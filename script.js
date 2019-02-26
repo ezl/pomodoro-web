@@ -56,6 +56,9 @@ const onMessage = function(event) {
             const pomodoroState = new PomodoroState(data.isWorkState, data.secondsRemaining * 1000, data.isRunning);
             timer.state = pomodoroState;
             break;
+        case "preferences":
+            timer.preferences = data;
+            break;
         case "potato":
             console.log("potato")
             break;
@@ -117,6 +120,7 @@ const sendPomodoroPreferences = function() {
     console.log(preferences);
     let payload = {
         'action': 'sendmessage',
+        'messageType': 'preferences',
         'data': preferences
     };
     doSend(JSON.stringify(payload));
