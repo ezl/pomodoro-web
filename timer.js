@@ -4,31 +4,29 @@ var PomodoroTimer = function(settings) {
 
     // Setup stuff
 
-    const defaults = {
-        workDuration: 12 * 1000 * SECONDS_PER_MINUTE,
-        restDuration: 5 * 1000 * SECONDS_PER_MINUTE,
-
+    const callbacks = {
         onStateChange: function() { console.log("Timer state changed"); },
         onTick: function() { console.log("onTick"); },
         onFinish: function() { console.log("Timer has finished"); }
     };
 
+    const preferences = {
+        autoStartNextSession: true,
+        workDuration: 12 * 1000 * SECONDS_PER_MINUTE,
+        restDuration: 5 * 1000 * SECONDS_PER_MINUTE
+    };
+
     const initialValues = {
         // Sensible initial values for a timer
         isWorkState: true,
-        currentDuration: defaults.workDuration,
-
+        currentDuration: preferences.workDuration,
         startTime: null,
         elapsedTime: 0,
         ticker: null
     };
 
-    const preferences = {
-        autoStartNextSession: true
-    };
-
     const init = function(pomodoroTimer) {
-        settings = {...initialValues, ...defaults, ...settings}
+        settings = {...initialValues, ...callbacks, ...settings}
         for (key in settings) {
             pomodoroTimer[key] = settings[key];
         }
@@ -63,7 +61,7 @@ var PomodoroTimer = function(settings) {
             }
 
             if (oldPomodoroState.millisecondsRemaining != newPomodoroState.millisecondsRemaining) {
-                this.currentDuration = this.isWorkState ? this.workDuration : this.restDuration;
+                this.currentDuration = this.isWorkState ? this.preferences.workDuration : this.preferences.restDuration;
                 this.elapsedTime = this.currentDuration - newPomodoroState.millisecondsRemaining;
             }
 
@@ -129,7 +127,7 @@ var PomodoroTimer = function(settings) {
             this.toggleWorkState();
             let nextState = new PomodoroState(
                 this.isWorkState,
-                this.isWorkState ? this.workDuration : this.restDuration,
+                this.isWorkState ? this.preferences.workDuration : this.preferences.restDuration,
                 this.preferences.autoStartNextSession
             );
             this.state = nextState;
