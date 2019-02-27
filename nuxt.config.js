@@ -1,7 +1,7 @@
 const pkg = require('./package')
 
 module.exports = {
-  mode: 'universal',
+  mode: 'spa',
 
   /*
   ** Headers of the page
@@ -24,12 +24,12 @@ module.exports = {
   /*
   ** Global CSS
   */
-  css: [],
+  css: ['@/assets/style.css'],
 
   /*
   ** Plugins to load before mounting the App
   */
-  plugins: [],
+  plugins: [{ src: '~/plugins/socket', ssr: false }],
 
   /*
   ** Nuxt.js modules
@@ -40,6 +40,7 @@ module.exports = {
   ** Build configuration
   */
   build: {
+    hardsource: true,
     /*
     ** You can extend webpack config here
     */

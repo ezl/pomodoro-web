@@ -1,66 +1,120 @@
 <template>
-  <section class="container">
-    <div>
-      <logo />
-      <h1 class="title">
-        pomodoro-web
-      </h1>
-      <h2 class="subtitle" />
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          class="button--green"
-        >Documentation</a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey"
-        >GitHub</a>
-      </div>
+  <div id="container">
+    <span>Pomodoro Timer</span>
+    <no-ssr placeholder="Loading web socket buttons...">
+      <button id="connectButton" :disabled="socketManager.getIsConnected()" @click="openWebSocket">
+        Connect
+      </button>
+      <button id="disconnectButton" :disabled="socketManager.getIsDisconnected()" @click="closeWebSocket">
+        Disconnect
+      </button>
+    </no-ssr>
+    <div id="yesWebSocketSupport" class="bannerMessage">
+      <p>This browser supports WebSockets</p>
     </div>
-  </section>
+    <div id="noWebSocketSupport" class="bannerMessage">
+      <p>This browser does not support WebSockets</p>
+    </div>
+    <div id="output">
+      <h2>Messages</h2>
+    </div>
+    <div id="pomodoroTimer" v-bind:class="timer.isWorkState ? 'red' : 'green'">
+      <h2>Ceci n'est pas une pomodoro timer</h2>
+      <button id="startTimer" :disabled="timer.getIsRunning()" @click="startTimer">
+        Start
+      </button>
+      <button id="stopTimer" :disabled="!timer.getIsRunning()" @click="stopTimer">
+        Stop
+      </button>
+      <table>
+        <tr><td><span>isWorkState</span></td><td><span id="isWorkStateValue">{{ timer.isWorkState }}</span></td></tr>
+        <tr><td><span>secondsRemaining</span></td><td><span id="secondsRemainingValue">{{ timer.getMillisecondsRemaining() }}</span></td></tr>
+        <tr><td><span>isRunning</span></td><td><span id="isRunningValue">{{ timer.getIsRunning() }}</span></td></tr>
+      </table>
+    </div>
+    <div>
+      <h2>Send Preferences</h2>
+      <button id="sendPreferencesButton" @click="sendPreferences">
+        Send Preferences
+      </button>
+    </div>
+    <div>
+      <h2>Send New State</h2>
+      <p>
+        <input id="secondsRemainingInput" type="number" min="0" step="1" value="60">
+        <label for="econdsRemainingInput">secondsRemaining</label>
+      </p>
+      <p>
+        <input id="isWorkStateInput" type="checkbox">
+        <label for="isWorkStateInput">isWorkState</label>
+      </p>
+      <p>
+        <input id="isRunningInput" type="checkbox">
+        <label for="isRunningInput">isRunning</label>
+      </p>
+      <button id="sendStateButton" @click="sendState">
+        Send State
+      </button>
+    </div>
+  </div><!-- container -->
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
+import { PomodoroTimer as PomodoroTimerModel } from '~/lib/timer'
+// let output
+
+// the callbacks need the timerDisplay object
+const callbacks = {
+  // maybe i don't need these at all since the timer state changes itself
+  // and vue can listen to that
+  onStateChange: function() {
+    console.log('state change')
+  },
+  onTick: function() {},
+  onFinish: function() {}
+}
+
+// make the internal model with the ui callbacks
+const timer = PomodoroTimerModel(callbacks)
 
 export default {
-  components: {
-    Logo
+  components: {},
+  data: function() {
+    return {
+      message: 'Hello World',
+      socketManager: this.$socketManager,
+      timer: timer
+    }
+  },
+  methods: {
+    openWebSocket: function() {
+      console.log('clicked open web socket')
+      this.$socketManager.openWebSocket()
+    },
+    closeWebSocket: function() {
+      console.log('clicked close web socket')
+      this.$socketManager.closeWebSocket()
+    },
+    startTimer: function() {
+      console.log('clicked start timer')
+      timer.start()
+    },
+    stopTimer: function() {
+      console.log('clicked start timer')
+      timer.stop()
+    },
+    sendState: function() {
+      console.log('clicked send state')
+    },
+    sendPreferences: function() {
+      console.log('clicked send preferences')
+    },
+    updateSocketConnectionButtons: function() {
+      console.log(this.$socketManager.getIsConnected() === true)
+    }
   }
 }
 </script>
 
 <style>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
-}
 </style>
