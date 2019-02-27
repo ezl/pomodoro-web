@@ -51,7 +51,7 @@ export default ({ app }, inject) => {
         case 'state':
           const pomodoroState = new PomodoroState(
             data.isWorkState,
-            data.secondsRemaining * 1000,
+            data.millisecondsRemaining,
             data.isRunning
           )
           pomodoroState.isWorkState = false

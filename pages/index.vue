@@ -27,6 +27,9 @@
       <button id="stopTimer" :disabled="!timer.getIsRunning()" @click="stopTimer">
         Stop
       </button>
+      <button @click="sendState" :disabled="!socketManager.getIsConnected()">
+        Send State
+      </button>
       <table>
         <tr><td><span>isWorkState</span></td><td><span id="isWorkStateValue">{{ timer.isWorkState }}</span></td></tr>
         <tr><td><span>secondsRemaining</span></td><td><span id="secondsRemainingValue">{{ timer.getMillisecondsRemaining() }}</span></td></tr>
@@ -35,7 +38,7 @@
     </div>
     <div>
       <h2>Send Preferences</h2>
-      <button id="sendPreferencesButton" @click="sendPreferences">
+      <button id="sendPreferencesButton" :disabled="!socketManager.getIsConnected()" @click="sendPreferences">
         Send Preferences
       </button>
     </div>
@@ -53,7 +56,7 @@
         <input id="isRunningInput" type="checkbox">
         <label for="isRunningInput">isRunning</label>
       </p>
-      <button id="sendStateButton" @click="sendState">
+      <button id="sendStateButton" :disabled="!socketManager.getIsConnected()" @click="sendState">
         Send State
       </button>
     </div>
@@ -107,6 +110,14 @@ export default {
     },
     sendState: function() {
       console.log('clicked send state')
+      const state = timer.state
+      const payload = {
+        action: 'sendmessage',
+        messageType: 'state',
+        data: state
+      }
+      const message = JSON.stringify(payload)
+      this.$socketManager.websocket.send(message) // <-- this is different here than below?
     },
     sendPreferences: function() {
       console.log('clicked send preferences')
