@@ -5,7 +5,6 @@
       <button id="connectButton" :disabled="socketManager.getIsConnected()" @click="openWebSocket">
         Connect
       </button>
-      {{socketManager.state.readyState}}
       <button id="disconnectButton" :disabled="socketManager.getIsDisconnected()" @click="closeWebSocket">
         Disconnect
       </button>
@@ -18,6 +17,7 @@
     </div>
     <div id="output">
       <h2>Messages</h2>
+      {{ output }}
     </div>
     <div id="pomodoroTimer" v-bind:class="timer.isWorkState ? 'red' : 'green'">
       <h2>Ceci n'est pas une pomodoro timer</h2>
@@ -84,7 +84,8 @@ export default {
     return {
       message: 'Hello World',
       socketManager: this.$socketManager,
-      timer: timer
+      timer: timer,
+      output: 'test output'
     }
   },
   methods: {

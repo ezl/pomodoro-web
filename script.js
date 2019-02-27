@@ -1,10 +1,6 @@
 
 /*
 
-  if (!window.WebSocket) {
-    document.getElementById('noWebSocketSupport').style.display = 'block'
-  }
-
   const writeToScreen = function(message) {
     const pre = document.createElement('p')
     pre.style.wordWrap = 'break-word'
@@ -20,39 +16,43 @@
 
 */
 
-
-// const state = timerModel.state
 /*
-secondsRemaining = state.millisecondsRemaining / 1000
-isRunning = state.isRunning
-isWorkState = state.isWorkState
+    // actual manual socket actions
+    const doSend = function(message) {
+      websocket.send(message)
+    }
+
+    // socket + ui + timer stuff
+
+    const sendPomodoroState = function() {
+      const secondsRemaining = parseFloat(
+        document.getElementById('secondsRemainingInput').value || 0
+      )
+      const isWorkState = document.getElementById('isWorkStateInput').checked
+      const isRunning = document.getElementById('isRunningInput').checked
+      const pomodoroState = {
+        secondsRemaining: secondsRemaining,
+        isWorkState: isWorkState,
+        isRunning: isRunning
+      }
+      const payload = {
+        action: 'sendmessage',
+        messageType: 'state',
+        data: pomodoroState
+      }
+      doSend(JSON.stringify(payload))
+    }
+
+    const sendPomodoroPreferences = function() {
+      const preferences = { foo: 5 } // timer.preferences
+      console.log(preferences)
+      const payload = {
+        action: 'sendmessage',
+        messageType: 'preferences',
+        data: preferences
+      }
+      doSend(JSON.stringify(payload))
+    }
 */
 
-// do stuff with the actual timer state
-/*
-const pomodoroState = self.timerModel.state
-secondsRemaining.textContent = pomodoroState.millisecondsRemaining / 1000
-isRunning.textContent = pomodoroState.isRunning
-*/
-// update display based on work or rest state?
-/*
-if (this.timerModel.isWorkState === true) {
-document.getElementById('pomodoroTimer').className = 'red'
-} else {
-document.getElementById('pomodoroTimer').className = 'green'
-}
-isWorkState.textContent = pomodoroState.isWorkState
-*/
-// Update the start and stop buttons based on the timer state
-// basically, don't allow starting a running timer or stopping a stopped timer
-/*
-if (self.timerModel.getIsRunning() === true) {
-  document.getElementById('startTimer').disabled = true
-  document.getElementById('stopTimer').disabled = false
-} else {
-  document.getElementById('startTimer').disabled = false
-  document.getElementById('stopTimer').disabled = true
-}
-*/
-
-
+// const output = document.getElementById('output') // well, if there is a socket, we'll want a place to dump output
