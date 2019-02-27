@@ -7,24 +7,32 @@ export default ({ app }, inject) => {
     const self = {}
 
     self.websocket = null
+    self.state = {
+      readyState: 0
+    }
 
     self.openWebSocket = function() {
       self.websocket = new WebSocket(wsUri)
       self.websocket.onopen = function(event) {
         self.onOpen(event)
+        self.state.readyState = self.websocket.readyState
       }
       self.websocket.onclose = function(event) {
         self.onClose(event)
+        self.state.readyState = self.websocket.readyState
       }
       self.websocket.onmessage = function(event) {
         self.onMessage(event)
+        self.state.readyState = self.websocket.readyState
       }
       self.websocket.onerror = function(event) {
         self.onError(event)
+        self.state.readyState = self.websocket.readyState
       }
     }
 
     self.closeWebSocket = function() {
+      console.log('close')
       self.websocket.close()
     }
 
@@ -65,15 +73,14 @@ export default ({ app }, inject) => {
       if (self.websocket === null) {
         return false
       }
-      console.log(self.websocket)
-      console.log(self.websocket.readyState)
+      console.log('getIsConnected')
       return self.websocket.readyState === self.websocket.OPEN
     }
     self.getIsDisconnected = function() {
       if (self.websocket === null) {
         return true
       }
-      console.log(self.websocket)
+      console.log('getIsDisconnected')
       console.log(self.websocket.readyState)
       return self.websocket.readyState === self.websocket.CLOSED
     }

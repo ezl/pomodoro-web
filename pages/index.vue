@@ -5,6 +5,7 @@
       <button id="connectButton" :disabled="socketManager.getIsConnected()" @click="openWebSocket">
         Connect
       </button>
+      {{socketManager.state.readyState}}
       <button id="disconnectButton" :disabled="socketManager.getIsDisconnected()" @click="closeWebSocket">
         Disconnect
       </button>
