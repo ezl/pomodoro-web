@@ -74,7 +74,7 @@ export default ({ app }, inject) => {
         return false
       }
       console.log('getIsConnected')
-      return self.websocket.readyState === self.websocket.OPEN
+      return self.state.readyState === self.websocket.OPEN
     }
     self.getIsDisconnected = function() {
       if (self.websocket === null) {
@@ -82,10 +82,10 @@ export default ({ app }, inject) => {
       }
       console.log('getIsDisconnected')
       console.log(self.websocket.readyState)
-      return self.websocket.readyState === self.websocket.CLOSED
+      return self.state.readyState === self.websocket.CLOSED
     }
     self.getIsPending = function() {
-      if (self.websocket === null) {
+      if (self.state === null) {
         return false
       }
       console.log(self.websocket)
