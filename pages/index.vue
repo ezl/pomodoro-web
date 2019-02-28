@@ -80,19 +80,36 @@ import {
 
 const Piecon = require('piecon/piecon.js')
 
-const setFavicon = function() {
+const setFaviconPercent = function() {
   const timeRemaining = timer.currentDuration - timer.elapsedTime
   const percentRemaining = (timeRemaining / timer.currentDuration) * 100
   Piecon.setProgress(percentRemaining)
 }
+const setFaviconColor = function() {
+  if (timer.isWorkState) {
+    Piecon.setOptions({
+      background: '#ffe2dd',
+      color: 'red'
+    })
+  } else {
+    Piecon.setOptions({
+      background: '#e3ffdd',
+      color: 'green'
+    })
+  }
+}
 
 const timer = PomodoroTimerModel({
   onTick: function() {
-    setFavicon()
+    setFaviconPercent()
+  },
+  onStateChange: function() {
+    setFaviconColor()
   }
 })
 
-setFavicon()
+setFaviconColor()
+setFaviconPercent()
 
 export default {
   components: {},
