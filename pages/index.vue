@@ -110,11 +110,20 @@ const setStylesForCountdowns = function() {
   // progressbar
 }
 
+function pad(num) {
+  const size = 2
+  return (Math.pow(10, size) + ~~num).toString().substring(1)
+}
+
 const setValuesForCountdowns = function() {
   const timeRemaining = timer.currentDuration - timer.elapsedTime
+  const minutesRemaining = Math.floor(timeRemaining / (60 * 1000))
+  const secondsRemaining = Math.floor((timeRemaining / 1000) % 60)
+  const timeString = pad(minutesRemaining) + ':' + pad(secondsRemaining)
   const percentRemaining = (timeRemaining / timer.currentDuration) * 100
   Piecon.setProgress(percentRemaining)
   countdown.animate(percentRemaining / 100)
+  countdown.setText(timeString)
 }
 
 const timer = PomodoroTimerModel({

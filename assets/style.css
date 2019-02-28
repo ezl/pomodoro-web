@@ -71,3 +71,8 @@ div#countdown {
 max-width: 300px;
 border: 0;
 }
+
+div#progressbar-text {
+  border: 0;
+  font-size: 2em;
+}
