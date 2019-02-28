@@ -74,20 +74,7 @@ import {
   PomodoroTimer as PomodoroTimerModel,
   PomodoroState as PomodoroTimerState
 } from '~/lib/timer'
-// let output
 
-// the callbacks need the timerDisplay object
-const callbacks = {
-  // maybe i don't need these at all since the timer state changes itself
-  // and vue can listen to that
-  onStateChange: function() {
-    console.log('state change')
-  },
-  onTick: function() {},
-  onFinish: function() {}
-}
-
-// make the internal model with the ui callbacks
 const timer = PomodoroTimerModel(callbacks)
 
 export default {
