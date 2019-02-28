@@ -130,10 +130,8 @@ export default {
               data.millisecondsRemaining,
               data.isRunning
             )
-            pomodoroTimerState.isWorkState = false
             timer.state = pomodoroTimerState
 
-            // timer.state = pomodoroState
             break
           case 'preferences':
             console.log("it's preferences")
