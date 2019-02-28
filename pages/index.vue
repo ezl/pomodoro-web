@@ -41,6 +41,11 @@
       <button id="sendPreferencesButton" :disabled="!socketManager.getIsConnected()" @click="sendPreferences">
         Send Preferences
       </button>
+      <table>
+        <tr><td><span>work time</span></td><td><span>{{ timer.preferences.workDuration }}</span></td></tr>
+        <tr><td><span>rest time</span></td><td><span>{{ timer.preferences.restDuration }}</span></td></tr>
+        <tr><td><span>autostart</span></td><td><span>{{ timer.preferences.autoStartNextSession }}</span></td></tr>
+      </table>
     </div>
     <div>
       <h2>Send New State</h2>
