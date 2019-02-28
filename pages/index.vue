@@ -35,6 +35,9 @@
         <tr><td><span>secondsRemaining</span></td><td><span id="secondsRemainingValue">{{ timer.getMillisecondsRemaining() }}</span></td></tr>
         <tr><td><span>isRunning</span></td><td><span id="isRunningValue">{{ timer.getIsRunning() }}</span></td></tr>
       </table>
+      graph goes here
+      <div id="progressBar" />
+      graph goes here
     </div>
     <div>
       <h2>Send Preferences</h2>
@@ -75,7 +78,21 @@ import {
   PomodoroState as PomodoroTimerState
 } from '~/lib/timer'
 
-const timer = PomodoroTimerModel(callbacks)
+const Piecon = require('piecon/piecon.js')
+
+const setFavicon = function() {
+  const timeRemaining = timer.currentDuration - timer.elapsedTime
+  const percentRemaining = (timeRemaining / timer.currentDuration) * 100
+  Piecon.setProgress(percentRemaining)
+}
+
+const timer = PomodoroTimerModel({
+  onTick: function() {
+    setFavicon()
+  }
+})
+
+setFavicon()
 
 export default {
   components: {},
