@@ -1,59 +1,63 @@
 <template>
   <div id="container">
-    <span>Pomodoro Timer</span>
-    <no-ssr placeholder="Loading web socket buttons...">
-      <button id="connectButton" :disabled="socketManager.getIsConnected()" @click="openWebSocket">
-        Connect
-      </button>
-      <button id="disconnectButton" :disabled="socketManager.getIsDisconnected()" @click="closeWebSocket">
-        Disconnect
-      </button>
-    </no-ssr>
+    <h2>Ceci n'est pas une pomodoro timer</h2>
     <div id="yesWebSocketSupport" class="bannerMessage">
       <p>This browser supports WebSockets</p>
     </div>
     <div id="noWebSocketSupport" class="bannerMessage">
       <p>This browser does not support WebSockets</p>
     </div>
-    <div id="output">
-      <h2>Messages</h2>
-      {{ output }}
-    </div>
     <div :class="timer.isWorkState ? 'red' : 'green'">
-      <h2>Ceci n'est pas une pomodoro timer</h2>
       <button id="startTimer" :disabled="timer.getIsRunning()" @click="startTimer">
         Start
       </button>
       <button id="stopTimer" :disabled="!timer.getIsRunning()" @click="stopTimer">
         Stop
       </button>
-      <button :disabled="!socketManager.getIsConnected()" @click="sendState">
-        Send State
-      </button>
+      <div id="countdown" />
       <table>
         <tr><td><span>isWorkState</span></td><td><span id="isWorkStateValue">{{ timer.isWorkState }}</span></td></tr>
         <tr><td><span>secondsRemaining</span></td><td><span id="secondsRemainingValue">{{ timer.getMillisecondsRemaining() }}</span></td></tr>
         <tr><td><span>isRunning</span></td><td><span id="isRunningValue">{{ timer.getIsRunning() }}</span></td></tr>
       </table>
-      <div id="countdown" />
+    </div>
+
+    <hr>
+
+    <h2>Just a bunch of stuff to make it easier for me while building</h2>
+    <div>
+      <h2>Socket Connect / Disconnect</h2>
+      <no-ssr placeholder="Loading web socket buttons...">
+        <button id="connectButton" :disabled="socketManager.getIsConnected()" @click="openWebSocket">
+          Connect
+        </button>
+        <button id="disconnectButton" :disabled="socketManager.getIsDisconnected()" @click="closeWebSocket">
+          Disconnect
+        </button>
+      </no-ssr>
     </div>
     <div>
       <h2>Send Preferences</h2>
-      <button id="sendPreferencesButton" :disabled="!socketManager.getIsConnected()" @click="sendPreferences">
-        Send Preferences
-      </button>
       <table>
         <tr><td><span>work time</span></td><td><input v-model="timer.preferences.workDuration" type="number"></input></td></tr>
         <tr><td><span>rest time</span></td><td><input v-model="timer.preferences.restDuration" type="number"></input></td></tr>
         <tr><td><span>autostart</span></td><td><input v-model="timer.preferences.autoStartNextSession" type="checkbox"></input></td></tr>
       </table>
+      <button id="sendPreferencesButton" :disabled="!socketManager.getIsConnected()" @click="sendPreferences">
+        Send Preferences
+      </button>
     </div>
     <div>
-      <h2>Send New State</h2>
+      <h2>Send Current State</h2>
+      <button :disabled="!socketManager.getIsConnected()" @click="sendState">
+        Send Current State
+      </button>
+    </div>
+    <div>
+      <h2>Send Arbitrary State</h2>
       <p>
         <input id="secondsRemainingInput" v-model="secondsRemainingInputValue" type="number" min="0" step="1">
         <label for="secondsRemainingInput">secondsRemaining</label>
-        {{ secondsRemainingInputValue }}
       </p>
       <p>
         <input id="isWorkStateInput" v-model="isWorkStateCheckboxValue" type="checkbox">
@@ -64,8 +68,12 @@
         <label for="isRunningInput">isRunning</label>
       </p>
       <button id="sendStateButton" :disabled="!socketManager.getIsConnected()" @click="sendArbitraryState">
-        Send State
+        Send Arbitrary State
       </button>
+    </div>
+    <div id="output">
+      <h2>Messages</h2>
+      {{ output }}
     </div>
   </div><!-- container -->
 </template>
