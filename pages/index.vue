@@ -19,7 +19,7 @@
       <h2>Messages</h2>
       {{ output }}
     </div>
-    <div id="pomodoroTimer" v-bind:class="timer.isWorkState ? 'red' : 'green'">
+    <div id="pomodoroTimer" :class="timer.isWorkState ? 'red' : 'green'">
       <h2>Ceci n'est pas une pomodoro timer</h2>
       <button id="startTimer" :disabled="timer.getIsRunning()" @click="startTimer">
         Start
@@ -27,7 +27,7 @@
       <button id="stopTimer" :disabled="!timer.getIsRunning()" @click="stopTimer">
         Stop
       </button>
-      <button @click="sendState" :disabled="!socketManager.getIsConnected()">
+      <button :disabled="!socketManager.getIsConnected()" @click="sendState">
         Send State
       </button>
       <table>
@@ -64,7 +64,10 @@
 </template>
 
 <script>
-import { PomodoroTimer as PomodoroTimerModel } from '~/lib/timer'
+import {
+  PomodoroTimer as PomodoroTimerModel,
+  PomodoroState as PomodoroTimerState
+} from '~/lib/timer'
 // let output
 
 // the callbacks need the timerDisplay object
@@ -89,6 +92,53 @@ export default {
       socketManager: this.$socketManager,
       timer: timer,
       output: 'test output'
+    }
+  },
+  watch: {
+    $socketManager: {
+      handler: function(obj) {
+        const msg = obj.lastMessage
+        console.log('msg', msg)
+
+        // this is stupid! just doing this
+        // so i can see if it's valid json!
+        function IsJsonString(str) {
+          try {
+            JSON.parse(str)
+          } catch (e) {
+            return false
+          }
+          return true
+        }
+        if (!IsJsonString(msg)) {
+          return
+        }
+
+        const response = JSON.parse(msg) // full response payload
+        const data = response.data // just the data key
+        const messageType = response.messageType
+
+        switch (messageType) {
+          case 'state':
+            const pomodoroTimerState = new PomodoroTimerState(
+              data.isWorkState,
+              data.millisecondsRemaining,
+              data.isRunning
+            )
+            pomodoroTimerState.isWorkState = false
+            timer.state = pomodoroTimerState
+
+            // timer.state = pomodoroState
+            break
+          case 'preferences':
+            // timer.preferences = data
+            break
+          case 'potato':
+            console.log('potato')
+            break
+        }
+      },
+      deep: true
     }
   },
   methods: {

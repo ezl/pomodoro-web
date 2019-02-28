@@ -1,11 +1,10 @@
-import { PomodoroState } from '~/lib/timer'
-
 export default ({ app }, inject) => {
   const wsUri = 'wss://l0rodnqh6l.execute-api.us-east-1.amazonaws.com/dev'
 
   const SocketManager = function() {
     const self = {}
 
+    self.lastMessage = ''
     self.websocket = null
     self.state = {
       readyState: 0
@@ -43,28 +42,8 @@ export default ({ app }, inject) => {
     self.onClose = function(event) {}
 
     self.onMessage = function(event) {
-      const response = JSON.parse(event.data) // full response payload
-      const data = response.data // just the data key
-      const messageType = response.messageType
-
-      switch (messageType) {
-        case 'state':
-          const pomodoroState = new PomodoroState(
-            data.isWorkState,
-            data.millisecondsRemaining,
-            data.isRunning
-          )
-          pomodoroState.isWorkState = false
-
-          // timer.state = pomodoroState
-          break
-        case 'preferences':
-          // timer.preferences = data
-          break
-        case 'potato':
-          console.log('potato')
-          break
-      }
+      self.lastMessage = event.data
+      // update the last message so vue can find it
     }
 
     self.onError = function(event) {}

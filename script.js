@@ -1,4 +1,3 @@
-
 /*
 
   const writeToScreen = function(message) {
