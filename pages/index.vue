@@ -84,19 +84,17 @@ import {
   PomodoroState as PomodoroTimerState
 } from '~/lib/timer'
 
+import Piecon from 'piecon/piecon'
+import ProgressBar from 'progressbar.js'
+/*
 const Piecon = require('piecon/piecon.js')
+*/
+let countdown
+let countdownColor = 'red'
 
-const getTimerPercentRemaining = function() {
-  const timeRemaining = timer.currentDuration - timer.elapsedTime
-  const percentRemaining = (timeRemaining / timer.currentDuration) * 100
-  return percentRemaining
-}
-
-const setFaviconPercent = function() {
-  Piecon.setProgress(getTimerPercentRemaining())
-}
-
-const setFaviconColor = function() {
+const setStylesForCountdowns = function() {
+  countdownColor = timer.isWorkState ? 'red' : 'green'
+  // piecon
   if (timer.isWorkState) {
     Piecon.setOptions({
       background: '#ffe2dd',
@@ -108,19 +106,25 @@ const setFaviconColor = function() {
       color: 'green'
     })
   }
+
+  // progressbar
+}
+
+const setValuesForCountdowns = function() {
+  const timeRemaining = timer.currentDuration - timer.elapsedTime
+  const percentRemaining = (timeRemaining / timer.currentDuration) * 100
+  Piecon.setProgress(percentRemaining)
+  countdown.animate(percentRemaining / 100)
 }
 
 const timer = PomodoroTimerModel({
   onTick: function() {
-    setFaviconPercent()
+    setValuesForCountdowns()
   },
   onStateChange: function() {
-    setFaviconColor()
+    setStylesForCountdowns()
   }
 })
-
-setFaviconColor()
-setFaviconPercent()
 
 export default {
   components: {},
@@ -185,17 +189,19 @@ export default {
     }
   },
   mounted: function() {
-    const ProgressBar = require('progressbar.js')
-    const countdown = new ProgressBar.Circle('#countdown', {
+    countdown = new ProgressBar.Circle('#countdown', {
       strokeWidth: 6,
-      easing: 'easeInOut',
-      duration: 2400,
+      duration: 500,
       color: 'red',
       trailColor: '#eee',
       trailWidth: 1,
-      svgStyle: null
+      svgStyle: null,
+      step: (state, bar) => {
+        bar.path.setAttribute('stroke', countdownColor)
+      }
     })
-    countdown.animate(getTimerPercentRemaining() / 100)
+    setStylesForCountdowns()
+    setValuesForCountdowns()
   },
   methods: {
     openWebSocket: function() {
