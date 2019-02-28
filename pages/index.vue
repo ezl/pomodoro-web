@@ -35,9 +35,7 @@
         <tr><td><span>secondsRemaining</span></td><td><span id="secondsRemainingValue">{{ timer.getMillisecondsRemaining() }}</span></td></tr>
         <tr><td><span>isRunning</span></td><td><span id="isRunningValue">{{ timer.getIsRunning() }}</span></td></tr>
       </table>
-      graph goes here
-      <div id="progressBar" />
-      graph goes here
+      <div id="countdown" />
     </div>
     <div>
       <h2>Send Preferences</h2>
@@ -80,11 +78,16 @@ import {
 
 const Piecon = require('piecon/piecon.js')
 
-const setFaviconPercent = function() {
+const getTimerPercentRemaining = function() {
   const timeRemaining = timer.currentDuration - timer.elapsedTime
   const percentRemaining = (timeRemaining / timer.currentDuration) * 100
-  Piecon.setProgress(percentRemaining)
+  return percentRemaining
 }
+
+const setFaviconPercent = function() {
+  Piecon.setProgress(getTimerPercentRemaining())
+}
+
 const setFaviconColor = function() {
   if (timer.isWorkState) {
     Piecon.setOptions({
@@ -172,6 +175,19 @@ export default {
       },
       deep: true
     }
+  },
+  mounted: function() {
+    const ProgressBar = require('progressbar.js')
+    const countdown = new ProgressBar.Circle('#countdown', {
+      strokeWidth: 6,
+      easing: 'easeInOut',
+      duration: 2400,
+      color: 'red',
+      trailColor: '#eee',
+      trailWidth: 1,
+      svgStyle: null
+    })
+    countdown.animate(getTimerPercentRemaining() / 100)
   },
   methods: {
     openWebSocket: function() {
