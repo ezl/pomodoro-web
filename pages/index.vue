@@ -19,7 +19,7 @@
       <h2>Messages</h2>
       {{ output }}
     </div>
-    <div id="pomodoroTimer" :class="timer.isWorkState ? 'red' : 'green'">
+    <div :class="timer.isWorkState ? 'red' : 'green'">
       <h2>Ceci n'est pas une pomodoro timer</h2>
       <button id="startTimer" :disabled="timer.getIsRunning()" @click="startTimer">
         Start
@@ -42,9 +42,9 @@
         Send Preferences
       </button>
       <table>
-        <tr><td><span>work time</span></td><td><input v-model="timer.preferences.workDuration" type="number"/></td></tr>
-        <tr><td><span>rest time</span></td><td><input v-model="timer.preferences.restDuration" type="number" /></td></tr>
-        <tr><td><span>autostart</span></td><td><input v-model="timer.preferences.autoStartNextSession" type="checkbox" /></td></tr>
+        <tr><td><span>work time</span></td><td><input v-model="timer.preferences.workDuration" type="number"></input></td></tr>
+        <tr><td><span>rest time</span></td><td><input v-model="timer.preferences.restDuration" type="number"></input></td></tr>
+        <tr><td><span>autostart</span></td><td><input v-model="timer.preferences.autoStartNextSession" type="checkbox"></input></td></tr>
       </table>
     </div>
     <div>
