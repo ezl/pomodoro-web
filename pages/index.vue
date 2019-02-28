@@ -50,18 +50,19 @@
     <div>
       <h2>Send New State</h2>
       <p>
-        <input id="secondsRemainingInput" type="number" min="0" step="1" value="60">
-        <label for="econdsRemainingInput">secondsRemaining</label>
+        <input id="secondsRemainingInput" v-model="secondsRemainingInputValue" type="number" min="0" step="1">
+        <label for="secondsRemainingInput">secondsRemaining</label>
+        {{ secondsRemainingInputValue }}
       </p>
       <p>
-        <input id="isWorkStateInput" type="checkbox">
+        <input id="isWorkStateInput" v-model="isWorkStateCheckboxValue" type="checkbox">
         <label for="isWorkStateInput">isWorkState</label>
       </p>
       <p>
-        <input id="isRunningInput" type="checkbox">
+        <input id="isRunningInput" v-model="isRunningCheckboxValue" type="checkbox">
         <label for="isRunningInput">isRunning</label>
       </p>
-      <button id="sendStateButton" :disabled="!socketManager.getIsConnected()" @click="sendState">
+      <button id="sendStateButton" :disabled="!socketManager.getIsConnected()" @click="sendArbitraryState">
         Send State
       </button>
     </div>
@@ -96,7 +97,12 @@ export default {
       message: 'Hello World',
       socketManager: this.$socketManager,
       timer: timer,
-      output: 'test output'
+      output: 'test output',
+      isWorkStateCheckbox: false,
+      isRunningCheckbox: false,
+      isWorkStateCheckboxValue: true,
+      secondsRemainingInputValue: 343,
+      isRunningCheckboxValue: false
     }
   },
   watch: {
@@ -185,6 +191,25 @@ export default {
     },
     updateSocketConnectionButtons: function() {
       console.log(this.$socketManager.getIsConnected() === true)
+    },
+    sendArbitraryState() {
+      // delete this
+      console.log('send arbitrary state')
+      console.log(this.isWorkStateCheckboxValue)
+      console.log(this.secondsRemainingInputValue)
+      console.log(this.isRunningCheckboxValue)
+      const state = new PomodoroTimerState(
+        this.isWorkStateCheckboxValue,
+        this.secondsRemainingInputValue,
+        this.isRunningCheckboxValue
+      )
+      const payload = {
+        action: 'sendmessage',
+        messageType: 'state',
+        data: state
+      }
+      const message = JSON.stringify(payload)
+      this.$socketManager.websocket.send(message)
     }
   }
 }
