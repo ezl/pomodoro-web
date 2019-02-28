@@ -16,12 +16,6 @@
 */
 
 /*
-    // actual manual socket actions
-    const doSend = function(message) {
-      websocket.send(message)
-    }
-
-    // socket + ui + timer stuff
 
     const sendPomodoroState = function() {
       const secondsRemaining = parseFloat(
@@ -42,16 +36,6 @@
       doSend(JSON.stringify(payload))
     }
 
-    const sendPomodoroPreferences = function() {
-      const preferences = { foo: 5 } // timer.preferences
-      console.log(preferences)
-      const payload = {
-        action: 'sendmessage',
-        messageType: 'preferences',
-        data: preferences
-      }
-      doSend(JSON.stringify(payload))
-    }
 */
 
 // const output = document.getElementById('output') // well, if there is a socket, we'll want a place to dump output

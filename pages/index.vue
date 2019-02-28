@@ -136,7 +136,9 @@ export default {
             // timer.state = pomodoroState
             break
           case 'preferences':
-            // timer.preferences = data
+            console.log("it's preferences")
+            console.log(data)
+            timer.preferences = data
             break
           case 'potato':
             console.log('potato')
@@ -165,17 +167,23 @@ export default {
     },
     sendState: function() {
       console.log('clicked send state')
-      const state = timer.state
       const payload = {
         action: 'sendmessage',
         messageType: 'state',
-        data: state
+        data: timer.state
       }
       const message = JSON.stringify(payload)
-      this.$socketManager.websocket.send(message) // <-- this is different here than below?
+      this.$socketManager.websocket.send(message)
     },
     sendPreferences: function() {
       console.log('clicked send preferences')
+      const payload = {
+        action: 'sendmessage',
+        messageType: 'preferences',
+        data: timer.preferences
+      }
+      const message = JSON.stringify(payload)
+      this.$socketManager.websocket.send(message)
     },
     updateSocketConnectionButtons: function() {
       console.log(this.$socketManager.getIsConnected() === true)
