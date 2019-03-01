@@ -8,10 +8,10 @@
       <p>This browser does not support WebSockets</p>
     </div>
     <div :class="timer.isWorkState ? 'red' : 'green'">
-      <button id="startTimer" :disabled="timer.getIsRunning()" @click="startTimer">
+      <button id="startTimer" :disabled="timer.getIsRunning()" @click="startTimer(true)">
         Start
       </button>
-      <button id="stopTimer" :disabled="!timer.getIsRunning()" @click="stopTimer">
+      <button id="stopTimer" :disabled="!timer.getIsRunning()" @click="stopTimer(true)">
         Stop
       </button>
       <div id="countdown" />
@@ -29,7 +29,7 @@
         <tr><td><span>rest time</span></td><td><input v-model="preferences.restDuration" type="number"></input></td></tr>
         <tr><td><span>autostart</span></td><td><input v-model="preferences.autoStartNextSession" type="checkbox"></input></td></tr>
       </table>
-      <button :disabled="!socketManager.getIsConnected()" @click="savePreferences">
+      <button :disabled="!socketManager.getIsConnected()" @click="savePreferences(true)">
         Save Preferences
       </button>
       <button :disabled="!socketManager.getIsConnected()" @click="sendPreferences">
@@ -196,12 +196,11 @@ export default {
               data.isRunning
             )
             timer.state = pomodoroTimerState
-
             break
           case 'preferences':
             console.log("it's preferences")
-            console.log(data)
-            timer.preferences = data
+            this.preferences = data
+            this.savePreferences(false)
             break
           case 'join':
             console.log('join')
@@ -242,11 +241,17 @@ export default {
     closeWebSocket: function() {
       this.$socketManager.closeWebSocket()
     },
-    startTimer: function() {
+    startTimer: function(broadcast = false) {
       timer.start()
+      if (broadcast === true && this.$socketManager.getIsConnected()) {
+        this.sendState()
+      }
     },
-    stopTimer: function() {
+    stopTimer: function(broadcast = false) {
       timer.stop()
+      if (broadcast === true && this.$socketManager.getIsConnected()) {
+        this.sendState()
+      }
     },
     sendState: function() {
       const payload = {
@@ -267,9 +272,12 @@ export default {
       const message = JSON.stringify(payload)
       this.$socketManager.websocket.send(message)
     },
-    savePreferences: function() {
+    savePreferences: function(broadcast = false) {
       timer.preferences = this.preferences
       timer.reset()
+      if (broadcast === true && this.$socketManager.getIsConnected()) {
+        this.sendPreferences()
+      }
     },
     updateSocketConnectionButtons: function() {
       console.log(this.$socketManager.getIsConnected() === true)
