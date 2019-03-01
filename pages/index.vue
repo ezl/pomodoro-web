@@ -8,11 +8,14 @@
       <p>This browser does not support WebSockets</p>
     </div>
     <div :class="timer.isWorkState ? 'red' : 'green'">
-      <button id="startTimer" :disabled="timer.getIsRunning()" @click="startTimer(true)">
+      <button :disabled="timer.getIsRunning()" @click="startTimer(true)">
         Start
       </button>
-      <button id="stopTimer" :disabled="!timer.getIsRunning()" @click="stopTimer(true)">
+      <button :disabled="!timer.getIsRunning()" @click="stopTimer(true)">
         Stop
+      </button>
+      <button :disabled="timer.getIsRunning()" @click="resetTimer(true)">
+        Reset
       </button>
       <div id="countdown" />
       <table>
@@ -196,6 +199,8 @@ export default {
               data.isRunning
             )
             timer.state = pomodoroTimerState
+            setStylesForCountdowns()
+            setValuesForCountdowns()
             break
           case 'preferences':
             console.log("it's preferences")
@@ -249,6 +254,14 @@ export default {
     },
     stopTimer: function(broadcast = false) {
       timer.stop()
+      if (broadcast === true && this.$socketManager.getIsConnected()) {
+        this.sendState()
+      }
+    },
+    resetTimer: function(broadcast = false) {
+      timer.reset()
+      console.log(timer.state)
+      console.log(broadcast, 'broadcast')
       if (broadcast === true && this.$socketManager.getIsConnected()) {
         this.sendState()
       }
