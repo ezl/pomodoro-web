@@ -39,11 +39,14 @@
     <div>
       <h2>Send Preferences</h2>
       <table>
-        <tr><td><span>work time</span></td><td><input v-model="timer.preferences.workDuration" type="number"></input></td></tr>
-        <tr><td><span>rest time</span></td><td><input v-model="timer.preferences.restDuration" type="number"></input></td></tr>
-        <tr><td><span>autostart</span></td><td><input v-model="timer.preferences.autoStartNextSession" type="checkbox"></input></td></tr>
+        <tr><td><span>work time</span></td><td><input v-model="preferences.workDuration" type="number"></input></td></tr>
+        <tr><td><span>rest time</span></td><td><input v-model="preferences.restDuration" type="number"></input></td></tr>
+        <tr><td><span>autostart</span></td><td><input v-model="preferences.autoStartNextSession" type="checkbox"></input></td></tr>
       </table>
-      <button id="sendPreferencesButton" :disabled="!socketManager.getIsConnected()" @click="sendPreferences">
+      <button :disabled="!socketManager.getIsConnected()" @click="savePreferences">
+        Save Preferences
+      </button>
+      <button :disabled="!socketManager.getIsConnected()" @click="sendPreferences">
         Send Preferences
       </button>
     </div>
@@ -157,6 +160,7 @@ export default {
       isWorkStateCheckboxValue: true,
       secondsRemainingInputValue: 343,
       users: [],
+      preferences: {},
       isRunningCheckboxValue: false
     }
   },
@@ -229,6 +233,7 @@ export default {
     setStylesForCountdowns()
     setValuesForCountdowns()
     this.openWebSocket()
+    this.preferences = { ...timer.preferences }
   },
   methods: {
     openWebSocket: function() {
@@ -261,6 +266,9 @@ export default {
       }
       const message = JSON.stringify(payload)
       this.$socketManager.websocket.send(message)
+    },
+    savePreferences: function() {
+      timer.preferences = this.preferences
     },
     updateSocketConnectionButtons: function() {
       console.log(this.$socketManager.getIsConnected() === true)
