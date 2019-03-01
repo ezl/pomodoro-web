@@ -23,7 +23,7 @@ input {
     background-color: white;
 }
 
-#container div {
+#container > div {
     border: 1px solid #aaa;
     padding: 20px;
     margin-top: 20px;

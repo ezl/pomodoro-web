@@ -98,28 +98,28 @@ import {
 
 import Piecon from 'piecon/piecon'
 import ProgressBar from 'progressbar.js'
-/*
-const Piecon = require('piecon/piecon.js')
-*/
 let countdown
-let countdownColor = 'red'
+
+const COLORS = {
+  red: '#ff0000',
+  green: '#008000',
+  lightred: '#ffe2dd',
+  lightgreen: '#e3ffdd'
+}
 
 const setStylesForCountdowns = function() {
-  countdownColor = timer.isWorkState ? 'red' : 'green'
+  const primary = timer.isWorkState ? COLORS.red : COLORS.green
+  const secondary = timer.isWorkState ? COLORS.lightred : COLORS.lightgreen
+
   // piecon
-  if (timer.isWorkState) {
-    Piecon.setOptions({
-      background: '#ffe2dd',
-      color: 'red'
-    })
-  } else {
-    Piecon.setOptions({
-      background: '#e3ffdd',
-      color: 'green'
-    })
-  }
+  Piecon.setOptions({
+    color: primary,
+    background: secondary
+  })
 
   // progressbar
+  countdown.path.setAttribute('stroke', primary)
+  countdown.text.style.color = primary
 }
 
 function pad(num) {
@@ -145,8 +145,8 @@ const timer = PomodoroTimerModel({
     setValuesForCountdowns()
   },
   onStateChange: function() {
-    setStylesForCountdowns()
     setValuesForCountdowns()
+    setStylesForCountdowns()
   }
 })
 
@@ -199,8 +199,8 @@ export default {
               data.isRunning
             )
             timer.state = pomodoroTimerState
-            setStylesForCountdowns()
             setValuesForCountdowns()
+            setStylesForCountdowns()
             break
           case 'preferences':
             console.log("it's preferences")
@@ -226,16 +226,13 @@ export default {
       strokeWidth: 6,
       duration: 1000,
       easing: { easing: 'linaear' },
-      color: 'red',
+      color: COLORS.red,
       trailColor: '#eee',
       trailWidth: 1,
-      svgStyle: null,
-      step: (state, bar) => {
-        bar.path.setAttribute('stroke', countdownColor)
-      }
+      svgStyle: null
     })
-    setStylesForCountdowns()
     setValuesForCountdowns()
+    setStylesForCountdowns()
     this.openWebSocket()
     this.preferences = { ...timer.preferences }
   },
