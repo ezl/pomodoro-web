@@ -7,12 +7,6 @@
     output.appendChild(pre) // output <-- reference to the dom element
   }
 
-  const updateButtons = function() {
-    if (websocket.readyState === websocket.OPEN) {
-    } else if (websocket.readyState === websocket.CLOSED) {
-    }
-  }
-
 */
 
 /*
@@ -38,4 +32,3 @@
 
 */
 
-// const output = document.getElementById('output') // well, if there is a socket, we'll want a place to dump output

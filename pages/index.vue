@@ -71,6 +71,12 @@
         Send Arbitrary State
       </button>
     </div>
+    <div>
+      <h2>Connected Users</h2>
+      <li v-for="user in users" :key="user.name">
+        Connection ID: {{ user.connectionId }}
+      </li>
+    </div>
     <div id="output">
       <h2>Messages</h2>
       {{ output }}
@@ -145,11 +151,12 @@ export default {
       message: 'Hello World',
       socketManager: this.$socketManager,
       timer: timer,
-      output: 'test output',
+      output: '',
       isWorkStateCheckbox: false,
       isRunningCheckbox: false,
       isWorkStateCheckboxValue: true,
       secondsRemainingInputValue: 343,
+      users: [],
       isRunningCheckboxValue: false
     }
   },
@@ -192,6 +199,12 @@ export default {
             console.log(data)
             timer.preferences = data
             break
+          case 'join':
+            console.log('join')
+            this.users.push(data)
+            this.sendPreferences()
+            this.sendState()
+            break
           case 'potato':
             console.log('potato')
             break
@@ -215,26 +228,22 @@ export default {
     })
     setStylesForCountdowns()
     setValuesForCountdowns()
+    this.openWebSocket()
   },
   methods: {
     openWebSocket: function() {
-      console.log('clicked open web socket')
       this.$socketManager.openWebSocket()
     },
     closeWebSocket: function() {
-      console.log('clicked close web socket')
       this.$socketManager.closeWebSocket()
     },
     startTimer: function() {
-      console.log('clicked start timer')
       timer.start()
     },
     stopTimer: function() {
-      console.log('clicked start timer')
       timer.stop()
     },
     sendState: function() {
-      console.log('clicked send state')
       const payload = {
         action: 'sendmessage',
         messageType: 'state',
