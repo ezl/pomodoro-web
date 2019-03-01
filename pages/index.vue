@@ -22,6 +22,20 @@
       </table>
     </div>
 
+    <div>
+      <h2>Preferences</h2>
+      <table>
+        <tr><td><span>work time</span></td><td><input v-model="preferences.workDuration" type="number"></input></td></tr>
+        <tr><td><span>rest time</span></td><td><input v-model="preferences.restDuration" type="number"></input></td></tr>
+        <tr><td><span>autostart</span></td><td><input v-model="preferences.autoStartNextSession" type="checkbox"></input></td></tr>
+      </table>
+      <button :disabled="!socketManager.getIsConnected()" @click="savePreferences">
+        Save Preferences
+      </button>
+      <button :disabled="!socketManager.getIsConnected()" @click="sendPreferences">
+        Send Preferences
+      </button>
+    </div>
     <hr>
 
     <h2>Just a bunch of stuff to make it easier for me while building</h2>
@@ -35,20 +49,6 @@
           Disconnect
         </button>
       </no-ssr>
-    </div>
-    <div>
-      <h2>Send Preferences</h2>
-      <table>
-        <tr><td><span>work time</span></td><td><input v-model="preferences.workDuration" type="number"></input></td></tr>
-        <tr><td><span>rest time</span></td><td><input v-model="preferences.restDuration" type="number"></input></td></tr>
-        <tr><td><span>autostart</span></td><td><input v-model="preferences.autoStartNextSession" type="checkbox"></input></td></tr>
-      </table>
-      <button :disabled="!socketManager.getIsConnected()" @click="savePreferences">
-        Save Preferences
-      </button>
-      <button :disabled="!socketManager.getIsConnected()" @click="sendPreferences">
-        Send Preferences
-      </button>
     </div>
     <div>
       <h2>Send Current State</h2>
@@ -269,6 +269,7 @@ export default {
     },
     savePreferences: function() {
       timer.preferences = this.preferences
+      timer.reset()
     },
     updateSocketConnectionButtons: function() {
       console.log(this.$socketManager.getIsConnected() === true)
