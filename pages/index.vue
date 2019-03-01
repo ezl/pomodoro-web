@@ -126,8 +126,8 @@ function pad(num) {
 
 const setValuesForCountdowns = function() {
   const timeRemaining = timer.currentDuration - timer.elapsedTime
-  const minutesRemaining = Math.floor(timeRemaining / (60 * 1000))
-  const secondsRemaining = Math.floor((timeRemaining / 1000) % 60)
+  const minutesRemaining = Math.max(0, Math.floor(timeRemaining / (60 * 1000)))
+  const secondsRemaining = Math.max(0, Math.floor((timeRemaining / 1000) % 60))
   const timeString = pad(minutesRemaining) + ':' + pad(secondsRemaining)
   const percentRemaining = Math.round(
     (timeRemaining / timer.currentDuration) * 100
