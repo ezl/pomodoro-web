@@ -106,7 +106,7 @@ const COLORS = {
   lightred: '#ffe2dd',
   lightgreen: '#e3ffdd'
 }
-const STROKEWIDTH = 6
+const PATHWIDTH = 6
 const TRAILWIDTH = 1
 
 const setStylesForCountdowns = function() {
@@ -132,7 +132,7 @@ function pad(num) {
 }
 
 const TICKINTERVAL = 1000
-const DELAYBETWEENCYCLES = 1000
+const DELAYBETWEENCYCLES = 2000
 
 const setValuesForCountdowns = function(duration = TICKINTERVAL) {
   const timeRemaining = timer.currentDuration - timer.elapsedTime
@@ -146,11 +146,12 @@ const setValuesForCountdowns = function(duration = TICKINTERVAL) {
   Piecon.setProgress(percentRemaining - oneTick)
   if (duration === 0) {
     countdown.set((percentRemaining - oneTick) / 100)
+    countdown.path.setAttribute('stroke-width', PATHWIDTH)
   } else {
     const color = timer.isWorkState ? COLORS.red : COLORS.green
     const opts = {
-      from: { color: color, width: STROKEWIDTH },
-      to: { color: color, width: STROKEWIDTH },
+      from: { color: color, width: PATHWIDTH },
+      to: { color: color, width: PATHWIDTH },
       duration: duration
     }
     countdown.animate((percentRemaining - oneTick) / 100, opts)
@@ -158,26 +159,27 @@ const setValuesForCountdowns = function(duration = TICKINTERVAL) {
   countdown.setText(timeString)
 }
 
-const animateTimerSwitch = function() {
+const animateTimerSwitch = function(delayBetweenCycles = 1000) {
   console.log('ANIMATE TIMER SWITCH')
   const fromColor = timer.isWorkState ? COLORS.lightgreen : COLORS.lightred
   const toColor = timer.isWorkState ? COLORS.green : COLORS.red
-  // const fromColor = '#aaaa00'
-  // const toColor = '#0000cc'
-  console.log('Colors', fromColor, '->', toColor)
   // immediatley set timer to 1.0 with fromColor (this replaces the track
   // immediately set timer to narrow width
   countdown.path.setAttribute('stroke', fromColor)
   countdown.path.setAttribute('stroke-width', 1)
+  countdown.set(1.0)
   // over delay between cycles, animate back to 1.0 with fat width and new color
+  // 1/3 just show the old trail
+  // 1/3 animate
+  // 1/3 show the new path
   const opts = {
     from: { color: fromColor, width: TRAILWIDTH },
-    to: { color: toColor, width: STROKEWIDTH },
-    duration: 1000
+    to: { color: toColor, width: PATHWIDTH },
+    duration: delayBetweenCycles / 2
   }
-  console.log('ok, going to animate it')
-  countdown.animate(1.0, opts)
-  console.log('just called animate!')
+  setTimeout(function() {
+    countdown.animate(1.0, opts)
+  }, delayBetweenCycles / 2)
 }
 
 const timer = PomodoroTimerModel({
@@ -191,7 +193,9 @@ const timer = PomodoroTimerModel({
     setStylesForCountdowns()
     console.log('on state change')
   },
-  onFinish: animateTimerSwitch
+  onFinish: function() {
+    animateTimerSwitch(DELAYBETWEENCYCLES)
+  }
 })
 
 export default {
@@ -266,7 +270,7 @@ export default {
   },
   mounted: function() {
     countdown = new ProgressBar.Circle('#countdown', {
-      strokeWidth: STROKEWIDTH,
+      strokeWidth: PATHWIDTH,
       easing: { easing: 'linaear' },
       step: function(state, circle) {
         circle.path.setAttribute('stroke', state.color)
