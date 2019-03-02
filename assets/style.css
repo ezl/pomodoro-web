@@ -68,11 +68,21 @@ input {
 }
 
 div#countdown {
-max-width: 180px;
-border: 0;
+  max-width: 180px;
+  margin: 0 auto;
 }
 
 #container div.progressbar-text {
   border: 0;
   font-size: 2em;
+}
+
+#timerContainer {
+  text-align: center;
+}
+
+#timerModeDisplay {
+  padding: 20px;
+  font-weight: bold;
+  font-size: 1.2em;
 }

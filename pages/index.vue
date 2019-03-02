@@ -7,18 +7,23 @@
     <div id="noWebSocketSupport" class="bannerMessage">
       <p>This browser does not support WebSockets</p>
     </div>
-    <div :class="timer.isWorkState ? 'red' : 'green'">
-      <button :disabled="timer.getIsRunning()" @click="startTimer(true)">
-        Start
-      </button>
-      <button :disabled="!timer.getIsRunning()" @click="stopTimer(true)">
-        Stop
-      </button>
-      <button :disabled="timer.getIsRunning()" @click="resetTimer(true)">
-        Reset
-      </button>
+    <div id="timerContainer" :class="timer.isWorkState ? 'red' : 'green'">
       <div id="countdown" />
-      <table>
+      <div id="timerModeDisplay">
+        {{ timer.isWorkState ? "Work Time" : "Rest Time" }}
+      </div>
+      <div id="timerButtons">
+        <button :disabled="timer.getIsRunning()" @click="startTimer(true)">
+          Start
+        </button>
+        <button :disabled="!timer.getIsRunning()" @click="stopTimer(true)">
+          Stop
+        </button>
+        <button :disabled="timer.getIsRunning()" @click="resetTimer(true)">
+          Reset
+        </button>
+      </div>
+      <table style="display:none;"><!-- #TODO: remove -->
         <tr><td><span>isWorkState</span></td><td><span id="isWorkStateValue">{{ timer.isWorkState }}</span></td></tr>
         <tr><td><span>secondsRemaining</span></td><td><span id="secondsRemainingValue">{{ timer.getMillisecondsRemaining() }}</span></td></tr>
         <tr><td><span>isRunning</span></td><td><span id="isRunningValue">{{ timer.getIsRunning() }}</span></td></tr>
@@ -296,6 +301,7 @@ export default {
     startTimer: function(broadcast = false) {
       console.log('start')
       timer.start()
+      setValuesForCountdowns(TICKINTERVAL)
       if (broadcast === true && this.$socketManager.getIsConnected()) {
         this.sendState()
       }
