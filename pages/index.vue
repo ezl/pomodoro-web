@@ -110,6 +110,7 @@ const COLORS = {
 const setStylesForCountdowns = function() {
   const primary = timer.isWorkState ? COLORS.red : COLORS.green
   const secondary = timer.isWorkState ? COLORS.lightred : COLORS.lightgreen
+  const contrast = timer.isWorkState ? COLORS.lightgreen : COLORS.lightred
 
   // piecon
   Piecon.setOptions({
@@ -119,6 +120,7 @@ const setStylesForCountdowns = function() {
 
   // progressbar
   countdown.path.setAttribute('stroke', primary)
+  countdown.trail.setAttribute('stroke', contrast)
   countdown.text.style.color = primary
 }
 
@@ -127,7 +129,7 @@ function pad(num) {
   return (Math.pow(10, size) + ~~num).toString().substring(1)
 }
 
-const setValuesForCountdowns = function() {
+const setValuesForCountdowns = function(duration = 1000) {
   const timeRemaining = timer.currentDuration - timer.elapsedTime
   const minutesRemaining = Math.max(0, Math.floor(timeRemaining / (60 * 1000)))
   const secondsRemaining = Math.max(0, Math.floor((timeRemaining / 1000) % 60))
@@ -136,7 +138,7 @@ const setValuesForCountdowns = function() {
     (timeRemaining / timer.currentDuration) * 100
   )
   Piecon.setProgress(percentRemaining)
-  countdown.animate(percentRemaining / 100)
+  countdown.animate(percentRemaining / 100, { duration: duration })
   countdown.setText(timeString)
 }
 
@@ -145,7 +147,7 @@ const timer = PomodoroTimerModel({
     setValuesForCountdowns()
   },
   onStateChange: function() {
-    setValuesForCountdowns()
+    setValuesForCountdowns(1)
     setStylesForCountdowns()
   }
 })
@@ -224,7 +226,7 @@ export default {
   mounted: function() {
     countdown = new ProgressBar.Circle('#countdown', {
       strokeWidth: 6,
-      duration: 1000,
+      duration: 1,
       easing: { easing: 'linaear' },
       color: COLORS.red,
       trailColor: '#eee',
