@@ -133,7 +133,6 @@ const TICKINTERVAL = 1000
 const ZEROISH = 1
 
 const setValuesForCountdowns = function(duration = TICKINTERVAL) {
-  console.log(duration, 'is duration')
   const timeRemaining = timer.currentDuration - timer.elapsedTime
   const minutesRemaining = Math.max(0, Math.floor(timeRemaining / (60 * 1000)))
   const secondsRemaining = Math.max(0, Math.ceil((timeRemaining / 1000) % 60))
@@ -142,13 +141,13 @@ const setValuesForCountdowns = function(duration = TICKINTERVAL) {
     (timeRemaining / timer.currentDuration) * 100
   )
   const oneTick = (duration / timer.currentDuration) * 100
-  console.log(percentRemaining, oneTick, timer.currentDuration, duration)
   Piecon.setProgress(percentRemaining - oneTick)
   countdown.animate((percentRemaining - oneTick) / 100, { duration: duration })
   countdown.setText(timeString)
 }
 
 const timer = PomodoroTimerModel({
+  tickInterval: 1000,
   onTick: function() {
     setValuesForCountdowns(TICKINTERVAL) // Tick interval
   },
