@@ -129,7 +129,11 @@ function pad(num) {
   return (Math.pow(10, size) + ~~num).toString().substring(1)
 }
 
-const setValuesForCountdowns = function(duration = 1000) {
+const TICKINTERVAL = 1000
+const ZEROISH = 1
+
+const setValuesForCountdowns = function(duration = TICKINTERVAL) {
+  console.log(duration, 'is duration')
   const timeRemaining = timer.currentDuration - timer.elapsedTime
   const minutesRemaining = Math.max(0, Math.floor(timeRemaining / (60 * 1000)))
   const secondsRemaining = Math.max(0, Math.ceil((timeRemaining / 1000) % 60))
@@ -137,17 +141,19 @@ const setValuesForCountdowns = function(duration = 1000) {
   const percentRemaining = Math.round(
     (timeRemaining / timer.currentDuration) * 100
   )
-  Piecon.setProgress(percentRemaining)
-  countdown.animate(percentRemaining / 100, { duration: duration })
+  const oneTick = (duration / timer.currentDuration) * 100
+  console.log(percentRemaining, oneTick, timer.currentDuration, duration)
+  Piecon.setProgress(percentRemaining - oneTick)
+  countdown.animate((percentRemaining - oneTick) / 100, { duration: duration })
   countdown.setText(timeString)
 }
 
 const timer = PomodoroTimerModel({
   onTick: function() {
-    setValuesForCountdowns(300)
+    setValuesForCountdowns(TICKINTERVAL) // Tick interval
   },
   onStateChange: function() {
-    setValuesForCountdowns(1)
+    setValuesForCountdowns(ZEROISH)
     setStylesForCountdowns()
   }
 })
@@ -232,7 +238,7 @@ export default {
       trailWidth: 1,
       svgStyle: null
     })
-    setValuesForCountdowns()
+    setValuesForCountdowns(ZEROISH)
     setStylesForCountdowns()
     this.openWebSocket()
     this.preferences = { ...timer.preferences }
