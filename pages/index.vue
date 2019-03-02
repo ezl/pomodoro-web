@@ -32,7 +32,7 @@
         <tr><td><span>rest time</span></td><td><input v-model="preferences.restDuration" type="number"></input></td></tr>
         <tr><td><span>autostart</span></td><td><input v-model="preferences.autoStartNextSession" type="checkbox"></input></td></tr>
       </table>
-      <button :disabled="!socketManager.getIsConnected()" @click="savePreferences(true)">
+      <button @click="savePreferences(true)">
         Save Preferences
       </button>
       <button :disabled="!socketManager.getIsConnected()" @click="sendPreferences">
