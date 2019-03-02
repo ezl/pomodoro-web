@@ -106,6 +106,8 @@ const COLORS = {
   lightred: '#ffe2dd',
   lightgreen: '#e3ffdd'
 }
+const STROKEWIDTH = 6
+const TRAILWIDTH = 1
 
 const setStylesForCountdowns = function() {
   const primary = timer.isWorkState ? COLORS.red : COLORS.green
@@ -130,7 +132,7 @@ function pad(num) {
 }
 
 const TICKINTERVAL = 1000
-const ZEROISH = 1
+const DELAYBETWEENCYCLES = 1000
 
 const setValuesForCountdowns = function(duration = TICKINTERVAL) {
   const timeRemaining = timer.currentDuration - timer.elapsedTime
@@ -142,19 +144,54 @@ const setValuesForCountdowns = function(duration = TICKINTERVAL) {
   )
   const oneTick = (duration / timer.currentDuration) * 100
   Piecon.setProgress(percentRemaining - oneTick)
-  countdown.animate((percentRemaining - oneTick) / 100, { duration: duration })
+  if (duration === 0) {
+    countdown.set((percentRemaining - oneTick) / 100)
+  } else {
+    const color = timer.isWorkState ? COLORS.red : COLORS.green
+    const opts = {
+      from: { color: color, width: STROKEWIDTH },
+      to: { color: color, width: STROKEWIDTH },
+      duration: duration
+    }
+    countdown.animate((percentRemaining - oneTick) / 100, opts)
+  }
   countdown.setText(timeString)
 }
 
+const animateTimerSwitch = function() {
+  console.log('ANIMATE TIMER SWITCH')
+  const fromColor = timer.isWorkState ? COLORS.lightgreen : COLORS.lightred
+  const toColor = timer.isWorkState ? COLORS.green : COLORS.red
+  // const fromColor = '#aaaa00'
+  // const toColor = '#0000cc'
+  console.log('Colors', fromColor, '->', toColor)
+  // immediatley set timer to 1.0 with fromColor (this replaces the track
+  // immediately set timer to narrow width
+  countdown.path.setAttribute('stroke', fromColor)
+  countdown.path.setAttribute('stroke-width', 1)
+  // over delay between cycles, animate back to 1.0 with fat width and new color
+  const opts = {
+    from: { color: fromColor, width: TRAILWIDTH },
+    to: { color: toColor, width: STROKEWIDTH },
+    duration: 1000
+  }
+  console.log('ok, going to animate it')
+  countdown.animate(1.0, opts)
+  console.log('just called animate!')
+}
+
 const timer = PomodoroTimerModel({
-  tickInterval: 1000,
+  tickInterval: TICKINTERVAL,
+  delayBetweenCycles: DELAYBETWEENCYCLES,
   onTick: function() {
     setValuesForCountdowns(TICKINTERVAL) // Tick interval
   },
   onStateChange: function() {
-    setValuesForCountdowns(ZEROISH)
+    setValuesForCountdowns(0)
     setStylesForCountdowns()
-  }
+    console.log('on state change')
+  },
+  onFinish: animateTimerSwitch
 })
 
 export default {
@@ -229,15 +266,18 @@ export default {
   },
   mounted: function() {
     countdown = new ProgressBar.Circle('#countdown', {
-      strokeWidth: 6,
-      duration: 1,
+      strokeWidth: STROKEWIDTH,
       easing: { easing: 'linaear' },
+      step: function(state, circle) {
+        circle.path.setAttribute('stroke', state.color)
+        circle.path.setAttribute('stroke-width', state.width)
+      },
       color: COLORS.red,
       trailColor: '#eee',
-      trailWidth: 1,
+      trailWidth: TRAILWIDTH,
       svgStyle: null
     })
-    setValuesForCountdowns(ZEROISH)
+    setValuesForCountdowns(0)
     setStylesForCountdowns()
     this.openWebSocket()
     this.preferences = { ...timer.preferences }
@@ -250,12 +290,14 @@ export default {
       this.$socketManager.closeWebSocket()
     },
     startTimer: function(broadcast = false) {
+      console.log('start')
       timer.start()
       if (broadcast === true && this.$socketManager.getIsConnected()) {
         this.sendState()
       }
     },
     stopTimer: function(broadcast = false) {
+      console.log('stop')
       timer.stop()
       if (broadcast === true && this.$socketManager.getIsConnected()) {
         this.sendState()
@@ -263,8 +305,6 @@ export default {
     },
     resetTimer: function(broadcast = false) {
       timer.reset()
-      console.log(timer.state)
-      console.log(broadcast, 'broadcast')
       if (broadcast === true && this.$socketManager.getIsConnected()) {
         this.sendState()
       }
