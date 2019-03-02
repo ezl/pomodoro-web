@@ -23,11 +23,6 @@
           Reset
         </button>
       </div>
-      <table style="display:none;"><!-- #TODO: remove -->
-        <tr><td><span>isWorkState</span></td><td><span id="isWorkStateValue">{{ timer.isWorkState }}</span></td></tr>
-        <tr><td><span>secondsRemaining</span></td><td><span id="secondsRemainingValue">{{ timer.getMillisecondsRemaining() }}</span></td></tr>
-        <tr><td><span>isRunning</span></td><td><span id="isRunningValue">{{ timer.getIsRunning() }}</span></td></tr>
-      </table>
     </div>
 
     <div>
@@ -44,6 +39,13 @@
         Send Preferences
       </button>
     </div>
+    <div>
+      <h2>Connected Users</h2>
+      <li v-for="user in users" :key="user.name">
+        Connection ID: {{ user.connectionId }}
+      </li>
+    </div>
+
     <hr>
 
     <h2>Just a bunch of stuff to make it easier for me while building</h2>
@@ -83,10 +85,11 @@
       </button>
     </div>
     <div>
-      <h2>Connected Users</h2>
-      <li v-for="user in users" :key="user.name">
-        Connection ID: {{ user.connectionId }}
-      </li>
+      <table><!-- #TODO: remove -->
+        <tr><td><span>isWorkState</span></td><td><span id="isWorkStateValue">{{ timer.isWorkState }}</span></td></tr>
+        <tr><td><span>secondsRemaining</span></td><td><span id="secondsRemainingValue">{{ timer.getMillisecondsRemaining() }}</span></td></tr>
+        <tr><td><span>isRunning</span></td><td><span id="isRunningValue">{{ timer.getIsRunning() }}</span></td></tr>
+      </table>
     </div>
     <div id="output">
       <h2>Messages</h2>
