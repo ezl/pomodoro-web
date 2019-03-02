@@ -132,7 +132,7 @@ function pad(num) {
 const setValuesForCountdowns = function(duration = 1000) {
   const timeRemaining = timer.currentDuration - timer.elapsedTime
   const minutesRemaining = Math.max(0, Math.floor(timeRemaining / (60 * 1000)))
-  const secondsRemaining = Math.max(0, Math.floor((timeRemaining / 1000) % 60))
+  const secondsRemaining = Math.max(0, Math.ceil((timeRemaining / 1000) % 60))
   const timeString = pad(minutesRemaining) + ':' + pad(secondsRemaining)
   const percentRemaining = Math.round(
     (timeRemaining / timer.currentDuration) * 100
@@ -144,7 +144,7 @@ const setValuesForCountdowns = function(duration = 1000) {
 
 const timer = PomodoroTimerModel({
   onTick: function() {
-    setValuesForCountdowns()
+    setValuesForCountdowns(300)
   },
   onStateChange: function() {
     setValuesForCountdowns(1)
@@ -173,9 +173,8 @@ export default {
     $socketManager: {
       handler: function(obj) {
         const msg = obj.lastMessage
-        console.log('msg', msg)
 
-        // this is stupid! just doing this
+        // TODO: this is stupid! just doing this
         // so i can see if it's valid json!
         function IsJsonString(str) {
           try {
