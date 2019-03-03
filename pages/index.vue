@@ -27,20 +27,6 @@
     </div>
 
     <div>
-      <h5>Preferences</h5>
-      <table>
-        <tr><td><span>work time</span></td><td><input v-model="preferences.workDuration" type="number"></input></td></tr>
-        <tr><td><span>rest time</span></td><td><input v-model="preferences.restDuration" type="number"></input></td></tr>
-        <tr><td><span>autostart</span></td><td><input v-model="preferences.autoStartNextSession" type="checkbox"></input></td></tr>
-      </table>
-      <button @click="savePreferences(true)">
-        Save Preferences
-      </button>
-      <button :disabled="!socketManager.getIsConnected()" @click="sendPreferences">
-        Send Preferences
-      </button>
-    </div>
-    <div>
       <h5>Connected Users</h5>
       <li v-for="user in users" :key="user.name">
         Connection ID: {{ user.connectionId }}
@@ -86,7 +72,8 @@
       </button>
     </div>
     <div>
-      <table><!-- #TODO: remove -->
+      <table>
+        <!-- #TODO: remove -->
         <tr><td><span>isWorkState</span></td><td><span id="isWorkStateValue">{{ timer.isWorkState }}</span></td></tr>
         <tr><td><span>secondsRemaining</span></td><td><span id="secondsRemainingValue">{{ timer.getMillisecondsRemaining() }}</span></td></tr>
         <tr><td><span>isRunning</span></td><td><span id="isRunningValue">{{ timer.getIsRunning() }}</span></td></tr>
@@ -177,10 +164,12 @@ const animateTimerSwitch = function(delayBetweenCycles = 1000) {
   countdown.path.setAttribute('stroke', fromColor)
   countdown.path.setAttribute('stroke-width', 1)
   countdown.set(1.0)
+
   // over delay between cycles, animate back to 1.0 with fat width and new color
   // 1/3 just show the old trail
   // 1/3 animate
   // 1/3 show the new path
+
   const opts = {
     from: { color: fromColor, width: TRAILWIDTH },
     to: { color: toColor, width: PATHWIDTH },
@@ -220,11 +209,21 @@ export default {
       isWorkStateCheckboxValue: true,
       secondsRemainingInputValue: 343,
       users: [],
-      preferences: {},
       isRunningCheckboxValue: false
     }
   },
+  computed: {
+    preferences() {
+      return this.$store.state.preferences
+    }
+  },
   watch: {
+    preferences: {
+      handler: function(obj) {
+        timer.preferences = obj
+        timer.reset()
+      }
+    },
     $socketManager: {
       handler: function(obj) {
         const msg = obj.lastMessage
@@ -260,13 +259,14 @@ export default {
             break
           case 'preferences':
             console.log("it's preferences")
-            this.preferences = data
+            this.$store.commit('setPreferences', data)
+            // this.preferences = data
             this.savePreferences(false)
             break
           case 'join':
             console.log('join')
             this.users.push(data)
-            this.sendPreferences()
+            // this.sendPreferences()
             this.sendState()
             break
           case 'potato':
@@ -293,7 +293,9 @@ export default {
     setValuesForCountdowns(0)
     setStylesForCountdowns()
     this.openWebSocket()
-    this.preferences = { ...timer.preferences }
+    console.log('hi dmitry')
+    console.log(timer.preferences)
+    this.$store.commit('setPreferences', timer.preferences)
   },
   methods: {
     openWebSocket: function() {
@@ -332,23 +334,6 @@ export default {
       const message = JSON.stringify(payload)
       this.$socketManager.websocket.send(message)
     },
-    sendPreferences: function() {
-      console.log('clicked send preferences')
-      const payload = {
-        action: 'sendmessage',
-        messageType: 'preferences',
-        data: timer.preferences
-      }
-      const message = JSON.stringify(payload)
-      this.$socketManager.websocket.send(message)
-    },
-    savePreferences: function(broadcast = false) {
-      timer.preferences = this.preferences
-      timer.reset()
-      if (broadcast === true && this.$socketManager.getIsConnected()) {
-        this.sendPreferences()
-      }
-    },
     updateSocketConnectionButtons: function() {
       console.log(this.$socketManager.getIsConnected() === true)
     },
@@ -374,6 +359,3 @@ export default {
   }
 }
 </script>
-
-<style>
-</style>
