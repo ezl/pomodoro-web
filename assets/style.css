@@ -1,26 +1,5 @@
-* {
-   font-family: Helvetica, Arial, sans-serif;
-   font-size: 16px;
-}
-
-body {
-    margin: 20px;
-}
-
 .bannerMessage {
     display: none;
-}
-
-input, button {
-    border: 1px solid #aaa;
-    margin: 0px 0px 20px;
-    padding: 5px 20px;
-}
-button {
-    background-color: #eee;
-}
-input {
-    background-color: white;
 }
 
 #container > div {
@@ -94,7 +73,7 @@ div#countdown {
     padding: 0px;
     margin: 0px;
     transform: translate(-50%, -50%);
-    height: 144px; /* I don't know why, but the countdown box is 4px taller than wide. this 4px offsets that */
+    height: 148px; /* I don't know why, but the countdown box is 4px taller than wide. this 4px offsets that */
     width: 140px;
     color: rgb(255, 0, 0);
 }

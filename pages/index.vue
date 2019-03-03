@@ -1,6 +1,5 @@
 <template>
   <div id="container">
-    <h2>Ceci n'est pas une pomodoro timer</h2>
     <div id="yesWebSocketSupport" class="bannerMessage">
       <p>This browser supports WebSockets</p>
     </div>
@@ -28,7 +27,7 @@
     </div>
 
     <div>
-      <h2>Preferences</h2>
+      <h5>Preferences</h5>
       <table>
         <tr><td><span>work time</span></td><td><input v-model="preferences.workDuration" type="number"></input></td></tr>
         <tr><td><span>rest time</span></td><td><input v-model="preferences.restDuration" type="number"></input></td></tr>
@@ -42,7 +41,7 @@
       </button>
     </div>
     <div>
-      <h2>Connected Users</h2>
+      <h5>Connected Users</h5>
       <li v-for="user in users" :key="user.name">
         Connection ID: {{ user.connectionId }}
       </li>
@@ -50,9 +49,9 @@
 
     <hr>
 
-    <h2>Just a bunch of stuff to make it easier for me while building</h2>
+    <h5>Just a bunch of stuff to make it easier for me while building</h5>
     <div>
-      <h2>Socket Connect / Disconnect</h2>
+      <h5>Socket Connect / Disconnect</h5>
       <no-ssr placeholder="Loading web socket buttons...">
         <button id="connectButton" :disabled="socketManager.getIsConnected()" @click="openWebSocket">
           Connect
@@ -63,13 +62,13 @@
       </no-ssr>
     </div>
     <div>
-      <h2>Send Current State</h2>
+      <h5>Send Current State</h5>
       <button :disabled="!socketManager.getIsConnected()" @click="sendState">
         Send Current State
       </button>
     </div>
     <div>
-      <h2>Send Arbitrary State</h2>
+      <h5>Send Arbitrary State</h5>
       <p>
         <input id="secondsRemainingInput" v-model="secondsRemainingInputValue" type="number" min="0" step="1">
         <label for="secondsRemainingInput">secondsRemaining</label>
@@ -94,7 +93,7 @@
       </table>
     </div>
     <div id="output">
-      <h2>Messages</h2>
+      <h5>Messages</h5>
       {{ output }}
     </div>
   </div><!-- container -->

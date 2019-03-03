@@ -7,13 +7,18 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: pkg.name,
+    title: 'Pomodoro Timer',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: pkg.description }
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    link: [
+      { rel: 'stylesheet', type: 'text/css', href: '//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css' },
+      { rel: 'stylesheet', type: 'text/css', href: '//fonts.googleapis.com/css?family=Raleway:400,300,600,800,900' },
+      { rel: 'stylesheet', type: 'text/css', href: '//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400' },
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+    ]
   },
 
   /*
@@ -24,7 +29,7 @@ module.exports = {
   /*
   ** Global CSS
   */
-  css: ['@/assets/style.css'],
+  css: ['@/assets/layout.css', '@/assets/style.css'],
 
   /*
   ** Plugins to load before mounting the App
