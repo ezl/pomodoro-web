@@ -8,7 +8,9 @@
       <p>This browser does not support WebSockets</p>
     </div>
     <div id="timerContainer" :class="timer.isWorkState ? 'red' : 'green'">
-      <div id="countdown" />
+      <div id="countdown">
+        <div id="tomatoImage" />
+      </div>
       <div id="timerModeDisplay">
         {{ timer.isWorkState ? "Work Time" : "Rest Time" }}
       </div>

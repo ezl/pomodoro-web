@@ -75,6 +75,7 @@ div#countdown {
 #container div.progressbar-text {
   border: 0;
   font-size: 2em;
+  text-shadow: 0 0 2px white;
 }
 
 #timerContainer {
@@ -85,4 +86,33 @@ div#countdown {
   padding: 20px;
   font-weight: bold;
   font-size: 1.2em;
+}
+#tomatoImage {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    padding: 0px;
+    margin: 0px;
+    transform: translate(-50%, -50%);
+    height: 144px; /* I don't know why, but the countdown box is 4px taller than wide. this 4px offsets that */
+    width: 140px;
+    color: rgb(255, 0, 0);
+}
+#tomatoImage::after {
+  content: "";
+  background-repeat: no-repeat;
+  background-size: 140px 140px;
+  opacity: 0.3;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  z-index: -1;
+}
+.red #tomatoImage::after {
+  background-image: url('tomato-red.png');
+}
+.green #tomatoImage::after {
+  background-image: url('tomato-green.png');
 }
