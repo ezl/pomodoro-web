@@ -5,22 +5,22 @@
       <div class="row">
         <div class="six columns">
           <label>Work time</label>
-          <input v-model="preferencesForm.workDuration" class="u-full-width" type="number"></input>
+          <input v-model="preferencesForm.workDuration" class="u-full-width" type="number">
         </div>
         <div class="six columns">
           <label>Rest time</label>
-          <input v-model="preferencesForm.restDuration" class="u-full-width" type="number"></input>
+          <input v-model="preferencesForm.restDuration" class="u-full-width" type="number">
         </div>
       </div>
       <div class="row">
         <label>
-          <input v-model="preferencesForm.autoStartNextSession" type="checkbox"></input>
+          <input v-model="preferencesForm.autoStartNextSession" type="checkbox">
           <span class="label-body">Automatically start next session</span>
         </label>
       </div>
       <div class="row">
         <div class="six columns">
-          <button @click="savePreferences(true)" class="u-full-width">
+          <button class="u-full-width" @click="savePreferences(true)">
             Save
           </button>
         </div>
@@ -29,7 +29,7 @@
             Cancel
           </button>
         </div>
-        <button @click="sendPreferences" style="display:none;">
+        <button style="display:none;" @click="sendPreferences">
           Send Preferences
         </button>
       </div>
