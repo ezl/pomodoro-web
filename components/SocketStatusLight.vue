@@ -1,7 +1,7 @@
 <template>
   <section id="socketStatusLight">
     <span>Connection Status:</span>
-    <span id="socketStatusIndicator" class="dot" :class="socketStatus()" />
+    <span id="socketStatusIndicator" class="dot" :class="socketStatusClass" />
   </section>
 </template>
 
@@ -9,17 +9,24 @@
 export default {
   data: function() {
     return {
-      socketStatus: function() {
-        if (this.$socketManager.getIsConnected() === true) {
-          return 'dot green'
-        } else if (this.$socketManager.getIsDisconnected() === true) {
-          return 'dot red'
-        } else if (this.$socketManager.getIsPending() === true) {
-          return 'dot yellow'
+      socketStatusClass: 'dot',
+      socketManager: this.$socketManager
+    }
+  },
+  watch: {
+    socketManager: {
+      handler: function(socket) {
+        if (socket.getIsConnected() === true) {
+          this.socketStatusClass = 'dot green'
+        } else if (socket.getIsDisconnected() === true) {
+          this.socketStatusClass = 'dot red'
+        } else if (socket.getIsPending() === true) {
+          this.socketStatusClass = 'dot yellow'
         } else {
-          return 'dot'
+          this.socketStatusClass = 'dot'
         }
-      }
+      },
+      deep: true
     }
   }
 }
