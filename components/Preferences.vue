@@ -25,19 +25,26 @@
           Send Preferences
         </button>
       </div>
+    </section>
+
+    <hr />
+
+    <section>
       <span>Connection Status:</span>
       <span id="socketStatusIndicator" class="dot" :class="socketStatus()" />
     </section>
+
+    <hr />
 
     <section id="groupSessionSettings">
       <div class="row">
         <div class="twelve columns">
           <label>Session Name</label>
-          <input v-model="preferencesForm.workDuration" class="u-full-width" type="number"></input>
+          <input class="u-full-width" type="text"></input>
         </div>
       </div>
       <div class="row">
-        <button @click="savePreferences(true)" class="u-full-width">
+        <button class="u-full-width">
           Join
         </button>
       </div>

@@ -1,29 +1,6 @@
 <template>
   <div>
-    <nav id="side-menu" class="side-menu slideout-menu">
-      <div class="side-menu-header">
-        <h1 class="main-header">
-          <a>
-            Pomodoro
-          </a>
-        </h1>
-
-        <h2 class="sub-header">
-          Share a session with an coworker or friend!
-        </h2>
-      </div>
-
-      <h3>Settings</h3>
-      <Preferences />
-
-      <div class="side-menu-ad" style="display:none;">
-        <img src="https://via.placeholder.com/90x130"></img>
-        <div class="side-menu-ad-text">
-          <p>Lorem ipsum dolor sit amet consectetur</p>
-          <a href="#">link</a>
-        </div>
-      </div>
-    </nav>
+    <Sidebar />
 
     <div id="content-wrapper" class="content-wrapper slideout-panel">
       <div id="top-bar" class="top-bar">
@@ -45,8 +22,8 @@
 </template>
 
 <script>
-import Preferences from '~/components/Preferences.vue'
+import Sidebar from '~/components/Sidebar.vue'
 export default {
-  components: { Preferences }
+  components: { Sidebar }
 }
 </script>
