@@ -19,9 +19,16 @@
         </label>
       </div>
       <div class="row">
-        <button @click="savePreferences(true)" class="u-full-width">
-          Save Settings
-        </button>
+        <div class="six columns">
+          <button @click="savePreferences(true)" class="u-full-width">
+            Save
+          </button>
+        </div>
+        <div class="six columns">
+          <button class="u-full-width">
+            Cancel
+          </button>
+        </div>
         <button @click="sendPreferences" style="display:none;">
           Send Preferences
         </button>
