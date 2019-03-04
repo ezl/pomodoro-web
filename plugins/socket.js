@@ -1,4 +1,5 @@
 export default ({ app }, inject) => {
+  const VERBOSE = true
   const wsUri = 'wss://l0rodnqh6l.execute-api.us-east-1.amazonaws.com/dev'
 
   const SocketManager = function() {
@@ -15,19 +16,22 @@ export default ({ app }, inject) => {
       self.state.readyState = self.websocket.readyState
       self.websocket.onopen = function(event) {
         self.onOpen(event)
-        self.state.readyState = self.websocket.readyState
       }
       self.websocket.onclose = function(event) {
         self.onClose(event)
-        self.state.readyState = self.websocket.readyState
       }
       self.websocket.onmessage = function(event) {
         self.onMessage(event)
-        self.state.readyState = self.websocket.readyState
       }
       self.websocket.onerror = function(event) {
         self.onError(event)
-        self.state.readyState = self.websocket.readyState
+      }
+    }
+
+    self.send = function(message) {
+      self.websocket.send(message)
+      if (VERBOSE === true) {
+        console.log('[socket.js] MESSAGE SENT:', message)
       }
     }
 
@@ -37,16 +41,35 @@ export default ({ app }, inject) => {
 
     // functions to define what to do on socket events
 
-    self.onOpen = function(event) {}
-
-    self.onClose = function(event) {}
-
-    self.onMessage = function(event) {
-      self.lastMessage = event.data
-      // update the last message so vue can find it
+    self.onOpen = function(event) {
+      self.state.readyState = self.websocket.readyState
+      if (VERBOSE === true) {
+        console.log('[socket.js] OPENED web socket')
+      }
     }
 
-    self.onError = function(event) {}
+    self.onClose = function(event) {
+      self.state.readyState = self.websocket.readyState
+      if (VERBOSE === true) {
+        console.log('[socket.js] CLOSED web socket')
+      }
+    }
+
+    self.onMessage = function(event) {
+      self.state.readyState = self.websocket.readyState
+      // update the last message so vue can find it
+      self.lastMessage = event.data
+      if (VERBOSE === true) {
+        console.log('[socket.js] MESSAGE RECEIVED', self.lastMessage)
+      }
+    }
+
+    self.onError = function(event) {
+      self.state.readyState = self.websocket.readyState
+      if (VERBOSE === true) {
+        console.log('[socket.js] SOCKET ERROR')
+      }
+    }
 
     self.getIsConnected = function() {
       if (self.websocket === null) {
@@ -54,12 +77,14 @@ export default ({ app }, inject) => {
       }
       return self.state.readyState === self.websocket.OPEN
     }
+
     self.getIsDisconnected = function() {
       if (self.websocket === null) {
         return true
       }
       return self.state.readyState === self.websocket.CLOSED
     }
+
     self.getIsPending = function() {
       if (self.state === null) {
         return false
@@ -69,6 +94,7 @@ export default ({ app }, inject) => {
         self.websocket.readyState === self.websocket.CLOSING
       )
     }
+
     return self
   }
 

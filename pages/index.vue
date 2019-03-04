@@ -321,7 +321,7 @@ export default {
         data: timer.state
       }
       const message = JSON.stringify(payload)
-      this.$socketManager.websocket.send(message)
+      this.$socketManager.send(message)
     },
     updateSocketConnectionButtons: function() {
       console.log(this.$socketManager.getIsConnected() === true)
@@ -343,7 +343,7 @@ export default {
         data: state
       }
       const message = JSON.stringify(payload)
-      this.$socketManager.websocket.send(message)
+      this.$socketManager.send(message)
     }
   }
 }
