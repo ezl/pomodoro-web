@@ -1,11 +1,5 @@
 <template>
   <div id="container">
-    <div id="yesWebSocketSupport" class="bannerMessage">
-      <p>This browser supports WebSockets</p>
-    </div>
-    <div id="noWebSocketSupport" class="bannerMessage">
-      <p>This browser does not support WebSockets</p>
-    </div>
     <div id="timerContainer" :class="timer.isWorkState ? 'red' : 'green'">
       <div id="countdown">
         <div id="tomatoImage" />
@@ -27,7 +21,7 @@
     </div>
 
     <div>
-      <h5>Connected Users</h5>
+      <span>Connected Users</span>
       <li v-for="user in users" :key="user.name">
         Connection ID: {{ user.connectionId }}
       </li>
@@ -35,9 +29,8 @@
 
     <hr>
 
-    <h5>Just a bunch of stuff to make it easier for me while building</h5>
     <div>
-      <h5>Socket Connect / Disconnect</h5>
+      <span>Socket Connect / Disconnect</span>
       <no-ssr placeholder="Loading web socket buttons...">
         <button id="connectButton" :disabled="socketManager.getIsConnected()" @click="openWebSocket">
           Connect
@@ -48,13 +41,13 @@
       </no-ssr>
     </div>
     <div>
-      <h5>Send Current State</h5>
+      <span>Send Current State</span>
       <button :disabled="!socketManager.getIsConnected()" @click="sendState">
         Send Current State
       </button>
     </div>
     <div>
-      <h5>Send Arbitrary State</h5>
+      <span>Send Arbitrary State</span>
       <p>
         <input id="secondsRemainingInput" v-model="secondsRemainingInputValue" type="number" min="0" step="1">
         <label for="secondsRemainingInput">secondsRemaining</label>
@@ -80,7 +73,7 @@
       </table>
     </div>
     <div id="output">
-      <h5>Messages</h5>
+      <span>Messages</span>
       {{ output }}
     </div>
   </div><!-- container -->
@@ -98,7 +91,7 @@ let countdown
 
 const COLORS = {
   red: '#ff0000',
-  green: '#008000',
+  green: '#5cb85c',
   lightred: '#ffe2dd',
   lightgreen: '#e3ffdd'
 }
@@ -156,7 +149,6 @@ const setValuesForCountdowns = function(duration = TICKINTERVAL) {
 }
 
 const animateTimerSwitch = function(delayBetweenCycles = 1000) {
-  console.log('ANIMATE TIMER SWITCH')
   const fromColor = timer.isWorkState ? COLORS.lightgreen : COLORS.lightred
   const toColor = timer.isWorkState ? COLORS.green : COLORS.red
   // immediatley set timer to 1.0 with fromColor (this replaces the track
@@ -260,8 +252,7 @@ export default {
           case 'preferences':
             console.log("it's preferences")
             this.$store.commit('setPreferences', data)
-            // this.preferences = data
-            this.savePreferences(false)
+            timer.preferences = { ...data }
             break
           case 'join':
             console.log('join')
@@ -293,8 +284,6 @@ export default {
     setValuesForCountdowns(0)
     setStylesForCountdowns()
     this.openWebSocket()
-    console.log('hi dmitry')
-    console.log(timer.preferences)
     this.$store.commit('setPreferences', timer.preferences)
   },
   methods: {

@@ -1,20 +1,47 @@
 <template>
   <div>
-    <div>
-      <span>work time</span><input v-model="preferences.workDuration" type="number"></input>
-    </div>
-    <div>
-      <span>rest time</span><input v-model="preferences.restDuration" type="number"></input>
-    </div>
-    <div>
-      <span>autostart</span><input v-model="preferences.autoStartNextSession" type="checkbox"></input>
-    </div>
-    <button @click="savePreferences(true)">
-      Save Preferences
-    </button>
-    <button @click="sendPreferences">
-      Send Preferences
-    </button>
+    <section id="preferencesForm">
+      <div class="row">
+        <div class="six columns">
+          <label>Work time</label>
+          <input v-model="preferencesForm.workDuration" class="u-full-width" type="number"></input>
+        </div>
+        <div class="six columns">
+          <label>Rest time</label>
+          <input v-model="preferencesForm.restDuration" class="u-full-width" type="number"></input>
+        </div>
+      </div>
+      <div class="row">
+        <label>
+          <input v-model="preferencesForm.autoStartNextSession" type="checkbox"></input>
+          <span class="label-body">Automatically start next session</span>
+        </label>
+      </div>
+      <div class="row">
+        <button @click="savePreferences(true)" class="u-full-width">
+          Save Settings
+        </button>
+        <button @click="sendPreferences" style="display:none;">
+          Send Preferences
+        </button>
+      </div>
+      <span>Connection Status:</span>
+      <span id="socketStatusIndicator" class="dot" :class="socketStatus()" />
+    </section>
+
+    <section id="groupSessionSettings">
+      <div class="row">
+        <div class="twelve columns">
+          <label>Session Name</label>
+          <input v-model="preferencesForm.workDuration" class="u-full-width" type="number"></input>
+        </div>
+      </div>
+      <div class="row">
+        <button @click="savePreferences(true)" class="u-full-width">
+          Join
+        </button>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -23,31 +50,53 @@ export default {
   components: {},
   data: function() {
     return {
-      preferences: {
-        workDuration: 10,
-        restDuration: 10,
-        autoStartNextSession: true
+      preferencesForm: {},
+      socketStatus: function() {
+        if (this.$socketManager.getIsConnected() === true) {
+          return 'dot green'
+        } else if (this.$socketManager.getIsDisconnected() === true) {
+          return 'dot red'
+        } else if (this.$socketManager.getIsPending() === true) {
+          return 'dot yellow'
+        } else {
+          return 'dot'
+        }
+      }
+    }
+  },
+  computed: {
+    preferences: {
+      // these are the actual preferences from vuex
+      get() {
+        return this.$store.state.preferences
+      },
+      set(value) {
+        this.$store.commit('setPreferences', value)
+      }
+    }
+  },
+  watch: {
+    preferences: {
+      handler: function(obj) {
+        this.preferencesForm = { ...obj }
       }
     }
   },
   methods: {
     sendPreferences: function() {
       console.log('clicked send preferences')
-      /*
       const payload = {
         action: 'sendmessage',
         messageType: 'preferences',
-        data: this.$store.state.timer.preferences
+        data: this.$store.state.preferences
       }
       const message = JSON.stringify(payload)
       this.$socketManager.websocket.send(message)
-      */
     },
     savePreferences: function(broadcast = false) {
       console.log('clicked save preferences', broadcast)
-      this.$store.commit('setPreferences', this.preferences)
+      this.$store.commit('setPreferences', this.preferencesForm)
       /*
-      // this.$store.state.timer.preferences = this.preferences
       this.$store.state.timer.reset() <--
       if (broadcast === true && this.$socketManager.getIsConnected()) {
         this.sendPreferences()
@@ -57,3 +106,32 @@ export default {
   }
 }
 </script>
+
+<style>
+.dot {
+  margin: 0 8px;
+  height: 10px;
+  width: 10px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0px 0px 0px 2px #f4f4f4, 0px 0px 0px 4px #bbb;
+}
+.dot.green {
+  background-color: #5cb85c;
+  box-shadow: 0px 0px 0px 2px #f4f4f4, 0px 0px 2px 4px #5cb85c;
+}
+.dot.yellow {
+  background-color: #f0ad4e;
+  box-shadow: 0px 0px 0px 2px #f4f4f4, 0px 0px 2px 4px #f0ad4e;
+}
+.dot.red {
+  background-color: #ff0000;
+  box-shadow: 0px 0px 0px 2px #f4f4f4, 0px 0px 2px 4px #ff0000;
+}
+label {
+  color: #aaa;
+  font-weight: normal;
+  font-size: 0.8em;
+}
+</style>

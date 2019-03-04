@@ -1,48 +1,7 @@
-.bannerMessage {
-    display: none;
-}
-
-#container > div {
-    border: 1px solid #aaa;
-    padding: 20px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    font-size: 16px;
-}
-
-#yesWebSocketSupport {
-    border-color: #0A0;
-    background-color: #F0FFF0;
-    color: #0d8900;
-}
-
-#noWebSocketSupport {
-    border-color:#cb0000;
-    background-color: #FFE1E1;
-    color: #800000;
-}
-
-#noWebSocketSupport p {
-    font-size: 16px;
-    line-height: 125%;
-    color: #800000;
-    margin-top: 10px;
-}
-
-
-#isWorkStateValue, #secondsRemainingValue, #isRunningValue {
-    font-weight: bold;
-    padding-left: 15px;
-}
-
 .red {
-    background-color: #ffe2dd;
-    border-color: red;
     color: red;
 }
 .green {
-    background-color: #e3ffdd;
-    border-color: green;
     color: green;
 }
 
@@ -51,7 +10,7 @@ div#countdown {
   margin: 0 auto;
 }
 
-#container div.progressbar-text {
+div.progressbar-text {
   border: 0;
   font-size: 2em;
   text-shadow: 0 0 2px white;
@@ -90,8 +49,8 @@ div#countdown {
   z-index: -1;
 }
 .red #tomatoImage::after {
-  background-image: url('tomato-red.png');
+  background-image: url('images/tomato-red.png');
 }
 .green #tomatoImage::after {
-  background-image: url('tomato-green.png');
+  background-image: url('images/tomato-green.png');
 }

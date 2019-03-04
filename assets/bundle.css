@@ -903,6 +903,7 @@ h6,
 }
 .sub-header {
   font-size: 1.3rem;
+  line-height: 1.7rem;
 }
 p {
   max-width: 600px;
@@ -936,23 +937,17 @@ body,
   -webkit-overflow-scrolling: touch;
   position: relative;
 }
-.content-wrapper .content > .github-link {
-  visibility: hidden;
-  display: none;
-}
 @media screen and (min-width: 700px) {
   .content-wrapper {
     box-shadow: none;
   }
+  .content-wrapper .top-bar {
+    visibility: hidden;
+    display: none;
+  }
 }
 .content {
   padding: 40px 40px 50px 40px;
-}
-.content .examples-header {
-  margin-top: 40px;
-}
-.content .examples-intro {
-  margin-bottom: 50px;
 }
 @media screen and (min-width: 500px) {
   .content {

@@ -12,6 +12,7 @@ export default ({ app }, inject) => {
 
     self.openWebSocket = function() {
       self.websocket = new WebSocket(wsUri)
+      self.state.readyState = self.websocket.readyState
       self.websocket.onopen = function(event) {
         self.onOpen(event)
         self.state.readyState = self.websocket.readyState
