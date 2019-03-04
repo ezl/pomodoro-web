@@ -1,6 +1,6 @@
 <template>
-  <section id="socketStatusLight">
-    <span>Connection Status:</span>
+  <section class="socketStatusIndicator">
+    <span>Connection:</span>
     <span id="socketStatusIndicator" class="dot" :class="socketStatusClass" />
   </section>
 </template>

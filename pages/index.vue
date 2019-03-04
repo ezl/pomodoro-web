@@ -1,5 +1,7 @@
 <template>
-  <div id="container">
+  <div class="content">
+    <SocketStatusLight />
+
     <div id="timerContainer" :class="timer.isWorkState ? 'red' : 'green'">
       <div id="countdown">
         <div id="tomatoImage" />
@@ -80,6 +82,7 @@
 </template>
 
 <script>
+import SocketStatusLight from '~/components/SocketStatusLight.vue'
 import {
   PomodoroTimer as PomodoroTimerModel,
   PomodoroState as PomodoroTimerState
@@ -189,7 +192,7 @@ const timer = PomodoroTimerModel({
 })
 
 export default {
-  components: {},
+  components: { SocketStatusLight },
   data: function() {
     return {
       message: 'Hello World',

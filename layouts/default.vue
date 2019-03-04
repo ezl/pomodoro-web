@@ -9,21 +9,19 @@
             <span class="hamburger-inner" />
           </span>
         </button>
+        <SocketStatusLight />
       </div>
 
-      <div class="content">
-        <div class="row">
-          <!-- main content area -->
-          <nuxt />
-        </div>
-      </div>
+      <!-- main content area -->
+      <nuxt />
     </div>
   </div>
 </template>
 
 <script>
 import Sidebar from '~/components/Sidebar.vue'
+import SocketStatusLight from '~/components/SocketStatusLight.vue'
 export default {
-  components: { Sidebar }
+  components: { Sidebar, SocketStatusLight }
 }
 </script>

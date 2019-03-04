@@ -23,6 +23,9 @@ html, body, .content-wrapper {
     -webkit-overflow-scrolling: touch;
     position: relative;
 
+    > .socketStatusIndicator {
+      .hidden();
+    }
   }
 
   @media screen and (min-width: @side-menu-collapse-breakpoint) {
@@ -30,6 +33,23 @@ html, body, .content-wrapper {
 
     .top-bar {
       .hidden();
+    }
+
+    .content > .socketStatusIndicator {
+      display: block;
+      visibility: visible;
+      position: absolute;
+      z-index: 999999;
+      top: 20px;
+      right: 20px;
+
+      > a {
+        color: #505d6b;
+
+        &:hover {
+          color: @red;
+        }
+      }
     }
   }
 }
