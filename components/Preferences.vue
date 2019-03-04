@@ -20,12 +20,12 @@
       </div>
       <div class="row">
         <div class="six columns">
-          <button class="u-full-width" @click="savePreferences(true)">
+          <button class="u-full-width" :disabled="!formIsDirty" @click="savePreferences(true)">
             Save
           </button>
         </div>
         <div class="six columns">
-          <button class="u-full-width">
+          <button class="u-full-width" :disabled="!formIsDirty" @click="cancelChangingPreferences">
             Cancel
           </button>
         </div>
@@ -43,6 +43,18 @@ export default {
   data: function() {
     return {
       preferencesForm: {}
+    }
+  },
+  computed: {
+    formIsDirty() {
+      const preferencesInMinutes = this.$store.getters.preferencesInMinutes
+      const allFieldsUnchanged =
+        preferencesInMinutes.autoStartNextSession ===
+          this.preferencesForm.autoStartNextSession &&
+        preferencesInMinutes.workDuration ===
+          this.preferencesForm.workDuration &&
+        preferencesInMinutes.restDuration === this.preferencesForm.restDuration
+      return !allFieldsUnchanged
     }
   },
   watch: {
@@ -72,6 +84,10 @@ export default {
         this.sendPreferences()
       }
       */
+    },
+    cancelChangingPreferences: function() {
+      console.log('clicked cancel preferences')
+      this.preferencesForm = { ...this.$store.getters.preferencesInMinutes }
     }
   }
 }
