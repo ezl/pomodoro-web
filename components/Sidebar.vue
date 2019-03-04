@@ -12,8 +12,11 @@
       </h2>
     </div>
 
-    <h3>Settings</h3>
     <Preferences />
+    <hr></hr>
+    <SocketStatusLight />
+    <hr></hr>
+    <GroupSessionForm />
 
     <div class="side-menu-ad" style="display:none;">
       <img src="https://via.placeholder.com/90x130"></img>
@@ -27,8 +30,10 @@
 
 <script>
 import Preferences from '~/components/Preferences.vue'
+import GroupSessionForm from '~/components/GroupSessionForm.vue'
+import SocketStatusLight from '~/components/SocketStatusLight.vue'
 export default {
-  components: { Preferences },
+  components: { Preferences, SocketStatusLight, GroupSessionForm },
   data: function() {
     return {}
   }

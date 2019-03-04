@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h3>Settings</h3>
     <section id="preferencesForm">
       <div class="row">
         <div class="six columns">
@@ -26,29 +27,6 @@
         </button>
       </div>
     </section>
-
-    <hr />
-
-    <section>
-      <span>Connection Status:</span>
-      <span id="socketStatusIndicator" class="dot" :class="socketStatus()" />
-    </section>
-
-    <hr />
-
-    <section id="groupSessionSettings">
-      <div class="row">
-        <div class="twelve columns">
-          <label>Session Name</label>
-          <input class="u-full-width" type="text"></input>
-        </div>
-      </div>
-      <div class="row">
-        <button class="u-full-width">
-          Join
-        </button>
-      </div>
-    </section>
   </div>
 </template>
 
@@ -57,18 +35,7 @@ export default {
   components: {},
   data: function() {
     return {
-      preferencesForm: {},
-      socketStatus: function() {
-        if (this.$socketManager.getIsConnected() === true) {
-          return 'dot green'
-        } else if (this.$socketManager.getIsDisconnected() === true) {
-          return 'dot red'
-        } else if (this.$socketManager.getIsPending() === true) {
-          return 'dot yellow'
-        } else {
-          return 'dot'
-        }
-      }
+      preferencesForm: {}
     }
   },
   computed: {
