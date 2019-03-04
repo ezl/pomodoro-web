@@ -45,19 +45,8 @@ export default {
       preferencesForm: {}
     }
   },
-  computed: {
-    preferences: {
-      // these are the actual preferences from vuex
-      get() {
-        return this.$store.state.preferences
-      },
-      set(value) {
-        this.$store.commit('setPreferences', value)
-      }
-    }
-  },
   watch: {
-    preferences: {
+    '$store.getters.preferencesInMinutes': {
       handler: function(obj) {
         this.preferencesForm = { ...obj }
       }
@@ -76,7 +65,7 @@ export default {
     },
     savePreferences: function(broadcast = false) {
       console.log('clicked save preferences', broadcast)
-      this.$store.commit('setPreferences', this.preferencesForm)
+      this.$store.commit('setPreferencesFromMinutes', this.preferencesForm)
       /*
       this.$store.state.timer.reset() <--
       if (broadcast === true && this.$socketManager.getIsConnected()) {
