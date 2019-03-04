@@ -14,8 +14,6 @@
 
     <Preferences />
     <hr></hr>
-    <SocketStatusLight />
-    <hr></hr>
     <GroupSessionForm />
 
     <div class="side-menu-ad" style="display:none;">
@@ -31,9 +29,8 @@
 <script>
 import Preferences from '~/components/Preferences.vue'
 import GroupSessionForm from '~/components/GroupSessionForm.vue'
-import SocketStatusLight from '~/components/SocketStatusLight.vue'
 export default {
-  components: { Preferences, SocketStatusLight, GroupSessionForm },
+  components: { Preferences, GroupSessionForm },
   data: function() {
     return {}
   }
