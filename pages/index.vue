@@ -42,13 +42,13 @@
         </button>
       </no-ssr>
     </div>
-    <div>
+    <div style="display: none;">
       <span>Send Current State</span>
       <button :disabled="!socketManager.getIsConnected()" @click="sendState">
         Send Current State
       </button>
     </div>
-    <div>
+    <div style="display: none;">
       <span>Send Arbitrary State</span>
       <p>
         <input id="secondsRemainingInput" v-model="secondsRemainingInputValue" type="number" min="0" step="1">
@@ -66,7 +66,7 @@
         Send Arbitrary State
       </button>
     </div>
-    <div>
+    <div style="display: none;">
       <table>
         <!-- #TODO: remove -->
         <tr><td><span>isWorkState</span></td><td><span id="isWorkStateValue">{{ timer.isWorkState }}</span></td></tr>
