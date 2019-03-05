@@ -74,10 +74,6 @@
         <tr><td><span>isRunning</span></td><td><span id="isRunningValue">{{ timer.getIsRunning() }}</span></td></tr>
       </table>
     </div>
-    <div id="output">
-      <span>Messages</span>
-      {{ output }}
-    </div>
   </div><!-- container -->
 </template>
 
@@ -198,7 +194,6 @@ export default {
       message: 'Hello World',
       socketManager: this.$socketManager,
       timer: timer,
-      output: '',
       isWorkStateCheckbox: false,
       isRunningCheckbox: false,
       isWorkStateCheckboxValue: true,
