@@ -21,11 +21,11 @@ provider:
   name: aws
   runtime: nodejs8.10
   stage: dev
-  websocketApiRouteSelectionExpression: $request.body.action
+  region: ${opt:region, 'us-east-1'}
+  stackName: ${self:service}-${self:provider.stage}
+  websocketsApiRouteSelectionExpression: $request.body.action
   profile: pomodoro-staging
-
-plugins:
-  - serverless-websockets-plugin
+  websocketsApiName: pomodoro-${self:provider.stage}
 
 
 functions:
@@ -33,7 +33,7 @@ functions:
     handler: src/connect.handler
     events:
       - websocket:
-          routeKey: $connect
+          route: $connect
     environment:
       CONNECTIONS_TABLE_NAME: ${env:CONNECTIONS_TABLE_NAME, 'pomodoro'}
       SESSIONS_TABLE_NAME: ${env:SESSIONS_TABLE_NAME, 'pomodoro-sessions'}
@@ -41,13 +41,18 @@ functions:
     handler: src/disconnect.handler
     events:
       - websocket:
-          routeKey: $disconnect
+          route: $disconnect
     environment:
       CONNECTIONS_TABLE_NAME: ${env:CONNECTIONS_TABLE_NAME, 'pomodoro'}
   actionHandler:
     handler: src/send.handler
     events:
       - websocket:
-          routeKey: action
+          route: action
     environment:
       TABLE_NAME: ${env:TABLE_NAME, 'pomodoro'}
+  defaultMessages:
+    handler: src/default.handler
+    events:
+      - websocket:
+          route: $default

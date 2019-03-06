@@ -1,5 +1,4 @@
 {
   "devDependencies": {
-    "serverless-websockets-plugin": "^1.0.0"
   }
 }
