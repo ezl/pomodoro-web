@@ -171,7 +171,7 @@ const animateTimerSwitch = function(delayBetweenCycles = 1000) {
   }, delayBetweenCycles / 2)
 }
 
-const timer = PomodoroTimerModel({
+const timer = new PomodoroTimerModel({
   tickInterval: TICKINTERVAL,
   delayBetweenCycles: DELAYBETWEENCYCLES,
   onTick: function() {

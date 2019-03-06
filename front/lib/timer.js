@@ -6,185 +6,173 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-const PomodoroTimer = function(settings) {
+class PomodoroTimer {
   // Setup stuff
 
-  const callbacks = {
-    onStateChange: function() {
-      console.log('Timer state changed')
-    },
-    onTick: function() {
-      console.log('onTick')
-    },
-    onFinish: function() {
-      console.log('Timer has finished')
+  constructor(settings) {
+    this.preferences = {
+      autoStartNextSession: true,
+      workDuration: 25 * 1000 * SECONDS_PER_MINUTE,
+      restDuration: 5 * 1000 * SECONDS_PER_MINUTE
+    }
+    const initialValues = {
+      // Sensible initial values for a timer
+      isWorkState: true,
+      currentDuration: this.preferences.workDuration,
+      startTime: null,
+      elapsedTime: 0,
+      ticker: null,
+      tickInterval: 1000,
+      delayBetweenCycles: 0
+    }
+    const callbacks = {
+      onStateChange: function() {
+        console.log('Timer state changed')
+      },
+      onTick: function() {
+        console.log('onTick')
+      },
+      onFinish: function() {
+        console.log('Timer has finished')
+      }
+    }
+
+    const actualSettings = { ...initialValues, ...callbacks, ...settings }
+    for (const key in actualSettings) {
+      this[key] = actualSettings[key]
     }
   }
 
-  const preferences = {
-    autoStartNextSession: true,
-    workDuration: 25 * 1000 * SECONDS_PER_MINUTE,
-    restDuration: 5 * 1000 * SECONDS_PER_MINUTE
+  //
+  //
+
+  getIsRunning() {
+    return this.startTime !== null
   }
 
-  const initialValues = {
-    // Sensible initial values for a timer
-    isWorkState: true,
-    currentDuration: preferences.workDuration,
-    startTime: null,
-    elapsedTime: 0,
-    ticker: null,
-    tickInterval: 1000,
-    delayBetweenCycles: 0
+  getMillisecondsRemaining() {
+    return this.currentDuration - this.elapsedTime
   }
 
-  const init = function(pomodoroTimer) {
-    settings = { ...initialValues, ...callbacks, ...settings }
-    for (const key in settings) {
-      pomodoroTimer[key] = settings[key]
+  // Timer operations
+
+  set state(newPomodoroState) {
+    if (!(newPomodoroState instanceof PomodoroState)) {
+      throw new Error('Expected type PomodoroState')
     }
 
-    pomodoroTimer.preferences = preferences
-  }
+    const oldPomodoroState = this.state
+    let changed = false
 
-  const pomodoroTimer = {
-    // Computed properties
+    if (oldPomodoroState.isWorkState !== newPomodoroState.isWorkState) {
+      this.isWorkState = newPomodoroState.isWorkState
+      changed = true
+    }
 
-    getIsRunning: function() {
-      return this.startTime !== null
-    },
+    if (
+      oldPomodoroState.millisecondsRemaining !==
+      newPomodoroState.millisecondsRemaining
+    ) {
+      this.currentDuration = this.isWorkState
+        ? this.preferences.workDuration
+        : this.preferences.restDuration
+      this.elapsedTime =
+        this.currentDuration - newPomodoroState.millisecondsRemaining
+    }
 
-    getMillisecondsRemaining: function() {
-      return this.currentDuration - this.elapsedTime
-    },
-
-    // Timer operations
-
-    set state(newPomodoroState) {
-      if (!(newPomodoroState instanceof PomodoroState)) {
-        throw new Error('Expected type PomodoroState')
+    if (oldPomodoroState.isRunning !== newPomodoroState.isRunning) {
+      if (oldPomodoroState.isRunning === true) {
+        this.stop()
+      } else {
+        this.start()
       }
+      changed = true
+    }
 
-      const oldPomodoroState = this.state
-      let changed = false
-
-      if (oldPomodoroState.isWorkState !== newPomodoroState.isWorkState) {
-        this.isWorkState = newPomodoroState.isWorkState
-        changed = true
-      }
-
-      if (
-        oldPomodoroState.millisecondsRemaining !==
-        newPomodoroState.millisecondsRemaining
-      ) {
-        this.currentDuration = this.isWorkState
-          ? this.preferences.workDuration
-          : this.preferences.restDuration
-        this.elapsedTime =
-          this.currentDuration - newPomodoroState.millisecondsRemaining
-      }
-
-      if (oldPomodoroState.isRunning !== newPomodoroState.isRunning) {
-        if (oldPomodoroState.isRunning === true) {
-          this.stop()
-        } else {
-          this.start()
-        }
-        changed = true
-      }
-
-      if (changed === true) {
-        this.onStateChange()
-      }
-    },
-
-    get state() {
-      return new PomodoroState(
-        this.isWorkState,
-        this.getMillisecondsRemaining(),
-        this.getIsRunning()
-      )
-    },
-
-    start: function() {
-      if (this.getIsRunning()) {
-        return
-      }
-
-      if (this.getMillisecondsRemaining() <= 0) {
-        return
-      }
-
-      const now = new Date()
-      this.startTime = new Date(now - this.elapsedTime)
-
-      this.ticker = setInterval(this.tick, this.tickInterval, this)
+    if (changed === true) {
       this.onStateChange()
-    },
-
-    stop: function() {
-      clearInterval(this.ticker)
-
-      this.startTime = null
-      this.ticker = null
-
-      this.onStateChange()
-    },
-
-    toggleWorkState: function() {
-      this.isWorkState = !this.isWorkState
-    },
-
-    // start
-    // stop
-    // reset
-    // set time
-    // toggle work state
-
-    reset: function() {
-      this.stop()
-      const state = new PomodoroState(
-        true,
-        this.preferences.workDuration,
-        false
-      )
-      this.state = state
-      this.onStateChange()
-    },
-
-    finish: async function() {
-      this.stop()
-      this.onFinish()
-      await sleep(this.delayBetweenCycles)
-      this.toggleWorkState()
-      const nextState = new PomodoroState(
-        this.isWorkState,
-        this.isWorkState
-          ? this.preferences.workDuration
-          : this.preferences.restDuration,
-        this.preferences.autoStartNextSession
-      )
-      this.state = nextState
-    },
-
-    tick: function(self) {
-      if (self.startTime == null) {
-        return
-      }
-
-      const now = new Date()
-      self.elapsedTime = now - self.startTime
-      console.log('Tick', self.getMillisecondsRemaining())
-      self.onTick()
-
-      if (self.getMillisecondsRemaining() <= 0) {
-        self.finish()
-      }
     }
   }
 
-  init(pomodoroTimer)
-  return pomodoroTimer
+  get state() {
+    return new PomodoroState(
+      this.isWorkState,
+      this.getMillisecondsRemaining(),
+      this.getIsRunning()
+    )
+  }
+
+  start() {
+    if (this.getIsRunning()) {
+      return
+    }
+
+    if (this.getMillisecondsRemaining() <= 0) {
+      return
+    }
+
+    const now = new Date()
+    this.startTime = new Date(now - this.elapsedTime)
+
+    this.ticker = setInterval(this.tick, this.tickInterval, this)
+    this.onStateChange()
+  }
+
+  stop() {
+    clearInterval(this.ticker)
+
+    this.startTime = null
+    this.ticker = null
+
+    this.onStateChange()
+  }
+
+  toggleWorkState() {
+    this.isWorkState = !this.isWorkState
+  }
+
+  // start
+  // stop
+  // reset
+  // set time
+  // toggle work state
+
+  reset() {
+    this.stop()
+    const state = new PomodoroState(true, this.preferences.workDuration, false)
+    this.state = state
+    this.onStateChange()
+  }
+
+  async finish() {
+    this.stop()
+    this.onFinish()
+    await sleep(this.delayBetweenCycles)
+    this.toggleWorkState()
+    const nextState = new PomodoroState(
+      this.isWorkState,
+      this.isWorkState
+        ? this.preferences.workDuration
+        : this.preferences.restDuration,
+      this.preferences.autoStartNextSession
+    )
+    this.state = nextState
+  }
+
+  tick(self) {
+    if (self.startTime == null) {
+      return
+    }
+
+    const now = new Date()
+    self.elapsedTime = now - self.startTime
+    console.log('Tick', self.getMillisecondsRemaining())
+    self.onTick()
+
+    if (self.getMillisecondsRemaining() <= 0) {
+      self.finish()
+    }
+  }
 }
 
 /// ///////////////////////////////////////////////////////////////////////
