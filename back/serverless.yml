@@ -33,13 +33,20 @@ functions:
     events:
       - websocket:
           routeKey: $connect
+    environment:
+      CONNECTIONS_TABLE_NAME: ${env:CONNECTIONS_TABLE_NAME, 'pomodoro'}
+      SESSIONS_TABLE_NAME: ${env:SESSIONS_TABLE_NAME, 'pomodoro-sessions'}
   defaultHandler:
     handler: src/disconnect.handler
     events:
       - websocket:
           routeKey: $disconnect
+    environment:
+      CONNECTIONS_TABLE_NAME: ${env:CONNECTIONS_TABLE_NAME, 'pomodoro'}
   actionHandler:
     handler: src/send.handler
     events:
       - websocket:
           routeKey: action
+    environment:
+      TABLE_NAME: ${env:TABLE_NAME, 'pomodoro'}
