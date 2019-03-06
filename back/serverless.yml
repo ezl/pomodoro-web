@@ -33,13 +33,13 @@ functions:
     events:
       - websocket:
           routeKey: $connect
+  defaultHandler:
+    handler: src/disconnect.handler
+    events:
       - websocket:
           routeKey: $disconnect
-  defaultHandler:
-    events:
-      - websocket:
-          routeKey: $default
   actionHandler:
+    handler: src/send.handler
     events:
       - websocket:
-          routeKey: myAction
+          routeKey: action
