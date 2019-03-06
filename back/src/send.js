@@ -1,14 +1,14 @@
 // Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-var AWS = require('aws-sdk')
+const AWS = require('aws-sdk')
 AWS.config.update({ region: process.env.AWS_REGION })
-var DDB = new AWS.DynamoDB({ apiVersion: "2012-10-08" })
+const DDB = new AWS.DynamoDB({ apiVersion: "2012-10-08" })
 
 require('aws-sdk/clients/apigatewaymanagementapi')
 
 exports.handler = function (event, context, callback) {
-  var scanParams = {
+  const scanParams = {
     TableName: process.env.TABLE_NAME,
     // ProjectionExpression: "connectionId",
     ExpressionAttributeValues: {
@@ -36,17 +36,17 @@ exports.handler = function (event, context, callback) {
         body: JSON.stringify(err)
       })
     } else {
-      var apigwManagementApi = new AWS.ApiGatewayManagementApi({
+      const apigwManagementApi = new AWS.ApiGatewayManagementApi({
         apiVersion: "2018-11-29",
         endpoint: event.requestContext.domainName + "/" + event.requestContext.stage
       })
       let dataToSend = JSON.parse(event.body)
       console.log(typeof (dataToSend), dataToSend)
 
-      var postParams = {
+      const postParams = {
         Data: JSON.stringify(dataToSend)
       }
-      var count = 0
+      let count = 0
 
       data.Items.forEach(function (element) {
         console.log(element)

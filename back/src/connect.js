@@ -1,10 +1,10 @@
 // Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-var AWS = require("aws-sdk")
+const AWS = require("aws-sdk")
 AWS.config.update({ region: process.env.AWS_REGION })
-var DDB = new AWS.DynamoDB({ apiVersion: "2012-10-08" })
-var documentClient = new AWS.DynamoDB.DocumentClient()
+const DDB = new AWS.DynamoDB({ apiVersion: "2012-10-08" })
+const documentClient = new AWS.DynamoDB.DocumentClient()
 
 require('aws-sdk/clients/apigatewaymanagementapi')
 
@@ -17,7 +17,7 @@ var sessionName = generateRandomSessionName()
 exports.handler = function (event, context, callback) {
 
   // put an item on the connections table so we know that you exist
-  var putParams = {
+  const putParams = {
     TableName: process.env.CONNECTIONS_TABLE_NAME,
     Item: {
       connectionId: { S: event.requestContext.connectionId },
@@ -32,13 +32,13 @@ exports.handler = function (event, context, callback) {
   })
 
   // update or create session.
-  var scanParams = {
+  const scanParamsSession = {
     TableName: process.env.SESSIONS_TABLE_NAME,
     Key: {
       sessionName: sessionName
     }
   }
-  documentClient.get(scanParams, function (err, data) {
+  documentClient.get(scanParamsSession, function (err, data) {
     if (err) {
       console.log(err, "ERROR")
     }
@@ -53,7 +53,7 @@ exports.handler = function (event, context, callback) {
       connections = [event.requestContext.connectionId]
     }
 
-    var putParams = {
+    const putParams = {
       TableName: process.env.SESSIONS_TABLE_NAME,
       Item: {
         connections: connections,
@@ -71,7 +71,7 @@ exports.handler = function (event, context, callback) {
   })
 
   // tell everyone else you joined
-  var scanParams = {
+  const scanParamsJoined = {
     TableName: process.env.CONNECTIONS_TABLE_NAME,
     ExpressionAttributeValues: {
       ":sessionName": { "S": sessionName }
@@ -79,14 +79,14 @@ exports.handler = function (event, context, callback) {
     FilterExpression: "sessionName = :sessionName"
   }
 
-  DDB.scan(scanParams, function (err, data) {
+  DDB.scan(scanParamsJoined, function (err, data) {
     if (err) {
       callback(null, {
         statusCode: 500,
         body: JSON.stringify(err)
       })
     } else {
-      var apigwManagementApi = new AWS.ApiGatewayManagementApi({
+      const apigwManagementApi = new AWS.ApiGatewayManagementApi({
         apiVersion: "2018-11-29",
         endpoint: event.requestContext.domainName + "/" + event.requestContext.stage
       })
@@ -100,10 +100,10 @@ exports.handler = function (event, context, callback) {
         }
       }
 
-      var postParams = {
+      const postParams = {
         Data: JSON.stringify(dataToSend)
       }
-      var count = 0
+      let count = 0
 
       data.Items.forEach(function (element) {
         const connectionId = element.connectionId.S

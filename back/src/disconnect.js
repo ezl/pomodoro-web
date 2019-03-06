@@ -1,18 +1,18 @@
 // Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-var AWS = require("aws-sdk")
+const AWS = require("aws-sdk")
 AWS.config.update({ region: process.env.AWS_REGION })
-var DDB = new AWS.DynamoDB({ apiVersion: "2012-10-08" })
+const DDB = new AWS.DynamoDB({ apiVersion: "2012-10-08" })
 
 require('aws-sdk/clients/apigatewaymanagementapi')
-var documentClient = new AWS.DynamoDB.DocumentClient()
+const documentClient = new AWS.DynamoDB.DocumentClient()
 
 
 exports.handler = function (event, context, callback) {
   // var connectionId = event.requestContext.connectionId
   // remove from table
-  var deleteParams = {
+  const deleteParams = {
     TableName: process.env.CONNECTIONS_TABLE_NAME,
     Key: {
       connectionId: { S: event.requestContext.connectionId }
@@ -31,7 +31,7 @@ exports.handler = function (event, context, callback) {
   const sessionName = "default"
 
   // This is everyone connected to our session
-  var scanParams = {
+  const scanParams = {
     TableName: process.env.CONNECTIONS_TABLE_NAME,
     ExpressionAttributeValues: {
       ":sessionName": { "S": sessionName }
@@ -43,7 +43,7 @@ exports.handler = function (event, context, callback) {
     if (err) {
       // pass
     } else {
-      var apigwManagementApi = new AWS.ApiGatewayManagementApi({
+      const apigwManagementApi = new AWS.ApiGatewayManagementApi({
         apiVersion: "2018-11-29",
         endpoint: event.requestContext.domainName + "/" + event.requestContext.stage
       })
@@ -56,7 +56,7 @@ exports.handler = function (event, context, callback) {
         }
       }
 
-      var postParams = {
+      const postParams = {
         Data: JSON.stringify(dataToSend)
       }
 
