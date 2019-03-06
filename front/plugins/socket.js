@@ -3,8 +3,7 @@ export default ({ app }, inject) => {
   const wsUri = 'wss://l0rodnqh6l.execute-api.us-east-1.amazonaws.com/dev'
 
   class SocketManager {
-
-    constructor (wsUri) {
+    constructor(wsUri) {
       this.wsUri = wsUri
       this.lastMessage = ''
       this.websocket = null
@@ -13,52 +12,43 @@ export default ({ app }, inject) => {
       }
     }
 
-
-    openWebSocket () {
-      this.websocket = new WebSocket(wsUri)
+    openWebSocket() {
+      this.websocket = new WebSocket(this.wsUri)
       this.state.readyState = this.websocket.readyState
-      this.websocket.onopen = (event) => {
-        this.onOpen(event)
-      }
-      this.websocket.onclose = (event) => {
-        this.onClose(event)
-      }
-      this.websocket.onmessage = (event) => {
-        this.onMessage(event)
-      }
-      this.websocket.onerror =  (event) => {
-        this.onError(event)
-      }
+      this.websocket.onopen = event => this.onOpen(event)
+      this.websocket.onclose = event => this.onClose(event)
+      this.websocket.onmessage = event => this.onMessage(event)
+      this.websocket.onerror = event => this.onError(event)
     }
 
-    send (message) {
+    send(message) {
       this.websocket.send(message)
       if (VERBOSE === true) {
         console.log('[socket.js] MESSAGE SENT:', message)
       }
     }
 
-    closeWebSocket () {
+    closeWebSocket() {
       this.websocket.close()
     }
 
     // functions to define what to do on socket events
 
-    onOpen (event) {
+    onOpen(event) {
       this.state.readyState = this.websocket.readyState
       if (VERBOSE === true) {
         console.log('[socket.js] OPENED web socket')
       }
     }
 
-    onClose (event) {
+    onClose(event) {
       this.state.readyState = this.websocket.readyState
       if (VERBOSE === true) {
         console.log('[socket.js] CLOSED web socket')
       }
     }
 
-    onMessage (event) {
+    onMessage(event) {
       this.state.readyState = this.websocket.readyState
       // update the last message so vue can find it
       this.lastMessage = event.data
@@ -67,28 +57,28 @@ export default ({ app }, inject) => {
       }
     }
 
-    onError (event) {
+    onError(event) {
       this.state.readyState = this.websocket.readyState
       if (VERBOSE === true) {
         console.log('[socket.js] SOCKET ERROR')
       }
     }
 
-    getIsConnected () {
+    getIsConnected() {
       if (this.websocket === null) {
         return false
       }
       return this.state.readyState === this.websocket.OPEN
     }
 
-    getIsDisconnected () {
+    getIsDisconnected() {
       if (this.websocket === null) {
         return true
       }
       return this.state.readyState === this.websocket.CLOSED
     }
 
-    getIsPending () {
+    getIsPending() {
       if (this.state === null) {
         return false
       }
@@ -97,7 +87,6 @@ export default ({ app }, inject) => {
         this.websocket.readyState === this.websocket.CLOSING
       )
     }
-
   }
 
   const socketManager = new SocketManager(wsUri)
