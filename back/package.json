@@ -1,4 +1,10 @@
 {
-  "devDependencies": {
-  }
+    "scripts": {
+        "sls:package": "sls package",
+        "sls:remove": "sls remove",
+        "sls:deploy": "sls deploy"
+    },
+    "devDependencies": {
+        "serverless": "^1.38.0"
+    }
 }
