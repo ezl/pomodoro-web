@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: pomodoro-connect # NOTE: update this with your service name
+service: pomodoro # NOTE: update this with your service name
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -22,6 +22,7 @@ provider:
   runtime: nodejs8.10
   stage: dev
   websocketApiRouteSelectionExpression: $request.body.action
+  profile: pomodoro-staging
 
 plugins:
   - serverless-websockets-plugin
