@@ -177,28 +177,30 @@ class PomodoroTimer {
 
 /// ///////////////////////////////////////////////////////////////////////
 
-const PomodoroState = function(isWorkState, millisecondsRemaining, isRunning) {
-  const typesAreValid =
-    typeof isWorkState === 'boolean' &&
-    !isNaN(parseFloat(millisecondsRemaining)) &&
-    typeof isRunning === 'boolean'
+class PomodoroState {
+  constructor(isWorkState, millisecondsRemaining, isRunning) {
+    const typesAreValid =
+      typeof isWorkState === 'boolean' &&
+      !isNaN(parseFloat(millisecondsRemaining)) &&
+      typeof isRunning === 'boolean'
 
-  if (!typesAreValid) {
-    throw new Error(
-      'Expected PomodoroState(isWorkState: Bool, millisecondsRemaining: Float, isRunning: Bool)'
-    )
+    if (!typesAreValid) {
+      throw new Error(
+        'Expected PomodoroState(isWorkState: Bool, millisecondsRemaining: Float, isRunning: Bool)'
+      )
+    }
+
+    const defaults = {
+      isWorkState: true,
+      millisecondsRemaining: 25 * 60,
+      isRunning: false
+    }
+
+    this.isWorkState = Boolean(isWorkState)
+    this.millisecondsRemaining =
+      parseFloat(millisecondsRemaining) || defaults.millisecondsRemaining
+    this.isRunning = Boolean(isRunning)
   }
-
-  const defaults = {
-    isWorkState: true,
-    millisecondsRemaining: 25 * 60,
-    isRunning: false
-  }
-
-  this.isWorkState = Boolean(isWorkState)
-  this.millisecondsRemaining =
-    parseFloat(millisecondsRemaining) || defaults.millisecondsRemaining
-  this.isRunning = Boolean(isRunning)
 }
 
 export { PomodoroTimer, PomodoroState }
