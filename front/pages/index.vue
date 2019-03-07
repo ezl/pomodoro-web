@@ -322,8 +322,7 @@ export default {
         messageType: 'state',
         data: timer.state
       }
-      const message = JSON.stringify(payload)
-      this.$socketManager.send(message)
+      this.$socketManager.send(payload)
     },
     updateSocketConnectionButtons: function() {
       console.log(this.$socketManager.getIsConnected() === true)
@@ -344,8 +343,7 @@ export default {
         messageType: 'state',
         data: state
       }
-      const message = JSON.stringify(payload)
-      this.$socketManager.send(message)
+      this.$socketManager.send(payload)
     }
   }
 }

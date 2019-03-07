@@ -1,5 +1,5 @@
 class SocketManager {
-  constructor(wsUri, verbose = false) {
+  constructor(wsUri, store, verbose = false) {
     this.wsUri = wsUri
     this.lastMessage = ''
     this.websocket = null
@@ -7,6 +7,7 @@ class SocketManager {
       readyState: 0
     }
     this.verbose = verbose
+    // this.store = store
   }
 
   openWebSocket() {
@@ -19,7 +20,7 @@ class SocketManager {
   }
 
   send(message) {
-    this.websocket.send(message)
+    this.websocket.send(JSON.stringify(message))
     if (this.verbose === true) {
       console.log('[socket.js] MESSAGE SENT:', message)
     }
