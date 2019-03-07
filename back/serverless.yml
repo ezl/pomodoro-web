@@ -48,7 +48,7 @@ functions:
     handler: src/send.handler
     events:
       - websocket:
-          route: action
+          route: sendMessage
     environment:
       TABLE_NAME: ${env:TABLE_NAME, 'pomodoro'}
   defaultMessages:
