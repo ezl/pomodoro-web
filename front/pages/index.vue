@@ -34,17 +34,17 @@
     <div>
       <span>Socket Connect / Disconnect</span>
       <no-ssr placeholder="Loading web socket buttons...">
-        <button id="connectButton" :disabled="socketManager.getIsConnected()" @click="openWebSocket">
+        <button id="connectButton" :disabled="isConnected || isPending" @click="openWebSocket">
           Connect
         </button>
-        <button id="disconnectButton" :disabled="socketManager.getIsDisconnected()" @click="closeWebSocket">
+        <button id="disconnectButton" :disabled="isDisconnected || isPending" @click="closeWebSocket">
           Disconnect
         </button>
       </no-ssr>
     </div>
     <div style="display: none;">
       <span>Send Current State</span>
-      <button :disabled="!socketManager.getIsConnected()" @click="sendState">
+      <button :disabled="!isConnected" @click="sendState">
         Send Current State
       </button>
     </div>
@@ -62,7 +62,7 @@
         <input id="isRunningInput" v-model="isRunningCheckboxValue" type="checkbox">
         <label for="isRunningInput">isRunning</label>
       </p>
-      <button id="sendStateButton" :disabled="!socketManager.getIsConnected()" @click="sendArbitraryState">
+      <button id="sendStateButton" :disabled="!isConnected" @click="sendArbitraryState">
         Send Arbitrary State
       </button>
     </div>
@@ -78,6 +78,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import SocketStatusLight from '~/components/SocketStatusLight.vue'
 import {
   PomodoroTimer as PomodoroTimerModel,
@@ -192,7 +193,6 @@ export default {
   data: function() {
     return {
       message: 'Hello World',
-      socketManager: this.$socketManager,
       timer: timer,
       isWorkStateCheckbox: false,
       isRunningCheckbox: false,
@@ -205,7 +205,12 @@ export default {
   computed: {
     preferences() {
       return this.$store.state.preferences
-    }
+    },
+    ...mapGetters({
+      isConnected: 'sockets/isConnected',
+      isDisconnected: 'sockets/isDisconnected',
+      isPending: 'sockets/isPending'
+    })
   },
   watch: {
     preferences: {
@@ -213,64 +218,63 @@ export default {
         timer.preferences = obj
         timer.reset()
       }
-    },
-    $socketManager: {
-      handler: function(obj) {
-        const msg = obj.lastMessage
-
-        // TODO: this is stupid! just doing this
-        // so i can see if it's valid json!
-        function IsJsonString(str) {
-          try {
-            JSON.parse(str)
-          } catch (e) {
-            return false
-          }
-          return true
-        }
-        if (!IsJsonString(msg)) {
-          return
-        }
-
-        const response = JSON.parse(msg) // full response payload
-        const data = response.data // just the data key
-        const messageType = response.messageType
-
-        switch (messageType) {
-          case 'state':
-            const pomodoroTimerState = new PomodoroTimerState(
-              data.isWorkState,
-              data.millisecondsRemaining,
-              data.isRunning
-            )
-            timer.state = pomodoroTimerState
-            setValuesForCountdowns()
-            setStylesForCountdowns()
-            break
-          case 'preferences':
-            console.log("it's preferences")
-            this.$store.commit('setPreferences', data)
-            timer.preferences = { ...data }
-            break
-          case 'join':
-            console.log('join')
-            this.users.push(data)
-            // this.sendPreferences()
-            this.sendState()
-            break
-          case 'quit':
-            console.log('data', data)
-            this.users.splice(this.users.indexOf(data), 1)
-            break
-          case 'potato':
-            console.log('potato')
-            break
-        }
-      },
-      deep: true
     }
   },
-  mounted: function() {
+  created() {
+    this.$socketManager.registerListener('onMessage', event => {
+      const msg = event.data
+
+      // TODO: this is stupid! just doing this
+      // so i can see if it's valid json!
+      function IsJsonString(str) {
+        try {
+          JSON.parse(str)
+        } catch (e) {
+          return false
+        }
+        return true
+      }
+      if (!IsJsonString(msg)) {
+        return
+      }
+
+      const response = JSON.parse(msg) // full response payload
+      const data = response.data // just the data key
+      const messageType = response.messageType
+
+      switch (messageType) {
+        case 'state':
+          const pomodoroTimerState = new PomodoroTimerState(
+            data.isWorkState,
+            data.millisecondsRemaining,
+            data.isRunning
+          )
+          timer.state = pomodoroTimerState
+          setValuesForCountdowns()
+          setStylesForCountdowns()
+          break
+        case 'preferences':
+          console.log("it's preferences")
+          this.$store.commit('setPreferences', data)
+          timer.preferences = { ...data }
+          break
+        case 'join':
+          console.log('join')
+          this.users.push(data)
+          // this.sendPreferences()
+          this.sendState()
+          break
+        case 'quit':
+          console.log('data', data)
+          this.users.splice(this.users.indexOf(data), 1)
+          break
+        case 'potato':
+          console.log('potato')
+          break
+      }
+    })
+  },
+  mounted() {
     countdown = new ProgressBar.Circle('#countdown', {
       strokeWidth: PATHWIDTH,
       easing: { easing: 'linaear' },
@@ -323,9 +327,6 @@ export default {
         data: timer.state
       }
       this.$socketManager.send(payload)
-    },
-    updateSocketConnectionButtons: function() {
-      console.log(this.$socketManager.getIsConnected() === true)
     },
     sendArbitraryState() {
       // delete this
