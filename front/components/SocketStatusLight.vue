@@ -9,18 +9,17 @@
 export default {
   data: function() {
     return {
-      socketStatusClass: 'dot',
-      socketManager: this.$socketManager
+      socketStatusClass: 'dot'
     }
   },
   watch: {
     socketManager: {
       handler: function(socket) {
-        if (socket.getIsConnected() === true) {
+        if (this.$store.getters['sockets/isConnected'] === true) {
           this.socketStatusClass = 'dot green'
-        } else if (socket.getIsDisconnected() === true) {
+        } else if (this.$store.getters['sockets/isDisconnected'] === true) {
           this.socketStatusClass = 'dot red'
-        } else if (socket.getIsPending() === true) {
+        } else if (this.$store.getters['sockets/isPending'] === true) {
           this.socketStatusClass = 'dot yellow'
         } else {
           this.socketStatusClass = 'dot'
