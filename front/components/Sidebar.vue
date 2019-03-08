@@ -13,11 +13,11 @@
     </div>
 
     <Preferences />
-    <hr></hr>
+    <hr>
     <GroupSessionForm />
 
     <div class="side-menu-ad" style="display:none;">
-      <img src="https://via.placeholder.com/90x130"></img>
+      <img src="https://via.placeholder.com/90x130">
       <div class="side-menu-ad-text">
         <p>Lorem ipsum dolor sit amet consectetur</p>
         <a href="#">link</a>
