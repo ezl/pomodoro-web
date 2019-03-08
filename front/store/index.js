@@ -23,3 +23,15 @@ export const mutations = {
     }
   }
 }
+
+export const actions = {
+  sendPreferences({ commit }, params) {
+    commit('setPreferences', params)
+    const payload = {
+      action: 'sendmessage',
+      messageType: 'preferences',
+      data: params
+    }
+    this.$socketManager.send(payload)
+  }
+}

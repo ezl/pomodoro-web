@@ -273,6 +273,13 @@ export default {
           break
       }
     })
+    this.$store.subscribeAction({
+      after: (action, state) => {
+        if (action.type === 'sendPreferences') {
+          timer.stop()
+        }
+      }
+    })
   },
   mounted() {
     countdown = new ProgressBar.Circle('#countdown', {
@@ -303,20 +310,20 @@ export default {
       console.log('start')
       timer.start()
       setValuesForCountdowns(TICKINTERVAL)
-      if (broadcast === true && this.$socketManager.getIsConnected()) {
+      if (broadcast === true && this.isConnected) {
         this.sendState()
       }
     },
     stopTimer: function(broadcast = false) {
       console.log('stop')
       timer.stop()
-      if (broadcast === true && this.$socketManager.getIsConnected()) {
+      if (broadcast === true && this.isConnected) {
         this.sendState()
       }
     },
     resetTimer: function(broadcast = false) {
       timer.reset()
-      if (broadcast === true && this.$socketManager.getIsConnected()) {
+      if (broadcast === true && this.isConnected) {
         this.sendState()
       }
     },

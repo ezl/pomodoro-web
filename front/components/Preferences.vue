@@ -29,7 +29,7 @@
             Cancel
           </button>
         </div>
-        <button style="display:none;" @click="sendPreferences">
+        <button @click="sendPreferences">
           Send Preferences
         </button>
       </div>
@@ -67,12 +67,7 @@ export default {
   methods: {
     sendPreferences: function() {
       console.log('clicked send preferences')
-      const payload = {
-        action: 'sendmessage',
-        messageType: 'preferences',
-        data: this.$store.state.preferences
-      }
-      this.$socketManager.send(payload)
+      this.$store.dispatch('sendPreferences', this.$store.state.preferences)
     },
     savePreferences: function(broadcast = false) {
       console.log('clicked save preferences', broadcast)
