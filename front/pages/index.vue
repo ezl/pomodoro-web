@@ -268,6 +268,10 @@ export default {
           console.log('data', data)
           this.users.splice(this.users.indexOf(data), 1)
           break
+        case 'request':
+          this.$store.dispatch('sendPreferences')
+          this.sendState()
+          break
         case 'potato':
           console.log('potato')
           break

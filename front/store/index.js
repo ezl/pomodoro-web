@@ -25,8 +25,8 @@ export const mutations = {
 }
 
 export const actions = {
-  sendPreferences({ commit }, params) {
-    commit('setPreferences', params)
+  sendPreferences({ commit, state }, params) {
+    commit('setPreferences', params || state.preferences)
     const payload = {
       action: 'sendmessage',
       messageType: 'preferences',
