@@ -72,8 +72,7 @@ export default {
         messageType: 'preferences',
         data: this.$store.state.preferences
       }
-      const message = JSON.stringify(payload)
-      this.$socketManager.send(message)
+      this.$socketManager.send(payload)
     },
     savePreferences: function(broadcast = false) {
       console.log('clicked save preferences', broadcast)
