@@ -12,6 +12,7 @@ class SocketManager {
       onMessage: [],
       onError: []
     }
+    this.store = store
     const updateReadyState = () => {
       store.commit('sockets/setSocketReadyState', this.websocket.readyState)
     }
@@ -22,7 +23,7 @@ class SocketManager {
 
   openWebSocket() {
     this.websocket = new WebSocket(this.wsUri)
-    this.state.readyState = this.websocket.readyState
+    this.store.commit('sockets/setSocketReadyState', this.websocket.readyState)
     this.websocket.onopen = event => this.onEvent('onOpen', event)
     this.websocket.onclose = event => this.onEvent('onClose', event)
     this.websocket.onmessage = event => this.onEvent('onMessage', event)
