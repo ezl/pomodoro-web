@@ -14,9 +14,22 @@ module.exports = {
       { hid: 'description', name: 'description', content: pkg.description }
     ],
     link: [
-      { rel: 'stylesheet', type: 'text/css', href: '//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css' },
-      { rel: 'stylesheet', type: 'text/css', href: '//fonts.googleapis.com/css?family=Raleway:400,300,600,800,900' },
-      { rel: 'stylesheet', type: 'text/css', href: '//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400' },
+      {
+        rel: 'stylesheet',
+        type: 'text/css',
+        href:
+          '//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css'
+      },
+      {
+        rel: 'stylesheet',
+        type: 'text/css',
+        href: '//fonts.googleapis.com/css?family=Raleway:400,300,600,800,900'
+      },
+      {
+        rel: 'stylesheet',
+        type: 'text/css',
+        href: '//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400'
+      },
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
@@ -35,7 +48,11 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [{ src: '~/plugins/socket', ssr: false }],
-
+  env: {
+    WS_URL:
+      process.env.WS_URL ||
+      'wss://l0rodnqh6l.execute-api.us-east-1.amazonaws.com/dev'
+  },
   /*
   ** Nuxt.js modules
   */
