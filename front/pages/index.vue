@@ -81,7 +81,7 @@
 import { mapGetters } from 'vuex'
 import SocketStatusLight from '~/components/SocketStatusLight.vue'
 import {
-  PomodoroTimer as PomodoroTimerModel,
+  pomodoroTimer as timer,
   PomodoroState as PomodoroTimerState
 } from '~/lib/timer'
 
@@ -99,9 +99,9 @@ const PATHWIDTH = 6
 const TRAILWIDTH = 1
 
 const setStylesForCountdowns = function() {
-  const primary = timer.isWorkState ? COLORS.red : COLORS.green
-  const secondary = timer.isWorkState ? COLORS.lightred : COLORS.lightgreen
-  const contrast = timer.isWorkState ? COLORS.lightgreen : COLORS.lightred
+  const primary = this.isWorkState ? COLORS.red : COLORS.green
+  const secondary = this.isWorkState ? COLORS.lightred : COLORS.lightgreen
+  const contrast = this.isWorkState ? COLORS.lightgreen : COLORS.lightred
 
   // piecon
   Piecon.setOptions({
@@ -113,42 +113,42 @@ const setStylesForCountdowns = function() {
   countdown.path.setAttribute('stroke', primary)
   countdown.trail.setAttribute('stroke', contrast)
   countdown.text.style.color = primary
-}
+}.bind(timer)
 
 function pad(num) {
   const size = 2
   return (Math.pow(10, size) + ~~num).toString().substring(1)
 }
 
-const TICKINTERVAL = 1000
-const DELAYBETWEENCYCLES = 2000
-
-const setValuesForCountdowns = function(duration = TICKINTERVAL) {
-  const timeRemaining = timer.currentDuration - timer.elapsedTime
+const setValuesForCountdowns = function(duration) {
+  const coDuration =
+    typeof duration !== 'undefined' ? duration : this.tickInterval
+  const timeRemaining = this.currentDuration - this.elapsedTime
   const minutesRemaining = Math.max(0, Math.floor(timeRemaining / (60 * 1000)))
   const secondsRemaining = Math.max(0, Math.ceil((timeRemaining / 1000) % 60))
   const timeString = pad(minutesRemaining) + ':' + pad(secondsRemaining)
   const percentRemaining = Math.round(
-    (timeRemaining / timer.currentDuration) * 100
+    (timeRemaining / this.currentDuration) * 100
   )
-  const oneTick = (duration / timer.currentDuration) * 100
+  const oneTick = (coDuration / this.currentDuration) * 100
   Piecon.setProgress(percentRemaining - oneTick)
-  if (duration === 0) {
+  if (coDuration === 0) {
     countdown.set((percentRemaining - oneTick) / 100)
     countdown.path.setAttribute('stroke-width', PATHWIDTH)
   } else {
-    const color = timer.isWorkState ? COLORS.red : COLORS.green
+    const color = this.isWorkState ? COLORS.red : COLORS.green
     const opts = {
       from: { color: color, width: PATHWIDTH },
       to: { color: color, width: PATHWIDTH },
-      duration: duration
+      duration: coDuration
     }
     countdown.animate((percentRemaining - oneTick) / 100, opts)
   }
   countdown.setText(timeString)
-}
+}.bind(timer)
 
-const animateTimerSwitch = function(delayBetweenCycles = 1000) {
+const animateTimerSwitch = function() {
+  const delayBetweenCycles = this.delayBetweenCycles
   const fromColor = timer.isWorkState ? COLORS.lightgreen : COLORS.lightred
   const toColor = timer.isWorkState ? COLORS.green : COLORS.red
   // immediatley set timer to 1.0 with fromColor (this replaces the track
@@ -170,23 +170,7 @@ const animateTimerSwitch = function(delayBetweenCycles = 1000) {
   setTimeout(function() {
     countdown.animate(1.0, opts)
   }, delayBetweenCycles / 2)
-}
-
-const timer = new PomodoroTimerModel({
-  tickInterval: TICKINTERVAL,
-  delayBetweenCycles: DELAYBETWEENCYCLES,
-  onTick: function() {
-    setValuesForCountdowns(TICKINTERVAL) // Tick interval
-  },
-  onStateChange: function() {
-    setValuesForCountdowns(0)
-    setStylesForCountdowns()
-    console.log('on state change')
-  },
-  onFinish: function() {
-    animateTimerSwitch(DELAYBETWEENCYCLES)
-  }
-})
+}.bind(timer)
 
 export default {
   components: { SocketStatusLight },
@@ -277,6 +261,10 @@ export default {
           break
       }
     })
+    timer.registerListener('onTick', setValuesForCountdowns)
+    timer.registerListener('onStateChange', setValuesForCountdowns)
+    timer.registerListener('onStateChange', setStylesForCountdowns)
+    timer.registerListener('onFinish', animateTimerSwitch)
     this.$store.subscribeAction({
       after: (action, state) => {
         if (action.type === 'sendPreferences') {
@@ -285,6 +273,9 @@ export default {
       }
     })
   },
+  // destroyed() {
+  //
+  // },
   mounted() {
     countdown = new ProgressBar.Circle('#countdown', {
       strokeWidth: PATHWIDTH,
@@ -313,7 +304,7 @@ export default {
     startTimer: function(broadcast = false) {
       console.log('start')
       timer.start()
-      setValuesForCountdowns(TICKINTERVAL)
+      setValuesForCountdowns()
       if (broadcast === true && this.isConnected) {
         this.sendState()
       }

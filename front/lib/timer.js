@@ -1,5 +1,8 @@
 const SECONDS_PER_MINUTE = 60
 
+const TICKINTERVAL = 1000
+const DELAYBETWEENCYCLES = 2000
+
 // Pomodoro Timer model
 
 function sleep(ms) {
@@ -22,24 +25,32 @@ class PomodoroTimer {
       startTime: null,
       elapsedTime: 0,
       ticker: null,
-      tickInterval: 1000,
-      delayBetweenCycles: 0
-    }
-    const callbacks = {
-      onStateChange: function() {
-        console.log('Timer state changed')
-      },
-      onTick: function() {
-        console.log('onTick')
-      },
-      onFinish: function() {
-        console.log('Timer has finished')
-      }
+      tickInterval: TICKINTERVAL,
+      delayBetweenCycles: DELAYBETWEENCYCLES
     }
 
-    const actualSettings = { ...initialValues, ...callbacks, ...settings }
+    const actualSettings = { ...initialValues, ...settings }
     for (const key in actualSettings) {
       this[key] = actualSettings[key]
+    }
+    this.listeners = {
+      onStateChange: [],
+      onTick: [],
+      onFinish: []
+    }
+  }
+
+  registerListener(event, func) {
+    if (event in this.listeners) {
+      this.listeners[event].push(func)
+    }
+  }
+
+  triggerListener(event) {
+    if (event in this.listeners) {
+      for (const listener of this.listeners[event]) {
+        listener()
+      }
     }
   }
 
@@ -90,7 +101,7 @@ class PomodoroTimer {
     }
 
     if (changed === true) {
-      this.onStateChange()
+      this.triggerListener('onStateChange')
     }
   }
 
@@ -114,8 +125,8 @@ class PomodoroTimer {
     const now = new Date()
     this.startTime = new Date(now - this.elapsedTime)
 
-    this.ticker = setInterval(this.tick, this.tickInterval, this)
-    this.onStateChange()
+    this.ticker = setInterval(() => this.tick(), this.tickInterval, this)
+    this.triggerListener('onStateChange')
   }
 
   stop() {
@@ -124,7 +135,7 @@ class PomodoroTimer {
     this.startTime = null
     this.ticker = null
 
-    this.onStateChange()
+    this.triggerListener('onStateChange')
   }
 
   toggleWorkState() {
@@ -139,14 +150,13 @@ class PomodoroTimer {
 
   reset() {
     this.stop()
-    const state = new PomodoroState(true, this.preferences.workDuration, false)
-    this.state = state
-    this.onStateChange()
+    this.state = new PomodoroState(true, this.preferences.workDuration, false)
+    this.triggerListener('onStateChange')
   }
 
   async finish() {
     this.stop()
-    this.onFinish()
+    this.triggerListener('onFinish')
     await sleep(this.delayBetweenCycles)
     this.toggleWorkState()
     const nextState = new PomodoroState(
@@ -159,18 +169,18 @@ class PomodoroTimer {
     this.state = nextState
   }
 
-  tick(self) {
-    if (self.startTime == null) {
+  tick() {
+    if (this.startTime == null) {
       return
     }
 
     const now = new Date()
-    self.elapsedTime = now - self.startTime
-    console.log('Tick', self.getMillisecondsRemaining())
-    self.onTick()
+    this.elapsedTime = now - this.startTime
+    console.log('Tick', this.getMillisecondsRemaining())
+    this.triggerListener('onTick')
 
-    if (self.getMillisecondsRemaining() <= 0) {
-      self.finish()
+    if (this.getMillisecondsRemaining() <= 0) {
+      this.finish()
     }
   }
 }
@@ -202,5 +212,6 @@ class PomodoroState {
     this.isRunning = Boolean(isRunning)
   }
 }
+const pomodoroTimer = new PomodoroTimer()
 
-export { PomodoroTimer, PomodoroState }
+export { pomodoroTimer, PomodoroState }
