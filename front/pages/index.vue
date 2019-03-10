@@ -262,7 +262,7 @@ export default {
       }
     })
     timer.registerListener('onTick', setValuesForCountdowns)
-    timer.registerListener('onStateChange', setValuesForCountdowns)
+    timer.registerListener('onStateChange', () => setValuesForCountdowns(0))
     timer.registerListener('onStateChange', setStylesForCountdowns)
     timer.registerListener('onFinish', animateTimerSwitch)
     this.$store.subscribeAction({
