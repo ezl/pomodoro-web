@@ -51,7 +51,7 @@ module.exports = {
   env: {
     WS_URL:
       process.env.WS_URL ||
-      'wss://l0rodnqh6l.execute-api.us-east-1.amazonaws.com/dev'
+      'wss://3xod2450hj.execute-api.us-east-1.amazonaws.com/dev'
   },
   /*
   ** Nuxt.js modules
