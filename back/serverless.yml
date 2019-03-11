@@ -41,12 +41,6 @@ provider:
               - Ref: 'AWS::Region'
               - Ref: 'AWS::AccountId'
               - 'table/pomodoro'
-        - 'Fn::Join':
-            - ':'
-            - - 'arn:aws:dynamodb'
-              - Ref: 'AWS::Region'
-              - Ref: 'AWS::AccountId'
-              - 'table/pomodoro-sessions'
 
 
 functions:

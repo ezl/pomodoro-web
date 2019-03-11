@@ -1,11 +1,7 @@
-// Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// SPDX-License-Identifier: MIT-0
-
 const AWS = require("aws-sdk")
 AWS.config.update({ region: process.env.AWS_REGION })
-const DDB = new AWS.DynamoDB({ apiVersion: "2012-10-08" })
-const documentClient = new AWS.DynamoDB.DocumentClient()
 
+const documentClient = new AWS.DynamoDB.DocumentClient()
 require('aws-sdk/clients/apigatewaymanagementapi')
 
 const generateRandomSessionName = function () {
@@ -15,71 +11,32 @@ const generateRandomSessionName = function () {
 var sessionName = generateRandomSessionName()
 
 exports.handler = function (event, context, callback) {
-
   // put an item on the connections table so we know that you exist
-  const putParams = {
+  const params1 = {
     TableName: process.env.CONNECTIONS_TABLE_NAME,
     Item: {
-      connectionId: { S: event.requestContext.connectionId },
-      sessionName: { S: sessionName }
+      connectionId: event.requestContext.connectionId,
+      sessionName: sessionName
     }
   }
-  DDB.putItem(putParams, function (err) {
+
+  documentClient.put(params1, function (err) {
     callback(null, {
       statusCode: err ? 500 : 200,
       body: err ? "Failed to connect: " + JSON.stringify(err) : "Connected."
     })
   })
 
-  // update or create session.
-  const scanParamsSession = {
-    TableName: process.env.SESSIONS_TABLE_NAME,
-    Key: {
-      sessionName: sessionName
-    }
-  }
-  documentClient.get(scanParamsSession, function (err, data) {
-    if (err) {
-      console.log(err, "ERROR")
-    }
-
-    let connections
-    const sessionAlreadyExists = Object.keys(data).length !== 0
-
-    if (sessionAlreadyExists === true) {
-      connections = data.Item.connections
-      connections.push(event.requestContext.connectionId)
-    } else {
-      connections = [event.requestContext.connectionId]
-    }
-
-    const putParams = {
-      TableName: process.env.SESSIONS_TABLE_NAME,
-      Item: {
-        connections: connections,
-        sessionName: sessionName
-      }
-    }
-
-    documentClient.put(putParams, function (err) {
-      if (err) {
-        console.log("ERROR", err)
-      }
-    })
-
-
-  })
-
   // tell everyone else you joined
-  const scanParamsJoined = {
+  const params2 = {
     TableName: process.env.CONNECTIONS_TABLE_NAME,
     ExpressionAttributeValues: {
-      ":sessionName": { "S": sessionName }
+      ":sessionName": sessionName
     },
     FilterExpression: "sessionName = :sessionName"
   }
 
-  DDB.scan(scanParamsJoined, function (err, data) {
+  documentClient.scan(params2, function (err, data) {
     if (err) {
       callback(null, {
         statusCode: 500,
@@ -92,21 +49,25 @@ exports.handler = function (event, context, callback) {
       })
 
       // craft a join message
-      const dataToSend = {
+      const joinMessageObject = {
         action: 'sendmessage',
         messageType: 'join',
         data: {
           connectionId: event.requestContext.connectionId
         }
       }
+      const payload = JSON.stringify(joinMessageObject)
+      const postParams = { Data: payload }
 
-      const postParams = {
-        Data: JSON.stringify(dataToSend)
+      /*
+      { Items: [ { connectionId: 'WZnvCesyIAMCIKQ=', sessionName: 'default' } ],
+        Count: 1,
+        ScannedCount: 1 
       }
-      let count = 0
+      */
 
-      data.Items.forEach(function (element) {
-        const connectionId = element.connectionId.S
+      data.Items.forEach(function(item) {
+        const connectionId = item.connectionId
         postParams.ConnectionId = connectionId
         console.log("doing a thing for", connectionId)
         apigwManagementApi.postToConnection(postParams, function (err) {
@@ -114,40 +75,27 @@ exports.handler = function (event, context, callback) {
             // API Gateway returns a status of 410 GONE when the connection is no
             // longer available. If this happens, we simply delete the identifier
             // from our DynamoDB table.
-            console.log("ERROR ERROR ERROR", err.statusCode)
-            if (err.statusCode === 410 || err.statusCode === 400) { // remove 400, just for testing
+            if (err.statusCode === 410) { // remove 400, just for testing
               console.log("Found stale connection, deleting " + connectionId)
-              console.log("typeof", typeof connectionId)
-              try {
-                //var attempt = DDB.deleteItem({ TableName: process.env.CONNECTIONS_TABLE_NAME,
-                //                 Key: { connectionId: { S: element.connectionId.S } } });
-                // console.log("attempt", attempt)
-                documentClient.delete({
-                  TableName: process.env.CONNECTIONS_TABLE_NAME,
-                  Key: {
-                    connectionId: connectionId
-                  }
-                }, function (err, data) {
-                  if (err) {
-                    console.log(err, err.stack)
-                  } else {
-                    console.log(data)
-                  }
-                })
-              } catch (anotherError) {
-                console.log("another error")
-                console.log(anotherError)
-              }
+              documentClient.delete({
+                TableName: process.env.CONNECTIONS_TABLE_NAME,
+                Key: {
+                  connectionId: connectionId
+                }
+              }, function (err, data) {
+                if (err) {
+                  console.log(err, err.stack)
+                } else {
+                  console.log(data)
+                }
+              })
             } else {
               console.log("Failed to post. Error: " + JSON.stringify(err))
             }
-          } else {
-            count++
           }
-        })
-      })
+        }) // posttoconnection
+      }) // data.items.foreach
     }
-
   })
+} // exports.handler
 
-}
