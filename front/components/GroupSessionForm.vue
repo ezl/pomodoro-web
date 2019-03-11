@@ -28,7 +28,7 @@ export default {
     joinSession() {
       console.log(this.groupSessionName)
       const msg = {
-        action: 'sendmessage',
+        action: 'sendMessage',
         messageType: 'join',
         data: { sessionName: this.groupSessionName }
       }

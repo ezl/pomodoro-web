@@ -324,7 +324,7 @@ export default {
     },
     sendState: function() {
       const payload = {
-        action: 'sendmessage',
+        action: 'sendMessage',
         messageType: 'state',
         data: timer.state
       }
@@ -342,7 +342,7 @@ export default {
         this.isRunningCheckboxValue
       )
       const payload = {
-        action: 'sendmessage',
+        action: 'sendMessage',
         messageType: 'state',
         data: state
       }

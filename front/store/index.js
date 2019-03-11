@@ -28,7 +28,7 @@ export const actions = {
   sendPreferences({ commit, state }, params) {
     commit('setPreferences', params || state.preferences)
     const payload = {
-      action: 'sendmessage',
+      action: 'sendMessage',
       messageType: 'preferences',
       data: params
     }
