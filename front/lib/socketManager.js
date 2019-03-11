@@ -89,53 +89,6 @@ class SocketManager {
     }
     this.triggerListeners(eventType, event)
   }
-
-  // onClose(event) {
-  //   this.state.readyState = this.websocket.readyState
-  //   if (this.verbose === true) {
-  //     console.log('[socket.js] CLOSED web socket')
-  //   }
-  // }
-  //
-  // onMessage(event) {
-  //   this.state.readyState = this.websocket.readyState
-  //   // update the last message so vue can find it
-  //   this.lastMessage = event.data
-  //   if (this.verbose === true) {
-  //     console.log('[socket.js] MESSAGE RECEIVED', this.lastMessage)
-  //   }
-  // }
-  //
-  // onError(event) {
-  //   this.state.readyState = this.websocket.readyState
-  //   if (this.verbose === true) {
-  //     console.log('[socket.js] SOCKET ERROR')
-  //   }
-  // }
-
-  getIsConnected() {
-    if (this.websocket === null) {
-      return false
-    }
-    return this.state.readyState === this.websocket.OPEN
-  }
-
-  getIsDisconnected() {
-    if (this.websocket === null) {
-      return true
-    }
-    return this.state.readyState === this.websocket.CLOSED
-  }
-
-  getIsPending() {
-    if (this.state === null) {
-      return false
-    }
-    return (
-      this.websocket.readyState === this.websocket.CONNECTING ||
-      this.websocket.readyState === this.websocket.CLOSING
-    )
-  }
 }
 
 export default SocketManager

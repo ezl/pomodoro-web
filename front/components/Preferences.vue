@@ -72,12 +72,6 @@ export default {
     savePreferences: function(broadcast = false) {
       console.log('clicked save preferences', broadcast)
       this.$store.commit('setPreferencesFromMinutes', this.preferencesForm)
-      /*
-      this.$store.state.timer.reset() <--
-      if (broadcast === true && this.$socketManager.getIsConnected()) {
-        this.sendPreferences()
-      }
-      */
     },
     cancelChangingPreferences: function() {
       console.log('clicked cancel preferences')
