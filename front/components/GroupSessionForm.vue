@@ -5,11 +5,11 @@
       <div class="row">
         <div class="twelve columns">
           <label>Session Name</label>
-          <input class="u-full-width" type="text"></input>
+          <input v-model="groupSessionName" class="u-full-width" type="text"></input>
         </div>
       </div>
       <div class="row">
-        <button class="u-full-width">
+        <button @click="joinSession" class="u-full-width">
           Join Session
         </button>
       </div>
@@ -20,7 +20,20 @@
 <script>
 export default {
   data: function() {
-    return {}
+    return {
+      groupSessionName: ''
+    }
+  },
+  methods: {
+    joinSession() {
+      console.log(this.groupSessionName)
+      const msg = {
+        action: 'sendmessage',
+        messageType: 'join',
+        data: { sessionName: this.groupSessionName }
+      }
+      this.$socketManager.send(msg)
+    }
   }
 }
 </script>
