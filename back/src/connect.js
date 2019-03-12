@@ -2,14 +2,15 @@ const AWS = require("aws-sdk")
 AWS.config.update({ region: process.env.AWS_REGION })
 const documentClient = new AWS.DynamoDB.DocumentClient()
 const broadcast = require('./utils.js').broadcast
+const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
 
 const generateRandomSessionName = function () {
   return 'default'
 }
 
-var sessionName = generateRandomSessionName()
+exports.handler = async (event, context) => {
+  const sessionName = generateRandomSessionName()
 
-exports.handler = function (event, context, callback) {
   // put an item on the connections table so we know that you exist
   const params = {
     TableName: process.env.CONNECTIONS_TABLE_NAME,
@@ -19,13 +20,14 @@ exports.handler = function (event, context, callback) {
     }
   }
 
-  documentClient.put(params, function (err) {
-    callback(null, {
+  try {
+    await documentClient.put(params).promise()
+  } catch (e) {
+    return {
       statusCode: err ? 500 : 200,
       body: err ? "Failed to connect: " + JSON.stringify(err) : "Connected."
-    })
-  })
-
+    }
+  }
   // tell everyone else you joined
   const message = {
     action: 'sendMessage',
@@ -34,6 +36,6 @@ exports.handler = function (event, context, callback) {
       connectionId: event.requestContext.connectionId
     }
   }
-  broadcast(event, sessionName, message)
+  return await broadcast(event, sessionName, message)
 } // exports.handler
 

@@ -3,8 +3,8 @@ AWS.config.update({ region: process.env.AWS_REGION })
 const documentClient = new AWS.DynamoDB.DocumentClient()
 const broadcast = require('./utils.js').broadcast
 
-exports.handler = function (event, context, callback) {
+exports.handler = async (event, context) => {
   const sessionName = "default"
   const message = JSON.parse(event.body)
-  broadcast(event, sessionName, message)
+  return await broadcast(event, sessionName, message)
 } // exports.handler

@@ -1,69 +1,60 @@
-const AWS = require("aws-sdk")
+const AWS = require('aws-sdk')
 AWS.config.update({ region: process.env.AWS_REGION })
 const documentClient = new AWS.DynamoDB.DocumentClient()
 
-const broadcast = function(event, sessionName, message) {
+const broadcast = async (event, sessionName, message) => {
   // takes event just so it can tell gateway api
   // broadcasts a message to all connected sockets with a specific sessionName
   const params = {
     TableName: process.env.CONNECTIONS_TABLE_NAME,
     ExpressionAttributeValues: {
-      ":sessionName": sessionName
+      ':sessionName': sessionName
     },
-    FilterExpression: "sessionName = :sessionName"
+    FilterExpression: 'sessionName = :sessionName'
   }
+  try {
+    const data = await documentClient.scan(params).promise()
+    const apigwManagementApi = new AWS.ApiGatewayManagementApi({
+      apiVersion: '2018-11-29',
+      endpoint: event.requestContext.domainName + '/' + event.requestContext.stage
+    })
 
-  documentClient.scan(params, function (err, data) {
-    if (err) {
-      callback(null, {
-        statusCode: 500,
-        body: JSON.stringify(err)
-      })
-    } else {
-      const apigwManagementApi = new AWS.ApiGatewayManagementApi({
-        apiVersion: "2018-11-29",
-        endpoint: event.requestContext.domainName + "/" + event.requestContext.stage
-      })
-
-      // get the object to broadcast ready for gw api
-      const payload = JSON.stringify(message)
-      const postParams = { Data: payload }
-
-      data.Items.forEach(function(item) {
-        const connectionId = item.connectionId
-        console.log("Trying to send a message to:", connectionId)
-        postParams.ConnectionId = connectionId
-        apigwManagementApi.postToConnection(postParams, function (err) {
-          if (err) {
-            // API Gateway returns a status of 410 GONE when the connection is no
-            // longer available. If this happens, we simply delete the identifier
-            // from our DynamoDB table.
-            if (err.statusCode === 410) { // remove 400, just for testing
-              console.log("Found stale connection, deleting " + connectionId)
-              documentClient.delete({
-                TableName: process.env.CONNECTIONS_TABLE_NAME,
-                Key: {
-                  connectionId: connectionId
-                }
-              }, function (err, data) {
-                if (err) {
-                  console.log(err, err.stack)
-                } else {
-                  console.log(data)
-                }
-              })
-            } else {
-              // error, but not statusCode == 410 (stale connection)
-              console.log("Failed to post. Error: " + JSON.stringify(err))
-            }
-          } else {
-            // successful post
-            console.log("Successfully posted to", connectionId)
+    // get the object to broadcast ready for gw api
+    const payload = JSON.stringify(message)
+    const postParams = { Data: payload }
+    for (const item of data.Items) {
+      const connectionId = item.connectionId
+      console.log('Trying to send a message to:', connectionId)
+      postParams.ConnectionId = connectionId
+      try {
+        await apigwManagementApi.postToConnection(postParams).promise() // posttoconnection
+        console.log('Successfully posted to', connectionId)
+      } catch (err) {
+        if (err.statusCode === 410) { // remove 400, just for testing
+          console.log('Found stale connection, deleting ' + connectionId)
+          try {
+            await documentClient.delete({
+              TableName: process.env.CONNECTIONS_TABLE_NAME,
+              Key: {
+                connectionId: connectionId
+              }
+            }).promise()
+          } catch (deleteError) {
+            console.log(deleteError, deleteError.stack)
           }
-        }) // posttoconnection
-      }) // data.items.foreach
+        } else {
+          // error, but not statusCode == 410 (stale connection)
+          console.log('Failed to post. Error: ' + JSON.stringify(err))
+        }
+      }
     }
-  })
+  } catch (err) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify(err)
+    }
+  }
+  return {}
 }
 
 module.exports = {
