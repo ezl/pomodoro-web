@@ -9,7 +9,7 @@
         </div>
       </div>
       <div class="row">
-        <button @click="joinSession" class="u-full-width">
+        <button class="u-full-width" @click="joinSession">
           Join Session
         </button>
       </div>

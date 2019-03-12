@@ -4,7 +4,7 @@
 
     <div id="content-wrapper" :class="{ 'is-active': showMenu }" class="content-wrapper slideout-panel">
       <div id="top-bar" class="top-bar">
-        <button :class="{ 'is-active': showMenu }" v-on:click="showMenu = !showMenu" class="side-menu-toggle hamburger hamburger--spin" type="button">
+        <button :class="{ 'is-active': showMenu }" class="side-menu-toggle hamburger hamburger--spin" type="button" @click="showMenu = !showMenu">
           <span class="hamburger-box">
             <span class="hamburger-inner" />
           </span>
