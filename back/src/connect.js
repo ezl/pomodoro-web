@@ -36,6 +36,6 @@ exports.handler = async (event, context) => {
       connectionId: event.requestContext.connectionId
     }
   }
-  return await broadcast(event, sessionName, message)
+  return await broadcast(event, sessionName, message, [event.requestContext.connectionId])
 } // exports.handler
 

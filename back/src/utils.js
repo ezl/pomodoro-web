@@ -2,7 +2,7 @@ const AWS = require('aws-sdk')
 AWS.config.update({ region: process.env.AWS_REGION })
 const documentClient = new AWS.DynamoDB.DocumentClient()
 
-const broadcast = async (event, sessionName, message) => {
+const broadcast = async (event, sessionName, message, excludeConnectionIds = []) => {
   // takes event just so it can tell gateway api
   // broadcasts a message to all connected sockets with a specific sessionName
   const params = {
@@ -24,6 +24,9 @@ const broadcast = async (event, sessionName, message) => {
     const postParams = { Data: payload }
     for (const item of data.Items) {
       const connectionId = item.connectionId
+      if (excludeConnectionIds.includes(connectionId) ) {
+        continue
+      }
       console.log('Trying to send a message to:', connectionId)
       postParams.ConnectionId = connectionId
       try {
