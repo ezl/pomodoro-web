@@ -44,15 +44,14 @@ provider:
 
 
 functions:
-  connectionHandler:
+  connectHandler:
     handler: src/connect.handler
     events:
       - websocket:
           route: $connect
     environment:
       CONNECTIONS_TABLE_NAME: ${env:CONNECTIONS_TABLE_NAME, 'pomodoro'}
-      SESSIONS_TABLE_NAME: ${env:SESSIONS_TABLE_NAME, 'pomodoro-sessions'}
-  defaultHandler:
+  disconnectHandler:
     handler: src/disconnect.handler
     events:
       - websocket:
@@ -65,7 +64,7 @@ functions:
       - websocket:
           route: sendMessage
     environment:
-      TABLE_NAME: ${env:TABLE_NAME, 'pomodoro'}
+      CONNECTIONS_TABLE_NAME: ${env:CONNECTIONS_TABLE_NAME, 'pomodoro'}
   defaultMessages:
     handler: src/default.handler
     events:
