@@ -10,14 +10,15 @@ const utils = require('./utils.js')
 
 exports.handler = async (event, context) => {
   const message = JSON.parse(event.body)
+  const sessionName = await getUserSessionName(event)
 
   // handle special cases
   if (message.messageType == 'joinRequest') {
-    const currentSessionName = await getUserSessionName(event)
-    if (currentSessionName === null) {
+    const oldSessionName = sessionName
+    if (oldSessionName === null) {
       return await join(generateRandomSessionName(), event)
     } else {
-      await quit(currentSessionName, event)
+      await quit(oldSessionName, event)
       const newSessionName = message.data.sessionName
       return await join(newSessionName, event)
     }
@@ -40,5 +41,5 @@ exports.handler = async (event, context) => {
   }
 
   // Echo the message (default behavior unless otherwise handled)
-  return await broadcast(event, getUserSessionName(event), message)
+  return await broadcast(event, sessionName, message)
 } // exports.handler
