@@ -60,6 +60,64 @@ const broadcast = async (event, sessionName, message, excludeConnectionIds = [])
   return {}
 }
 
+const join = async (sessionName, event) => {
+  // put an item on the connections table so we know that you exist
+  const params = {
+    TableName: process.env.CONNECTIONS_TABLE_NAME,
+    Item: {
+      connectionId: event.requestContext.connectionId,
+      sessionName: sessionName
+    }
+  }
+
+  try {
+    await documentClient.put(params).promise()
+  } catch (err) {
+    return {
+      statusCode: err ? 500 : 200,
+      body: err ? "Failed to connect: " + JSON.stringify(err) : "Connected."
+    }
+  }
+  // tell everyone else you joined
+  const message = {
+    action: 'sendMessage',
+    messageType: 'join',
+    data: {
+      connectionId: event.requestContext.connectionId
+    }
+  }
+  return await broadcast(event, sessionName, message, [event.requestContext.connectionId])
+}
+
+const quit = async (sessionName, event) => {
+  const params = {
+    TableName: process.env.CONNECTIONS_TABLE_NAME,
+    Key: {
+      connectionId: event.requestContext.connectionId
+    }
+  }
+
+  try {
+    await documentClient.delete(params).promise()
+  } catch (err) {
+    return {
+      statusCode: err ? 500 : 200,
+      body: err ? "Failed to connect: " + JSON.stringify(err) : "Connected."
+    }
+  }
+
+  const message = {
+    action: 'sendMessage',
+    messageType: 'quit',
+    data: {
+      connectionId: event.requestContext.connectionId
+    }
+  }
+  return await broadcast(event, sessionName, message, [event.requestContext.connectionId])
+}
+
 module.exports = {
-  broadcast: broadcast
+  broadcast: broadcast,
+  join: join,
+  quit: quit
 }
