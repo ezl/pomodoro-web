@@ -1,4 +1,5 @@
 const SECONDS_PER_MINUTE = 60
+const VERBOSE = false
 
 const TICKINTERVAL = 1000
 const DELAYBETWEENCYCLES = 2000
@@ -176,7 +177,9 @@ class PomodoroTimer {
 
     const now = new Date()
     this.elapsedTime = now - this.startTime
-    console.log('Tick', this.getMillisecondsRemaining())
+    if (VERBOSE === true) {
+      console.log('Tick', this.getMillisecondsRemaining())
+    }
     this.triggerListener('onTick')
 
     if (this.getMillisecondsRemaining() <= 0) {

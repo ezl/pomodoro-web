@@ -238,18 +238,15 @@ export default {
           setStylesForCountdowns()
           break
         case 'preferences':
-          console.log("it's preferences")
           this.$store.commit('setPreferences', data)
           timer.preferences = { ...data }
           break
         case 'join':
-          console.log('join')
           this.users.push(data)
           // this.sendPreferences()
           this.sendState()
           break
         case 'quit':
-          console.log('data', data)
           this.users.splice(this.users.indexOf(data), 1)
           break
         case 'request':
@@ -257,7 +254,6 @@ export default {
           this.sendState()
           break
         case 'potato':
-          console.log('potato')
           break
       }
     })
@@ -302,7 +298,6 @@ export default {
       this.$socketManager.closeWebSocket()
     },
     startTimer: function(broadcast = false) {
-      console.log('start')
       timer.start()
       setValuesForCountdowns()
       if (broadcast === true && this.isConnected) {
@@ -310,7 +305,6 @@ export default {
       }
     },
     stopTimer: function(broadcast = false) {
-      console.log('stop')
       timer.stop()
       if (broadcast === true && this.isConnected) {
         this.sendState()
@@ -332,10 +326,6 @@ export default {
     },
     sendArbitraryState() {
       // delete this
-      console.log('send arbitrary state')
-      console.log(this.isWorkStateCheckboxValue)
-      console.log(this.secondsRemainingInputValue)
-      console.log(this.isRunningCheckboxValue)
       const state = new PomodoroTimerState(
         this.isWorkStateCheckboxValue,
         this.secondsRemainingInputValue,
