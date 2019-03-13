@@ -1,8 +1,5 @@
 const join = require('./utils.js').join
-
-const generateRandomSessionName = function () {
-  return 'default'
-}
+const generateRandomSessionName = require('./utils.js').generateRandomSessionName
 
 exports.handler = async (event, context) => {
   const sessionName = generateRandomSessionName()

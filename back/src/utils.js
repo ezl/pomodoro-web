@@ -2,6 +2,31 @@ const AWS = require('aws-sdk')
 AWS.config.update({ region: process.env.AWS_REGION })
 const documentClient = new AWS.DynamoDB.DocumentClient()
 
+const generateRandomSessionName = function () {
+  return 'default'
+}
+
+const getUserSessionName = async (event) => {
+  const params = {
+    TableName: process.env.CONNECTIONS_TABLE_NAME,
+    ExpressionAttributeValues: {
+      ':connectionId': event.requestContext.connectionId
+    },
+    FilterExpression: 'connectionId = :connectionId'
+  }
+  const data = await documentClient.scan(params).promise()
+  if (data.Count === 1) {
+    return data.Items[0].sessionName
+  } else if (data.Count === 0) {
+    return null
+    // we don't know that this person is connected, but they are.
+    // this means we cleaned their connectionId off the table, but
+    // they were still connected.
+    // we should probably readd them (but don't know what sessionname)
+    // handle later.
+  }
+}
+
 const broadcast = async (event, sessionName, message, excludeConnectionIds = []) => {
   // takes event just so it can tell gateway api
   // broadcasts a message to all connected sockets with a specific sessionName
@@ -117,7 +142,9 @@ const quit = async (sessionName, event) => {
 }
 
 module.exports = {
-  broadcast: broadcast,
-  join: join,
-  quit: quit
+  getUserSessionName,
+  generateRandomSessionName,
+  broadcast,
+  join,
+  quit
 }
