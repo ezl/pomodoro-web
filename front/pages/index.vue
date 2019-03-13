@@ -29,9 +29,7 @@
       </li>
     </div>
 
-    <hr>
-
-    <div>
+    <div style="display:none">
       <span>Socket Connect / Disconnect</span>
       <no-ssr placeholder="Loading web socket buttons...">
         <button id="connectButton" :disabled="isConnected || isPending" @click="openWebSocket">
