@@ -65,8 +65,3 @@ functions:
           route: sendMessage
     environment:
       CONNECTIONS_TABLE_NAME: ${env:CONNECTIONS_TABLE_NAME, 'pomodoro'}
-  defaultMessages:
-    handler: src/default.handler
-    events:
-      - websocket:
-          route: $default
