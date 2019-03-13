@@ -245,7 +245,7 @@ export default {
           this.$store.commit('setPreferences', data)
           timer.preferences = { ...data }
           break
-        case 'join':
+        case 'userJoined':
           this.users.push(data)
           // this.sendPreferences()
           this.sendState()

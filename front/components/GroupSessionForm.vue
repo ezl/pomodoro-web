@@ -29,7 +29,7 @@ export default {
       console.log(this.groupSessionName)
       const msg = {
         action: 'sendMessage',
-        messageType: 'join',
+        messageType: 'joinRequest',
         data: { sessionName: this.groupSessionName }
       }
       this.$socketManager.send(msg)

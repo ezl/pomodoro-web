@@ -106,7 +106,7 @@ const join = async (sessionName, event) => {
   // tell everyone else you joined
   const message = {
     action: 'sendMessage',
-    messageType: 'join',
+    messageType: 'userJoined',
     data: {
       connectionId: event.requestContext.connectionId
     }

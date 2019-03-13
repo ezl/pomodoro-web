@@ -11,7 +11,7 @@ exports.handler = async (event, context) => {
   const message = JSON.parse(event.body)
 
   // handle special cases
-  if (message.messageType == 'join') {
+  if (message.messageType == 'joinRequest') {
     const currentSessionName = await getUserSessionName(event)
     if (currentSessionName === null) {
       return await join(generateRandomSessionName(), event)
