@@ -6,6 +6,26 @@ const generateRandomSessionName = function () {
   return 'default'
 }
 
+const updateUserName = async (event, name) => {
+  var params = {
+    TableName: process.env.CONNECTIONS_TABLE_NAME,
+    Key: { connectionId: event.requestContext.connectionId },
+    UpdateExpression: 'set #name = :name',
+    ExpressionAttributeNames: {'#name' : 'name'},
+    ExpressionAttributeValues: {
+      ':name' : name,
+    }
+  }
+
+  try {
+    const data = await documentClient.update(params).promise()
+    console.log("output of update", data)
+  } catch (err) {
+    console.log("ERRRRRRRRRRRRRRR")
+    console.log(err)
+  }
+}
+
 const getUserSessionName = async (event) => {
   const params = {
     TableName: process.env.CONNECTIONS_TABLE_NAME,
@@ -143,6 +163,7 @@ const quit = async (sessionName, event) => {
 
 module.exports = {
   getUserSessionName,
+  updateUserName,
   generateRandomSessionName,
   broadcast,
   join,
