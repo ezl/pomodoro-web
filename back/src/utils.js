@@ -38,13 +38,25 @@ const getUserSessionName = async (event) => {
   if (data.Count === 1) {
     return data.Items[0].sessionName
   } else if (data.Count === 0) {
-    return null
+    return generateRandomSessionName()
     // we don't know that this person is connected, but they are.
     // this means we cleaned their connectionId off the table, but
     // they were still connected.
     // we should probably readd them (but don't know what sessionname)
     // handle later.
   }
+}
+
+const getChannelMembers = async function(sessionName) {
+  const params = {
+    TableName: process.env.CONNECTIONS_TABLE_NAME,
+    ExpressionAttributeValues: {
+      ':sessionName': sessionName
+    },
+    FilterExpression: 'sessionName = :sessionName'
+  }
+  const data = await documentClient.scan(params).promise()
+  return data.Items
 }
 
 const broadcast = async (event, sessionName, message, excludeConnectionIds = []) => {
@@ -164,6 +176,7 @@ const quit = async (sessionName, event) => {
 module.exports = {
   getUserSessionName,
   updateUserName,
+  getChannelMembers,
   generateRandomSessionName,
   broadcast,
   join,

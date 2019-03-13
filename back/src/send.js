@@ -26,11 +26,19 @@ exports.handler = async (event, context) => {
     await utils.updateUserName(event, message.data.name)
     // broadcast to everyone connected that user changed name
     return {}
+  } else if (message.messageType == 'getChannelMembers') {
+    const sessionName = await utils.getUserSessionName(event)
+    const members = await utils.getChannelMembers(sessionName)
+    const message = {
+      action: 'sendMessage',
+      messageType: 'channelMembers',
+      data: {
+        members: members
+      }
+    }
+    return await utils.broadcast(event, sessionName, message)
   }
 
-  console.log('messageType:', message.messageType)
-  console.log('if execution got here, then this should echo')
-  console.log('message', message)
   // Echo the message (default behavior unless otherwise handled)
   return await broadcast(event, getUserSessionName(event), message)
 } // exports.handler
