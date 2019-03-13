@@ -29,7 +29,7 @@
             Cancel
           </button>
         </div>
-        <button @click="sendPreferences">
+        <button class="u-full-width" @click="sendPreferences">
           Send Preferences
         </button>
       </div>

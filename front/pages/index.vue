@@ -72,12 +72,15 @@
         <tr><td><span>isRunning</span></td><td><span id="isRunningValue">{{ timer.getIsRunning() }}</span></td></tr>
       </table>
     </div>
+
+    <UserSettingsForm />
   </div><!-- container -->
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import SocketStatusLight from '~/components/SocketStatusLight.vue'
+import UserSettingsForm from '~/components/UserSettingsForm.vue'
 import {
   pomodoroTimer as timer,
   PomodoroState as PomodoroTimerState
@@ -171,7 +174,10 @@ const animateTimerSwitch = function() {
 }.bind(timer)
 
 export default {
-  components: { SocketStatusLight },
+  components: {
+    SocketStatusLight,
+    UserSettingsForm
+  },
   data: function() {
     return {
       message: 'Hello World',
