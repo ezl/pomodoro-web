@@ -1,5 +1,5 @@
 <template>
-  <section class="socketStatusIndicator">
+  <section @click="toggleWebSocketConnection" class="socketStatusIndicator">
     <span>Connection:</span>
     <span
       id="socketStatusIndicator"
@@ -10,3 +10,21 @@
     />
   </section>
 </template>
+<script>
+export default {
+  methods: {
+    toggleWebSocketConnection: function() {
+      if (this.$store.getters['sockets/isConnected']) {
+        this.$socketManager.closeWebSocket()
+      } else {
+        this.$socketManager.openWebSocket()
+      }
+    }
+  }
+}
+</script>
+<style>
+section.socketStatusIndicator {
+  cursor: pointer;
+}
+</style>
