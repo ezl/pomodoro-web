@@ -1,33 +1,24 @@
 <template>
-  <div id='groups'>
+  <div id="groups">
     <a @click="showEntryDialog">Start or Join a Pomodoro Party</a>
-    <br>
-    <button @click="show('hello-world')">
-      show
-    </button>
-    <button @click="hide('hello-world')">
-      hide
-    </button>
-
-    <modal name="hello-world">
-      hello, world!
-    </modal>
 
     <v-dialog />
+    <CreateGroupSuccessModal />
+    <JoinGroupGetSessionNameModal />
 
-    <GroupSessionForm />
-    <hr>
-    <UserSettingsForm />
+    <UserSettingsForm /><!-- this will get moved -->
   </div>
 </template>
 
 <script>
-import GroupSessionForm from '~/components/GroupSessionForm.vue'
+import CreateGroupSuccessModal from '~/components/groupsmodals/CreateGroupSuccessModal.vue'
+import JoinGroupGetSessionNameModal from '~/components/groupsmodals/JoinGroupGetSessionNameModal.vue'
 import UserSettingsForm from '~/components/UserSettingsForm.vue'
 
 export default {
   components: {
-    GroupSessionForm,
+    CreateGroupSuccessModal,
+    JoinGroupGetSessionNameModal,
     UserSettingsForm
   },
   methods: {
@@ -48,13 +39,15 @@ export default {
           {
             title: 'Join',
             handler: () => {
-              alert('Join')
+              this.$modal.hide('dialog')
+              this.show('joinGroupGetSessionName')
             }
           }, // End join block
           {
             title: 'Start',
             handler: () => {
-              alert('Start')
+              this.$modal.hide('dialog')
+              this.show('createGroupSuccess')
             }
           }, // End start block
           {
@@ -62,7 +55,7 @@ export default {
           }
         ]
       })
-    } // showEntryModal
+    } // showEntryDialog
   }
 }
 </script>

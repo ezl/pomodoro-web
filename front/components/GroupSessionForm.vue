@@ -1,10 +1,11 @@
 <template>
   <div>
-    <h3>Groups</h3>
     <section id="groupSessionSettings">
       <div class="row">
+        <p>To join an existing group, you need the name of the group's current session.</p>
+        <p>If you don't have it, ask someone in the group to check their timer for the session name then enter it below.</p>
         <div class="twelve columns">
-          <label>Session Name</label>
+          <label>What is the session name for the group you want to join?</label>
           <input v-model="groupSessionName" class="u-full-width" type="text"></input>
         </div>
       </div>
