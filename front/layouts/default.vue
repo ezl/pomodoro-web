@@ -20,18 +20,18 @@
       <!-- main content area -->
       <nuxt />
     </div>
-    <GroupsModal />
+    <JoinOrCreateGroupModal />
   </div>
 </template>
 
 <script>
 import Sidebar from '~/components/Sidebar.vue'
+import JoinOrCreateGroupModal from '~/components/groupsmodals/JoinOrCreateGroupModal.vue'
 import SocketStatusLight from '~/components/SocketStatusLight.vue'
-import GroupsModal from '~/components/GroupsModal.vue'
 
 export default {
   components: {
-    GroupsModal,
+    JoinOrCreateGroupModal,
     Sidebar,
     SocketStatusLight
   },

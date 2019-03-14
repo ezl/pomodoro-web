@@ -19,6 +19,9 @@
       </div>
     </div>
 
+    <div id="groups">
+      <a @click="showJoinOrCreateGroupModal">Start or Join a Pomodoro Party</a>
+    </div>
     <ConnectedUsers :users=users />
 
     <div style="display:none">
@@ -314,6 +317,9 @@ export default {
         this.sendState()
       }
     },
+    showJoinOrCreateGroupModal() {
+      this.$modal.show('joinOrCreateGroupModal')
+    },
     getChannelMembers: function() {
       const msg = {
         action: 'sendMessage',
@@ -349,5 +355,9 @@ export default {
 <style>
 #countdown {
   cursor: pointer;
+}
+#groups {
+  padding-top: 50px;
+  text-align: center;
 }
 </style>
