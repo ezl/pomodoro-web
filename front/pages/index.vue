@@ -3,7 +3,7 @@
     <SocketStatusLight />
 
     <div id="timerContainer" :class="timer.isWorkState ? 'red' : 'green'">
-      <div id="countdown">
+      <div id="countdown" @click="toggleTimer(true)">
         <div id="tomatoImage" />
       </div>
       <div id="timerModeDisplay">
@@ -317,6 +317,13 @@ export default {
         this.sendState()
       }
     },
+    toggleTimer: function(broadcast = false) {
+      if (timer.getIsRunning() === true) {
+        this.stopTimer(broadcast)
+      } else {
+        this.startTimer(broadcast)
+      }
+    },
     resetTimer: function(broadcast = false) {
       timer.reset()
       if (broadcast === true && this.isConnected) {
@@ -367,5 +374,8 @@ export default {
 #connectedUsers .muted {
   color: #bbb;
   font-style: italic;
+}
+#countdown {
+  cursor: pointer;
 }
 </style>

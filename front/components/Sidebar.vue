@@ -11,10 +11,13 @@
     </div>
 
     <Preferences />
+
+    <div style="display: none;">
     <hr>
     <GroupSessionForm />
     <hr>
     <UserSettingsForm />
+    </div>
 
     <div class="side-menu-ad" style="display:none;">
       <img src="https://via.placeholder.com/90x130">
