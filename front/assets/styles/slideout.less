@@ -73,3 +73,23 @@ body {
     display: none;
   }
 }
+
+#top-bar-header {
+  display: none;
+}
+
+@media screen and (max-width: @breakpoint-narrow) {
+  #top-bar-header {
+    display: block;
+  }
+}
+
+#side-menu h1.main-header {
+  display: block;
+}
+
+@media screen and (max-width: @breakpoint-narrow) {
+  #side-menu h1.main-header {
+    display: none;
+  }
+}
