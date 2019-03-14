@@ -47,7 +47,10 @@ module.exports = {
   /*
   ** Plugins to load before mounting the App
   */
-  plugins: [{ src: '~/plugins/socket', ssr: false }],
+  plugins: [
+    { src: '~/plugins/socket', ssr: false },
+    '~/plugins/vue-js-modal'
+  ],
   env: {
     WS_URL:
       process.env.WS_URL ||

@@ -19,6 +19,8 @@
       </div>
     </div>
 
+    <GroupsModal />
+
     <div v-if="users.length > 1" id="connectedUsers">
       <h3>Connected Users</h3>
       <ul>
@@ -74,6 +76,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import GroupsModal from '~/components/GroupsModal.vue'
 import SocketStatusLight from '~/components/SocketStatusLight.vue'
 import {
   pomodoroTimer as timer,
@@ -169,6 +172,7 @@ const animateTimerSwitch = function() {
 
 export default {
   components: {
+    GroupsModal,
     SocketStatusLight
   },
   data: function() {
