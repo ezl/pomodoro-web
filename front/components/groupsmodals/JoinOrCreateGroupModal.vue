@@ -1,8 +1,5 @@
 <template>
   <div>
-    <CreateGroupSuccessModal />
-    <JoinGroupGetSessionNameModal />
-    <GetUserNameModal />
     <modal name="joinOrCreateGroupModal" height="auto" :scrollable="true">
       <div class="modal">
         <div class="modal-header">
@@ -32,16 +29,8 @@
 </template>
 
 <script>
-import GetUserNameModal from '~/components/groupsmodals/GetUserNameModal.vue'
-import CreateGroupSuccessModal from '~/components/groupsmodals/CreateGroupSuccessModal.vue'
-import JoinGroupGetSessionNameModal from '~/components/groupsmodals/JoinGroupGetSessionNameModal.vue'
 export default {
   name: 'JoinOrCreateGroupModal',
-  components: {
-    CreateGroupSuccessModal,
-    JoinGroupGetSessionNameModal,
-    GetUserNameModal
-  },
   methods: {
     show(modalName) {
       this.$modal.show(modalName)

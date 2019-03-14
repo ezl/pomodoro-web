@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Modals />
     <Sidebar />
 
     <div id="content-wrapper" :class="{ 'is-active': showMenu }" class="content-wrapper slideout-panel">
@@ -20,21 +21,17 @@
       <!-- main content area -->
       <nuxt />
     </div>
-    <JoinOrCreateGroupModal />
-    <GetUserNameModal />
   </div>
 </template>
 
 <script>
 import Sidebar from '~/components/Sidebar.vue'
-import GetUserNameModal from '~/components/groupsmodals/GetUserNameModal.vue'
-import JoinOrCreateGroupModal from '~/components/groupsmodals/JoinOrCreateGroupModal.vue'
+import Modals from '~/components/Modals.vue'
 import SocketStatusLight from '~/components/SocketStatusLight.vue'
 
 export default {
   components: {
-    JoinOrCreateGroupModal,
-    GetUserNameModal,
+    Modals,
     Sidebar,
     SocketStatusLight
   },
