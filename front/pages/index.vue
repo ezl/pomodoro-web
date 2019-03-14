@@ -20,9 +20,12 @@
     </div>
 
     <div id="groups">
-      <a @click="showJoinOrCreateGroupModal">Start or Join a Pomodoro Party</a>
+      <a v-if="this.$store.state.sessionName === null" @click="showJoinOrCreateGroupModal">Start or Join a Pomodoro Party</a>
+      <div v-else>
+        You are in session <code>{{ this.$store.state.sessionName }}</code>. <a @click="quitSession">Click to quit.</a>
+      </div>
     </div>
-    <ConnectedUsers :users=users />
+    <ConnectedUsers :users="users" />
 
     <div style="display:none">
       <span>Socket Connect / Disconnect</span>
@@ -285,6 +288,10 @@ export default {
     this.$store.commit('setPreferences', timer.preferences)
   },
   methods: {
+    quitSession: function() {
+      this.$store.commit('setSessionName', null)
+      this.closeWebSocket()
+    },
     openWebSocket: function() {
       this.$socketManager.openWebSocket()
     },
@@ -318,6 +325,7 @@ export default {
       }
     },
     showJoinOrCreateGroupModal() {
+      this.openWebSocket()
       this.$modal.show('joinOrCreateGroupModal')
     },
     getChannelMembers: function() {

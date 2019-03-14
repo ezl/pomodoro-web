@@ -1,6 +1,7 @@
 const MILLISECONDS_PER_MINUTE = 60 * 1000
 export const state = () => ({
-  preferences: {}
+  preferences: {},
+  sessionName: null
 })
 
 export const getters = {
@@ -21,6 +22,9 @@ export const mutations = {
       workDuration: newPreferences.workDuration * MILLISECONDS_PER_MINUTE,
       restDuration: newPreferences.restDuration * MILLISECONDS_PER_MINUTE
     }
+  },
+  setSessionName(state, newSessionName) {
+    state.sessionName = newSessionName
   }
 }
 

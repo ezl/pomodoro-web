@@ -36,6 +36,7 @@ export default {
         data: { sessionName: this.groupSessionName }
       }
       this.$socketManager.send(msg)
+      this.$store.commit('setSessionName', this.groupSessionName)
     }
   }
 }

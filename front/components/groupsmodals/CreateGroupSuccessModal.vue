@@ -14,7 +14,7 @@
           <li>using your session name <code><strong>group-session-name</strong></code>, or</li>
           <li>entering this link directly in their browser: <a href="https://www.google.com">https://foobar.com</a></li>
         </ol>
-        <button @click="next" class="u-full-width">
+        <button class="u-full-width" @click="next">
           Thank U, Next!
         </button>
       </div>
