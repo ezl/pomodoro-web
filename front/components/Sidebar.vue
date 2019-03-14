@@ -12,13 +12,6 @@
 
     <Preferences />
 
-    <div style="display: none;">
-      <hr>
-      <GroupSessionForm />
-      <hr>
-      <UserSettingsForm />
-    </div>
-
     <div class="side-menu-ad" style="display:none;">
       <img src="https://via.placeholder.com/90x130">
       <div class="side-menu-ad-text">
@@ -31,13 +24,9 @@
 
 <script>
 import Preferences from '~/components/Preferences.vue'
-import GroupSessionForm from '~/components/GroupSessionForm.vue'
-import UserSettingsForm from '~/components/UserSettingsForm.vue'
 export default {
   components: {
-    Preferences,
-    GroupSessionForm,
-    UserSettingsForm
+    Preferences
   },
   data: function() {
     return {}

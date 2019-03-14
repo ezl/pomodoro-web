@@ -374,10 +374,6 @@ export default {
   list-style-position: inside;
   margin-bottom: 0;
 }
-#connectedUsers .muted {
-  color: #bbb;
-  font-style: italic;
-}
 #countdown {
   cursor: pointer;
 }
