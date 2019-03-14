@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    <div>
+    <div v-if="users.length > 1">
       <span>Connected Users</span>
       <li v-for="user in users" :key="user.name">
         Connection ID: {{ user.connectionId }}
