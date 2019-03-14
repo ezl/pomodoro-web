@@ -6,7 +6,7 @@
       </h1>
 
       <h2 class="sub-header">
-        Share a pomodoro session with an coworker or friend
+        Share a pomodoro session with a coworker or friend
       </h2>
     </div>
 

@@ -22,11 +22,11 @@
       </div>
     </div>
 
-    <div v-if="users.length > 1">
-      <span>Connected Users</span>
-      <li v-for="user in users" :key="user.name">
-        Connection ID: {{ user.connectionId }}
-      </li>
+    <div v-if="users.length > 1" id="connectedUsers">
+      <h3>Connected Users</h3>
+      <ul>
+        <li v-for="user in users" :class="{muted : user.name === undefined}" :key="user.connectionId">{{ user.name || "Anonymous" }}</li>
+      </ul>
     </div>
 
     <div style="display:none">
@@ -355,3 +355,17 @@ export default {
   }
 }
 </script>
+<style>
+#connectedUsers {
+  display: block;
+}
+#connectedUsers li {
+  list-style: circle;
+  list-style-position: inside;
+  margin-bottom: 0;
+}
+#connectedUsers .muted {
+  color: #bbb;
+  font-style: italic;
+}
+</style>
