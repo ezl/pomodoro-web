@@ -1,0 +1,25 @@
+<template>
+  <div v-if="users.length > 1" id="connectedUsers">
+    <h3>Connected Users</h3>
+    <ul>
+      <li v-for="user in users" :key="user.connectionId" :class="{muted : user.name === undefined}">
+        {{ user.name || "Anonymous" }}
+      </li>
+    </ul>
+  </div>
+</template>
+<script>
+export default {
+  props: ['users']
+}
+</script>
+<style>
+#connectedUsers {
+  display: block;
+}
+#connectedUsers li {
+  list-style: circle;
+  list-style-position: inside;
+  margin-bottom: 0;
+}
+</style>

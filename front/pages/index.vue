@@ -20,15 +20,7 @@
     </div>
 
     <GroupsModal />
-
-    <div v-if="users.length > 1" id="connectedUsers">
-      <h3>Connected Users</h3>
-      <ul>
-        <li v-for="user in users" :key="user.connectionId" :class="{muted : user.name === undefined}">
-          {{ user.name || "Anonymous" }}
-        </li>
-      </ul>
-    </div>
+    <ConnectedUsers :users=users />
 
     <div style="display:none">
       <span>Socket Connect / Disconnect</span>
@@ -79,6 +71,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import GroupsModal from '~/components/GroupsModal.vue'
+import ConnectedUsers from '~/components/ConnectedUsers.vue'
 import SocketStatusLight from '~/components/SocketStatusLight.vue'
 import {
   pomodoroTimer as timer,
@@ -175,6 +168,7 @@ const animateTimerSwitch = function() {
 export default {
   components: {
     GroupsModal,
+    ConnectedUsers,
     SocketStatusLight
   },
   data: function() {
@@ -356,14 +350,6 @@ export default {
 }
 </script>
 <style>
-#connectedUsers {
-  display: block;
-}
-#connectedUsers li {
-  list-style: circle;
-  list-style-position: inside;
-  margin-bottom: 0;
-}
 #countdown {
   cursor: pointer;
 }
