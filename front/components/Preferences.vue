@@ -29,7 +29,7 @@
             Cancel
           </button>
         </div>
-        <button class="u-full-width" @click="sendPreferences">
+        <button class="u-full-width" @click="sendPreferences" style="display: none;">
           Send Preferences
         </button>
       </div>
@@ -72,6 +72,7 @@ export default {
     savePreferences: function(broadcast = false) {
       console.log('clicked save preferences', broadcast)
       this.$store.commit('setPreferencesFromMinutes', this.preferencesForm)
+      this.sendPreferences()
     },
     cancelChangingPreferences: function() {
       console.log('clicked cancel preferences')
