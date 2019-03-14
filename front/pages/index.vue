@@ -210,23 +210,13 @@ export default {
   created() {
     this.$socketManager.registerListener('onMessage', event => {
       const msg = event.data
-
-      // TODO: this is stupid! just doing this
-      // so i can see if it's valid json!
-      function IsJsonString(str) {
-        try {
-          JSON.parse(str)
-        } catch (e) {
-          return false
-        }
-        return true
-      }
-      if (!IsJsonString(msg)) {
+      let response
+      try {
+        response = JSON.parse(msg)
+      } catch (err) {
         return
       }
-
-      const response = JSON.parse(msg) // full response payload
-      const data = response.data // just the data key
+      const data = response.data
       const messageType = response.messageType
 
       switch (messageType) {
