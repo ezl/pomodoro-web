@@ -1,7 +1,6 @@
-const quit = require('./utils.js').quit
-const generateRandomSessionName = require('./utils.js').generateRandomSessionName
+const utils = require('./utils.js')
 
 exports.handler = function (event, context, callback) {
-  const sessionName = generateRandomSessionName()
-  return await quit(sessionName, event)
+  const sessionName = utils.generateRandomSessionName()
+  return await utils.quit(sessionName, event)
 }
