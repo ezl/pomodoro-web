@@ -1,6 +1,5 @@
 <template>
   <section @click="toggleWebSocketConnection" class="socketStatusIndicator">
-    <span>Connection:</span>
     <span
       id="socketStatusIndicator"
       class="dot"
@@ -26,5 +25,7 @@ export default {
 <style>
 section.socketStatusIndicator {
   cursor: pointer;
+  height: 20px;
+  width: 30px; /* matching dimensions of hamburger box */
 }
 </style>

@@ -2,13 +2,11 @@
   <nav id="side-menu" class="side-menu slideout-menu">
     <div class="side-menu-header">
       <h1 class="main-header">
-        <a>
-          Pomodoro
-        </a>
+        Pomodoro Party
       </h1>
 
       <h2 class="sub-header">
-        Share a session with an coworker or friend!
+        Share a pomodoro session with an coworker or friend
       </h2>
     </div>
 

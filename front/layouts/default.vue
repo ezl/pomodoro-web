@@ -9,6 +9,9 @@
             <span class="hamburger-inner" />
           </span>
         </button>
+        <div>
+          <h1 id="top-bar-header">Pomodoro Party</h1>
+        </div>
         <SocketStatusLight />
       </div>
 
