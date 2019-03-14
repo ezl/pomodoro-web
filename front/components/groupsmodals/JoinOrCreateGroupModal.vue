@@ -20,10 +20,10 @@
               Join
             </button>
           </div><!-- row -->
-          <div class="row">
-            <div class="muted center italic underline" @click="cancel">
+          <div class="row center">
+            <span class="cancel muted underline" @click="cancel">
               Cancel
-            </div>
+            </span>
           </div><!-- row -->
         </div>
       </div><!-- .modal -->
@@ -63,3 +63,8 @@ export default {
   }
 }
 </script>
+<style>
+.modal span.cancel {
+  cursor: pointer;
+}
+</style>
