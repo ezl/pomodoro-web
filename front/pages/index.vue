@@ -245,13 +245,20 @@ export default {
           this.$store.commit('setPreferences', data)
           timer.preferences = { ...data }
           break
+        case 'channelMembers':
+          this.users = data.members
+          break
         case 'userJoined':
-          this.users.push(data)
+          console.log('user joined', data)
+          this.getChannelMembers()
+          // this.users.push(data)
           // this.sendPreferences()
           this.sendState()
           break
         case 'quit':
-          this.users.splice(this.users.indexOf(data), 1)
+          console.log('user quit:', data)
+          // this.users.splice(this.users.indexOf(data), 1)
+          this.getChannelMembers()
           break
         case 'request':
           this.$store.dispatch('sendPreferences')
@@ -319,6 +326,13 @@ export default {
       if (broadcast === true && this.isConnected) {
         this.sendState()
       }
+    },
+    getChannelMembers: function() {
+      const msg = {
+        action: 'sendMessage',
+        messageType: 'getChannelMembers'
+      }
+      this.$socketManager.send(msg)
     },
     sendState: function() {
       const payload = {
