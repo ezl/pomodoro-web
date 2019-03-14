@@ -13,10 +13,10 @@
     <Preferences />
 
     <div style="display: none;">
-    <hr>
-    <GroupSessionForm />
-    <hr>
-    <UserSettingsForm />
+      <hr>
+      <GroupSessionForm />
+      <hr>
+      <UserSettingsForm />
     </div>
 
     <div class="side-menu-ad" style="display:none;">
