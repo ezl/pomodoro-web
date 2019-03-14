@@ -19,7 +19,6 @@
       </div>
     </div>
 
-    <GroupsModal />
     <ConnectedUsers :users=users />
 
     <div style="display:none">
@@ -70,7 +69,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import GroupsModal from '~/components/GroupsModal.vue'
 import ConnectedUsers from '~/components/ConnectedUsers.vue'
 import SocketStatusLight from '~/components/SocketStatusLight.vue'
 import {
@@ -167,7 +165,6 @@ const animateTimerSwitch = function() {
 
 export default {
   components: {
-    GroupsModal,
     ConnectedUsers,
     SocketStatusLight
   },

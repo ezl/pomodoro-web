@@ -20,15 +20,21 @@
       <!-- main content area -->
       <nuxt />
     </div>
+    <GroupsModal />
   </div>
 </template>
 
 <script>
 import Sidebar from '~/components/Sidebar.vue'
 import SocketStatusLight from '~/components/SocketStatusLight.vue'
+import GroupsModal from '~/components/GroupsModal.vue'
 
 export default {
-  components: { Sidebar, SocketStatusLight },
+  components: {
+    GroupsModal,
+    Sidebar,
+    SocketStatusLight
+  },
   data: function() {
     return {
       showMenu: false
