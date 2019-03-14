@@ -10,11 +10,8 @@
         {{ timer.isWorkState ? "Work Time" : "Rest Time" }}
       </div>
       <div id="timerButtons">
-        <button :disabled="timer.getIsRunning()" @click="startTimer(true)">
-          Start
-        </button>
-        <button :disabled="!timer.getIsRunning()" @click="stopTimer(true)">
-          Stop
+        <button @click="toggleTimer(true)">
+          {{ !timer.getIsRunning() ? 'Start' : 'Stop' }}
         </button>
         <button :disabled="timer.getIsRunning()" @click="resetTimer(true)">
           Reset
