@@ -10,7 +10,9 @@
           </span>
         </button>
         <div>
-          <h1 id="top-bar-header">Pomodoro Party</h1>
+          <h1 id="top-bar-header">
+            Pomodoro Party
+          </h1>
         </div>
         <SocketStatusLight />
       </div>

@@ -24,7 +24,9 @@
     <div v-if="users.length > 1" id="connectedUsers">
       <h3>Connected Users</h3>
       <ul>
-        <li v-for="user in users" :class="{muted : user.name === undefined}" :key="user.connectionId">{{ user.name || "Anonymous" }}</li>
+        <li v-for="user in users" :key="user.connectionId" :class="{muted : user.name === undefined}">
+          {{ user.name || "Anonymous" }}
+        </li>
       </ul>
     </div>
 

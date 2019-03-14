@@ -1,5 +1,5 @@
 <template>
-  <section @click="toggleWebSocketConnection" class="socketStatusIndicator">
+  <section class="socketStatusIndicator" @click="toggleWebSocketConnection">
     <span
       id="socketStatusIndicator"
       class="dot"
