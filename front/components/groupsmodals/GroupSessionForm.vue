@@ -28,6 +28,8 @@ export default {
   methods: {
     joinSession() {
       console.log(this.groupSessionName)
+      this.$modal.hide('joinGroupGetSessionNameModal')
+      this.$modal.show('getUserNameModal')
       const msg = {
         action: 'sendMessage',
         messageType: 'joinRequest',

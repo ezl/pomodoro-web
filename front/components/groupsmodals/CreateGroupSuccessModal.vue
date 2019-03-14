@@ -1,5 +1,5 @@
 <template>
-  <modal name="createGroupSuccess" height="auto" :scrollable="true">
+  <modal name="createGroupSuccessModal" height="auto" :scrollable="true">
     <div class="modal">
       <div class="modal-header">
         <h3>Start Group</h3>
@@ -14,7 +14,7 @@
           <li>using your session name <code><strong>group-session-name</strong></code>, or</li>
           <li>entering this link directly in their browser: <a href="https://www.google.com">https://foobar.com</a></li>
         </ol>
-        <button class="u-full-width">
+        <button @click="next" class="u-full-width">
           Thank U, Next!
         </button>
       </div>
@@ -24,7 +24,13 @@
 
 <script>
 export default {
-  name: 'CreateGroupSuccessModal'
+  name: 'CreateGroupSuccessModal',
+  methods: {
+    next: function() {
+      this.$modal.hide('createGroupSuccessModal')
+      this.$modal.show('getUserNameModal')
+    }
+  }
 }
 </script>
 <style>

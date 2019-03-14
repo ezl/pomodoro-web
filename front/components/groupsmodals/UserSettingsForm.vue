@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p><strong>Who are you?</strong></p>
+    <p>Let anyone else in the session know who you are by entering your name below.</p>
     <section>
       <div class="row">
         <div class="twelve columns">
@@ -10,7 +10,7 @@
       </div>
       <div class="row">
         <button class="u-full-width" @click="setName">
-          Update
+          Join Session
         </button>
       </div>
     </section>
@@ -26,6 +26,7 @@ export default {
   },
   methods: {
     setName() {
+      this.$modal.hide('getUserNameModal')
       console.log('clicked button to set name:', this.name)
       const msg = {
         action: 'sendMessage',

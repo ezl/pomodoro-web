@@ -1,5 +1,5 @@
 <template>
-  <modal name="joinGroupGetSessionName" height="auto" :scrollable="true">
+  <modal name="joinGroupGetSessionNameModal" height="auto" :scrollable="true">
     <div class="modal">
       <div class="modal-header">
         <h3>Join Group</h3>

@@ -51,11 +51,11 @@ export default {
     },
     join() {
       this.hide('joinOrCreateGroupModal')
-      this.show('joinGroupGetSessionName')
+      this.show('joinGroupGetSessionNameModal')
     },
     start() {
       this.hide('joinOrCreateGroupModal')
-      this.show('createGroupSuccess')
+      this.show('createGroupSuccessModal')
     },
     cancel() {
       this.hide('joinOrCreateGroupModal')

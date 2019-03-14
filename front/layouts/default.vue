@@ -21,17 +21,20 @@
       <nuxt />
     </div>
     <JoinOrCreateGroupModal />
+    <GetUserNameModal />
   </div>
 </template>
 
 <script>
 import Sidebar from '~/components/Sidebar.vue'
+import GetUserNameModal from '~/components/groupsmodals/GetUserNameModal.vue'
 import JoinOrCreateGroupModal from '~/components/groupsmodals/JoinOrCreateGroupModal.vue'
 import SocketStatusLight from '~/components/SocketStatusLight.vue'
 
 export default {
   components: {
     JoinOrCreateGroupModal,
+    GetUserNameModal,
     Sidebar,
     SocketStatusLight
   },
