@@ -61,12 +61,13 @@ body {
 
 @media screen and (min-width: @breakpoint-narrow) {
   .slideout-panel {
-    margin-left: @slideout-menu-width;
+    padding-left: @slideout-menu-width;
     padding-right: @slideout-menu-width;
   }
 
   .slideout-menu {
     display: block;
+    z-index: 5;
   }
 
   .side-menu-toggle.hamburger {
