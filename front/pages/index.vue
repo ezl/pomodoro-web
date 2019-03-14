@@ -249,7 +249,7 @@ export default {
           this.users = data.members
           break
         case 'userJoined':
-          console.log('user joined', data)
+          console.log('user joined:', data)
           this.getChannelMembers()
           // this.users.push(data)
           // this.sendPreferences()
