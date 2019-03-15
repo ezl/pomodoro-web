@@ -254,6 +254,18 @@ export default {
           break
       }
     })
+    this.$socketManager.registerListener('onOpen', event => {
+      // whenever a socket is connected, if the expects to be in
+      // a specific channel, join it.
+      if (this.$store.state.sessionName === null) {
+        const msg = {
+          action: 'sendMessage',
+          messageType: 'joinRequest',
+          data: { sessionName: this.$store.state.sessionName }
+        }
+        this.$socketManager.send(msg)
+      }
+    })
     timer.registerListener('onTick', setValuesForCountdowns)
     timer.registerListener('onStateChange', () => setValuesForCountdowns(0))
     timer.registerListener('onStateChange', setStylesForCountdowns)
@@ -284,7 +296,6 @@ export default {
     })
     setValuesForCountdowns(0)
     setStylesForCountdowns()
-    this.openWebSocket()
     this.$store.commit('setPreferences', timer.preferences)
   },
   methods: {
