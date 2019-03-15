@@ -1,7 +1,8 @@
 const MILLISECONDS_PER_MINUTE = 60 * 1000
 export const state = () => ({
   preferences: {},
-  sessionName: null
+  sessionName: null,
+  userName: null
 })
 
 export const getters = {
@@ -25,6 +26,9 @@ export const mutations = {
   },
   setSessionName(state, newSessionName) {
     state.sessionName = newSessionName
+  },
+  setUserName(state, newUserName) {
+    state.userName = newUserName
   }
 }
 

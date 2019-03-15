@@ -6,11 +6,11 @@
       <div class="row">
         <div class="twelve columns">
           <label>My name is:</label>
-          <input v-model="name" class="u-full-width" type="text"></input>
+          <input v-model="userName" class="u-full-width" type="text"></input>
         </div>
       </div>
       <div class="row">
-        <button class="u-full-width" @click="setName">
+        <button class="u-full-width" @click="setUserName">
           Join Session
         </button>
       </div>
@@ -22,19 +22,28 @@
 export default {
   data: function() {
     return {
-      name: ''
+      userName: this.$store.state.userName
     }
   },
   methods: {
-    setName() {
-      this.$modal.hide('getUserNameModal')
+    setUserName() {
       console.log('clicked button to set name:', this.name)
-      const msg = {
-        action: 'sendMessage',
-        messageType: 'identify',
-        data: { name: this.name }
+      function isNullOrWhitespace(input) {
+        return !input || input.replace(/\s/g, '').length < 1
       }
-      this.$socketManager.send(msg)
+      this.$modal.hide('getUserNameModal')
+      if (!isNullOrWhitespace(this.userName)) {
+        this.$store.commit('setUserName', this.userName)
+        const msg = {
+          action: 'sendMessage',
+          messageType: 'identify',
+          data: { name: this.userName }
+        }
+        this.$socketManager.send(msg)
+      } else {
+        // white space or null. set store value back to null.
+        this.$store.commit('setUserName', null)
+      }
     }
   }
 }
