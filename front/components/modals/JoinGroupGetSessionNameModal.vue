@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import GroupSessionForm from '~/components/groupsmodals/GroupSessionForm.vue'
+import GroupSessionForm from '~/components/forms/GroupSessionForm.vue'
 export default {
   name: 'JoinGroupGetSessionNameModal',
   components: {

@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import UserSettingsForm from '~/components/groupsmodals/UserSettingsForm.vue'
+import UserSettingsForm from '~/components/forms/UserSettingsForm.vue'
 export default {
   name: 'GetUserNameModal',
   components: {
