@@ -297,6 +297,10 @@ export default {
     setValuesForCountdowns(0)
     setStylesForCountdowns()
     this.$store.commit('setPreferences', timer.preferences)
+    // if this person had a session before, add it and try to connect
+    this.$store.commit('setSessionName', localStorage.getItem('sessionName'))
+    this.openWebSocket()
+    console.log('session name:', this.$store.state.sessionName)
   },
   methods: {
     quitSession: function() {

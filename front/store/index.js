@@ -30,6 +30,7 @@ export const mutations = {
   },
   setSessionName(state, newSessionName) {
     state.sessionName = newSessionName
+    localStorage.setItem('sessionName', newSessionName)
   },
   setUserName(state, newUserName) {
     state.userName = newUserName
