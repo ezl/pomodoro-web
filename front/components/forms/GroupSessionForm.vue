@@ -42,7 +42,6 @@ export default {
   },
   methods: {
     joinSession() {
-      console.log(this.groupSessionName)
       this.$modal.hide('joinGroupGetSessionNameModal')
 
       if (this.$store.state.joinOrCreateModalMode === 'join') {
