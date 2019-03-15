@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class="row">
-        <button class="u-full-width" @click="joinSession">
+        <button class="u-full-width" @click="joinSession" :disabled="!groupSessionName">
           Join Session
         </button>
       </div>
