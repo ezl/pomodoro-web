@@ -257,7 +257,7 @@ export default {
     this.$socketManager.registerListener('onOpen', event => {
       // whenever a socket is connected, if the expects to be in
       // a specific channel, join it.
-      if (this.$store.state.sessionName === null) {
+      if (this.$store.state.sessionName !== null) {
         const msg = {
           action: 'sendMessage',
           messageType: 'joinRequest',
