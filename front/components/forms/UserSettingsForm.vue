@@ -11,7 +11,7 @@
       </div>
       <div class="row">
         <button class="u-full-width" @click="setUserName">
-          Join Session
+          Go
         </button>
       </div>
     </section>

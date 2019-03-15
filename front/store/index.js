@@ -1,6 +1,7 @@
 const MILLISECONDS_PER_MINUTE = 60 * 1000
 export const state = () => ({
   preferences: {},
+  joinOrCreateModalMode: 'create',
   sessionName: null,
   userName: null
 })
@@ -23,6 +24,9 @@ export const mutations = {
       workDuration: newPreferences.workDuration * MILLISECONDS_PER_MINUTE,
       restDuration: newPreferences.restDuration * MILLISECONDS_PER_MINUTE
     }
+  },
+  setJoinOrCreateModalMode(state, value) {
+    state.joinOrCreateModalMode = value
   },
   setSessionName(state, newSessionName) {
     state.sessionName = newSessionName

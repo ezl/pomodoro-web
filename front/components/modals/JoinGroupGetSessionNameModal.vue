@@ -2,7 +2,8 @@
   <modal name="joinGroupGetSessionNameModal" height="auto" :scrollable="true">
     <div class="modal">
       <div class="modal-header">
-        <h3>Join Group</h3>
+        <h3 v-if="$store.state.joinOrCreateModalMode == 'join'">Join Group</h3>
+        <h3 v-if="$store.state.joinOrCreateModalMode == 'create'">Start Group</h3>
       </div>
       <div class="modal-body">
         <GroupSessionForm />
