@@ -11,8 +11,8 @@
           Now anyone can join your session by:
         </p>
         <ol>
-          <li>using your session name <code><strong>group-session-name</strong></code>, or</li>
-          <li>entering this link directly in their browser: <a href="https://www.google.com">https://foobar.com</a></li>
+          <li>using your session name <code><strong>{{ $store.state.sessionName }}</strong></code>, or</li>
+          <li>entering this link directly in their browser: <a style="color: #ED6A5A;" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Click to copy link</a></li>
         </ol>
         <button class="u-full-width" @click="next">
           Thank U, Next!
