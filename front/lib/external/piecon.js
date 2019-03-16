@@ -153,13 +153,10 @@ const drawFavicon = function(percentage) {
   }
 }
 
-const updateTitle = function(percentage) {
-  if (percentage > 0) {
-    document.title = '(' + percentage + '%) ' + originalTitle
-  } else {
-    document.title = originalTitle
-  }
+const updateTitle = function(value) {
+  document.title = '(' + value + ') ' + originalTitle
 }
+Piecon.updateTitle = updateTitle
 
 Piecon.setOptions = function(custom) {
   options = {}
@@ -184,18 +181,6 @@ Piecon.setProgress = function(percentage) {
   }
 
   if (!isNaN(parseFloat(percentage)) && isFinite(percentage)) {
-    if (
-      !getCanvas().getContext ||
-      browser.ie ||
-      browser.safari ||
-      options.fallback === true
-    ) {
-      // Fallback to updating the browser title if unsupported
-      return updateTitle(percentage)
-    } else if (options.fallback === 'force') {
-      updateTitle(percentage)
-    }
-
     return drawFavicon(percentage)
   }
 
