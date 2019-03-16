@@ -22,7 +22,9 @@
     <div id="groups">
       <a v-if="this.$store.state.sessionName === ''" @click="showJoinOrCreateGroupModal">Start or Join a Pomodoro Party</a>
       <div v-else>
-        You are in session <code>{{ this.$store.state.sessionName }}</code>. <a @click="quitSession">Click to quit.</a>
+        You are in session <code>{{ this.$store.state.sessionName }}</code>.
+        <br>
+        <a @click="quitSession">Click to quit.</a>
       </div>
     </div>
     <ConnectedUsers :users="users" />
@@ -272,8 +274,8 @@ export default {
       }
       if (this.$store.state.userName !== '') {
         console.log(
-          'username is non empty string, joining it',
-          this.$store.state.sessionName
+          'username is non empty string, it is',
+          this.$store.state.userName
         )
         console.log('XXXX this.store.username is:', this.$store.state.userName)
         const msg = {
