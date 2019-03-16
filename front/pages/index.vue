@@ -84,7 +84,7 @@ import {
   PomodoroState as PomodoroTimerState
 } from '~/lib/timer'
 
-import Piecon from 'piecon/piecon'
+import Piecon from '@/lib/external/piecon'
 import ProgressBar from 'progressbar.js'
 let countdown
 
@@ -130,6 +130,7 @@ const setValuesForCountdowns = function(duration) {
     (timeRemaining / this.currentDuration) * 100
   )
   const oneTick = (coDuration / this.currentDuration) * 100
+  Piecon.updateTitle(minutesRemaining)
   Piecon.setProgress(percentRemaining - oneTick)
   if (coDuration === 0) {
     countdown.set((percentRemaining - oneTick) / 100)

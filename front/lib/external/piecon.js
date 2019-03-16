@@ -22,21 +22,6 @@ const defaults = {
 
 const isRetina = window.devicePixelRatio > 1
 
-const ua = (function() {
-  const agent = navigator.userAgent.toLowerCase()
-  return function(browser) {
-    return agent.indexOf(browser) !== -1
-  }
-})()
-
-const browser = {
-  ie: ua('msie'),
-  chrome: ua('chrome'),
-  webkit: ua('chrome') || ua('safari'),
-  safari: ua('safari') && !ua('chrome'),
-  mozilla: ua('mozilla') && !ua('chrome') && !ua('safari')
-}
-
 const getFaviconTag = function() {
   const links = document.getElementsByTagName('link')
 
@@ -154,7 +139,7 @@ const drawFavicon = function(percentage) {
 }
 
 const updateTitle = function(value) {
-  document.title = '(' + value + ') ' + originalTitle
+  document.title = value + ' ' + originalTitle
 }
 Piecon.updateTitle = updateTitle
 
