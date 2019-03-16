@@ -1,6 +1,6 @@
 <template>
   <div>
-    <modal name="joinOrCreateGroupModal" height="auto" :scrollable="true">
+    <modal name="joinOrCreateGroupModal" height="auto" :scrollable="true" :adaptive="true">
       <div class="modal">
         <div class="modal-header">
           <h3>Start or Join A Group Pomodoro</h3>
