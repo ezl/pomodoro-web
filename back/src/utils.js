@@ -3,7 +3,7 @@ AWS.config.update({ region: process.env.AWS_REGION })
 const documentClient = new AWS.DynamoDB.DocumentClient()
 
 const generateRandomSessionName = function () {
-  return 'default'
+  return 'session-' + (Math.random() * 10000).toFixed()
 }
 
 const updateUserName = async (event, userName) => {
