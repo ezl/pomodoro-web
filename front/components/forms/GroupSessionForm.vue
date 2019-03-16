@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class="row">
-        <button class="u-full-width" :disabled="!groupSessionName" @click="joinSession">
+        <button class="u-full-width" :disabled="isNullOrWhitespace(groupSessionName)" @click="joinSession">
           Join Session
         </button>
       </div>
@@ -25,7 +25,7 @@
         </div>
       </div>
       <div class="row">
-        <button class="u-full-width" :disabled="!groupSessionName" @click="joinSession">
+        <button class="u-full-width" :disabled="isNullOrWhitespace(groupSessionName)" @click="joinSession">
           Start Session
         </button>
       </div>
@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import { isNullOrWhitespace } from '@/lib/utils'
 export default {
   data: function() {
     return {
@@ -41,6 +42,9 @@ export default {
     }
   },
   methods: {
+    isNullOrWhitespace(val) {
+      return isNullOrWhitespace(val)
+    },
     joinSession() {
       this.$modal.hide('joinGroupGetSessionNameModal')
 
@@ -49,13 +53,15 @@ export default {
       } else if (this.$store.state.joinOrCreateModalMode === 'create') {
         this.$modal.show('createGroupSuccessModal')
       }
-      const msg = {
-        action: 'sendMessage',
-        messageType: 'joinRequest',
-        data: { sessionName: this.groupSessionName }
+      if (!isNullOrWhitespace(this.groupSessionName)) {
+        const msg = {
+          action: 'sendMessage',
+          messageType: 'joinRequest',
+          data: { sessionName: this.groupSessionName }
+        }
+        this.$socketManager.send(msg)
+        this.$store.commit('setSessionName', this.groupSessionName)
       }
-      this.$socketManager.send(msg)
-      this.$store.commit('setSessionName', this.groupSessionName)
     }
   }
 }

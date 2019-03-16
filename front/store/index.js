@@ -2,8 +2,8 @@ const MILLISECONDS_PER_MINUTE = 60 * 1000
 export const state = () => ({
   preferences: {},
   joinOrCreateModalMode: 'create',
-  sessionName: null,
-  userName: null
+  sessionName: '',
+  userName: ''
 })
 
 export const getters = {
@@ -32,8 +32,9 @@ export const mutations = {
     state.sessionName = newSessionName
     localStorage.setItem('sessionName', newSessionName)
   },
-  setUserName(state, newUserName) {
-    state.userName = newUserName
+  setUserName(state, value) {
+    state.userName = value
+    localStorage.setItem('userName', value)
   }
 }
 

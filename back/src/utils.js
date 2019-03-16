@@ -6,14 +6,14 @@ const generateRandomSessionName = function () {
   return 'default'
 }
 
-const updateUserName = async (event, name) => {
+const updateUserName = async (event, userName) => {
   var params = {
     TableName: process.env.CONNECTIONS_TABLE_NAME,
     Key: { connectionId: event.requestContext.connectionId },
-    UpdateExpression: 'set #name = :name',
-    ExpressionAttributeNames: {'#name' : 'name'},
+    UpdateExpression: 'set #userName = :userName',
+    ExpressionAttributeNames: {'#userName' : 'userName'},
     ExpressionAttributeValues: {
-      ':name' : name,
+      ':userName' : userName,
     }
   }
 

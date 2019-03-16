@@ -20,7 +20,7 @@
     </div>
 
     <div id="groups">
-      <a v-if="this.$store.state.sessionName === null" @click="showJoinOrCreateGroupModal">Start or Join a Pomodoro Party</a>
+      <a v-if="this.$store.state.sessionName === ''" @click="showJoinOrCreateGroupModal">Start or Join a Pomodoro Party</a>
       <div v-else>
         You are in session <code>{{ this.$store.state.sessionName }}</code>. <a @click="quitSession">Click to quit.</a>
       </div>
@@ -255,13 +255,31 @@ export default {
       }
     })
     this.$socketManager.registerListener('onOpen', event => {
+      console.log('on open listener being executed')
       // whenever a socket is connected, if the expects to be in
       // a specific channel, join it.
-      if (this.$store.state.sessionName !== null) {
+      if (this.$store.state.sessionName !== '') {
+        console.log(
+          'session name is non empty string, joining it',
+          this.$store.state.sessionName
+        )
         const msg = {
           action: 'sendMessage',
           messageType: 'joinRequest',
           data: { sessionName: this.$store.state.sessionName }
+        }
+        this.$socketManager.send(msg)
+      }
+      if (this.$store.state.userName !== '') {
+        console.log(
+          'username is non empty string, joining it',
+          this.$store.state.sessionName
+        )
+        console.log('XXXX this.store.username is:', this.$store.state.userName)
+        const msg = {
+          action: 'sendMessage',
+          messageType: 'identify',
+          data: { userName: this.$store.state.userName }
         }
         this.$socketManager.send(msg)
       }
@@ -297,14 +315,22 @@ export default {
     setValuesForCountdowns(0)
     setStylesForCountdowns()
     this.$store.commit('setPreferences', timer.preferences)
+
     // if this person had a session before, add it and try to connect
-    this.$store.commit('setSessionName', localStorage.getItem('sessionName'))
-    this.openWebSocket()
-    console.log('session name:', this.$store.state.sessionName)
+    const sessionName = localStorage.getItem('sessionName')
+    const userName = localStorage.getItem('userName')
+    if (userName) {
+      this.$store.commit('setUserName', userName)
+    }
+
+    if (sessionName) {
+      this.$store.commit('setSessionName', sessionName)
+      this.openWebSocket()
+    }
   },
   methods: {
     quitSession: function() {
-      this.$store.commit('setSessionName', null)
+      this.$store.commit('setSessionName', '')
       this.closeWebSocket()
     },
     openWebSocket: function() {

@@ -20,7 +20,7 @@ exports.handler = async (event, context) => {
     }
   } else if (message.messageType == 'identify') {
     // get user current name
-    await utils.updateUserName(event, message.data.name)
+    await utils.updateUserName(event, message.data.userName)
     // send message to everyone connected that user changed name
     return {}
   } else if (message.messageType == 'getChannelMembers') {

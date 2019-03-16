@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import { isNullOrWhitespace } from '~/lib/utils'
 export default {
   data: function() {
     return {
@@ -29,22 +30,18 @@ export default {
   },
   methods: {
     setUserName() {
-      console.log('clicked button to set name:', this.name)
-      function isNullOrWhitespace(input) {
-        return !input || input.replace(/\s/g, '').length < 1
-      }
       this.$modal.hide('getUserNameModal')
       if (!isNullOrWhitespace(this.userName)) {
         this.$store.commit('setUserName', this.userName)
         const msg = {
           action: 'sendMessage',
           messageType: 'identify',
-          data: { name: this.userName }
+          data: { userName: this.userName }
         }
         this.$socketManager.send(msg)
       } else {
         // white space or null. set store value back to null.
-        this.$store.commit('setUserName', null)
+        this.$store.commit('setUserName', '')
       }
     }
   }
