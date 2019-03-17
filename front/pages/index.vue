@@ -20,7 +20,7 @@
     </div>
 
     <div id="groups">
-      <section id='groupSessionLink' class='center'>
+      <section id="groupSessionLink" class="center">
         <div v-if="this.$store.state.sessionName !== ''">
           <div v-if="isConnected === true">
             You are in session <code>{{ this.$store.state.sessionName }}</code>.
@@ -39,7 +39,7 @@
         </div>
       </section><!-- connect/disconnect instructions -->
 
-      <ConnectedUsers id='connectedUsers' :users="users" />
+      <ConnectedUsers id="connectedUsers" :users="users" />
     </div>
 
 
@@ -222,8 +222,12 @@ export default {
     },
     isDisconnected: {
       handler: function(newValue, oldValue) {
-        if (newValue === true && oldValue === false) {
-          // somehow got disconnected, fire the disconnected modal
+        if (
+          newValue === true &&
+          oldValue === false &&
+          this.$store.state.sessionName !== ''
+        ) {
+          // somehow got disconnected and user *wants* to be in a session
           this.$modal.show('userDisconnectedModal')
         }
       }
