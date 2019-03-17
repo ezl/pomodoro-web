@@ -30,7 +30,11 @@ html, body, .content-wrapper {
     }
   }
 
+  border-bottom: 3px solid @red;
+
   @media screen and (min-width: @side-menu-collapse-breakpoint) {
+    border-bottom: none;
+
     box-shadow: none;
 
     .top-bar {

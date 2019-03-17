@@ -20,14 +20,28 @@
     </div>
 
     <div id="groups">
-      <a v-if="this.$store.state.sessionName === ''" @click="showJoinOrCreateGroupModal">Start or Join a Pomodoro Party</a>
-      <div v-else>
-        You are in session <code>{{ this.$store.state.sessionName }}</code>.
-        <br>
-        <a @click="quitSession">Click to quit.</a>
-      </div>
+      <section id="groupSessionLink" class="center">
+        <div v-if="this.$store.state.sessionName !== ''">
+          <div v-if="isConnected === true">
+            You are in session <code>{{ this.$store.state.sessionName }}</code>.
+            <br>
+            <a @click="quitSession">Click to quit.</a>
+          </div>
+          <div v-else>
+            You were disconnected while in session <code>{{ this.$store.state.sessionName }}</code>.
+            <br>
+            <a @click="openWebSocket">Click to reconnect.</a>
+          </div>
+        </div>
+
+        <div v-else>
+          <a @click="showJoinOrCreateGroupModal">Start or Join a Pomodoro Party</a>
+        </div>
+      </section><!-- connect/disconnect instructions -->
+
+      <ConnectedUsers id="connectedUsers" :users="users" />
     </div>
-    <ConnectedUsers :users="users" />
+
 
     <div style="display:none">
       <span>Socket Connect / Disconnect</span>
@@ -204,6 +218,18 @@ export default {
       handler: function(obj) {
         timer.preferences = obj
         timer.reset()
+      }
+    },
+    isDisconnected: {
+      handler: function(newValue, oldValue) {
+        if (
+          newValue === true &&
+          oldValue === false &&
+          this.$store.state.sessionName !== ''
+        ) {
+          // somehow got disconnected and user *wants* to be in a session
+          this.$modal.show('userDisconnectedModal')
+        }
       }
     }
   },
@@ -414,6 +440,9 @@ export default {
 #groups {
   margin-top: auto;
   padding-top: 50px;
-  text-align: center;
+}
+#connectedUsers {
+  max-width: 540px;
+  margin: 0 auto;
 }
 </style>

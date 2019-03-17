@@ -1,6 +1,19 @@
 .side-menu {
   padding: 30px;
-  background: @grey-xxx-light;
+  background: @red;
+
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5);
+  button {
+    background-color: @white;
+  }
+
+  button:disabled {
+    background-color: @grey-xxx-light;
+  }
+
+  label {
+    color: @white;
+  }
 
   .side-menu-header {
     margin-bottom: 60px;
@@ -8,7 +21,7 @@
     .main-header {
       font-size: @font-size-x-large;
       margin-bottom: 20px;
-      color: @red;
+      color: @white;
 
       a {
         border-bottom: none;
@@ -19,7 +32,7 @@
     h2 {
       font-size: 1.05rem;
       font-weight: normal;
-      color: @grey-x-light;
+      color: @white;
     }
   }
 
@@ -28,7 +41,7 @@
     font-weight: 700;
     margin-top: 28px;
     margin-bottom: 13px;
-    color: @black-x-light;
+    color: @white;
   }
 
   ul > li {

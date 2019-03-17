@@ -6,6 +6,18 @@ const generateRandomSessionName = function () {
   return 'session-' + (Math.random() * 10000).toFixed()
 }
 
+const sendChannelMembers = async function(event, sessionName) {
+  const members = await getChannelMembers(sessionName)
+  const message = {
+    action: 'sendMessage',
+    messageType: 'channelMembers',
+    data: {
+      members: members
+    }
+  }
+  return await broadcast(event, sessionName, message)
+}
+
 const updateUserName = async (event, userName) => {
   var params = {
     TableName: process.env.CONNECTIONS_TABLE_NAME,
@@ -19,7 +31,6 @@ const updateUserName = async (event, userName) => {
 
   try {
     const data = await documentClient.update(params).promise()
-    console.log("output of update", data)
   } catch (err) {
     console.log("ERRRRRRRRRRRRRRR")
     console.log(err)
@@ -174,6 +185,7 @@ const quit = async (sessionName, event) => {
 }
 
 module.exports = {
+  sendChannelMembers,
   getUserSessionName,
   updateUserName,
   getChannelMembers,
