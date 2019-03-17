@@ -219,6 +219,14 @@ export default {
         timer.preferences = obj
         timer.reset()
       }
+    },
+    isDisconnected: {
+      handler: function(newValue, oldValue) {
+        if (newValue === true || oldValue === false) {
+          // somehow got disconnected, fire the disconnected modal
+          this.$modal.show('userDisconnectedModal')
+        }
+      }
     }
   },
   created() {
