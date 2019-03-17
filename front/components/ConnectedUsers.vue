@@ -10,7 +10,12 @@
 </template>
 <script>
 export default {
-  props: ['users']
+  props: {
+    users: {
+      type: Array,
+      required: true
+    }
+  }
 }
 </script>
 <style>

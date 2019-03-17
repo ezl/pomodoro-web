@@ -154,7 +154,6 @@ Piecon.setOptions = function(custom) {
 }
 
 Piecon.setProgress = function(percentage) {
-  console.log('fff', document.title)
   if (!originalTitle) {
     originalTitle = document.title
   }
