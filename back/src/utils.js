@@ -7,9 +7,6 @@ const generateRandomSessionName = function () {
 }
 
 const sendChannelMembers = async function(event, sessionName) {
-  console.log('sendChannelMembers')
-  console.log('sessionName', sessionName)
-  console.log('event', event)
   const members = await getChannelMembers(sessionName)
   const message = {
     action: 'sendMessage',
@@ -34,7 +31,6 @@ const updateUserName = async (event, userName) => {
 
   try {
     const data = await documentClient.update(params).promise()
-    console.log("output of update", data)
   } catch (err) {
     console.log("ERRRRRRRRRRRRRRR")
     console.log(err)
