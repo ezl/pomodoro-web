@@ -287,6 +287,9 @@ export default {
         this.$socketManager.send(msg)
       }
     })
+    this.$socketManager.registerListener('onClose', () => {
+      this.users = []
+    })
     timer.registerListener('onTick', setValuesForCountdowns)
     timer.registerListener('onStateChange', () => setValuesForCountdowns(0))
     timer.registerListener('onStateChange', setStylesForCountdowns)
