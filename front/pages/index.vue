@@ -412,6 +412,7 @@ export default {
   cursor: pointer;
 }
 #groups {
+  margin-top: auto;
   padding-top: 50px;
   text-align: center;
 }
