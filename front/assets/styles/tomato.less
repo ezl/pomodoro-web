@@ -1,23 +1,13 @@
-.red {
-    color: red;
-}
-.green {
-    color: green;
+#timerContainer {
+  text-align: center;
 }
 
 div#countdown {
   max-width: 180px;
+  @media screen and (max-width: @breakpoint-x-narrow) {
+    max-width: 140px;
+  }
   margin: 0 auto;
-}
-
-div.progressbar-text {
-  border: 0;
-  font-size: 2em;
-  text-shadow: 0 0 2px white;
-}
-
-#timerContainer {
-  text-align: center;
 }
 
 #timerModeDisplay {
@@ -25,6 +15,7 @@ div.progressbar-text {
   font-weight: bold;
   font-size: 1.2em;
 }
+
 #tomatoImage {
     position: absolute;
     left: 50%;
@@ -32,14 +23,22 @@ div.progressbar-text {
     padding: 0px;
     margin: 0px;
     transform: translate(-50%, -50%);
-    height: 148px; /* I don't know why, but the countdown box is 4px taller than wide. this 4px offsets that */
-    width: 140px;
     color: rgb(255, 0, 0);
+    height: 148px; /* I don't know why, but the countdown box is 8px taller than wide. this offsets that */
+    width: 140px;
+
+    @media screen and (max-width: @breakpoint-x-narrow) {
+      height: 118px; /* I don't know why, but the countdown box is 8px taller than wide. this offsets that */
+      width: 110px;
+    }
 }
 #tomatoImage::after {
   content: "";
   background-repeat: no-repeat;
   background-size: 140px 140px;
+  @media screen and (max-width: @breakpoint-x-narrow) {
+    background-size: 110px 110px;
+  }
   opacity: 0.2;
   top: 0;
   left: 0;
@@ -48,9 +47,23 @@ div.progressbar-text {
   position: absolute;
   z-index: -1;
 }
+
 .red #tomatoImage::after {
   background-image: url('../images/tomato-red.png');
 }
 .green #tomatoImage::after {
   background-image: url('../images/tomato-green.png');
+}
+
+div.progressbar-text {
+  border: 0;
+  font-size: 2em;
+  text-shadow: 0 0 2px white;
+}
+
+.red {
+    color: red;
+}
+.green {
+    color: green;
 }
