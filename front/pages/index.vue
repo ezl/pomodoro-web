@@ -222,7 +222,7 @@ export default {
     },
     isDisconnected: {
       handler: function(newValue, oldValue) {
-        if (newValue === true || oldValue === false) {
+        if (newValue === true && oldValue === false) {
           // somehow got disconnected, fire the disconnected modal
           this.$modal.show('userDisconnectedModal')
         }
