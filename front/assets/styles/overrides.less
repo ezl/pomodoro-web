@@ -3,3 +3,17 @@ button[disabled] {
   background-color: #eee;
   border-color: #ddd;
 }
+
+.button:hover:enabled,
+button:hover:enabled,
+input[type="submit"]:hover:enabled,
+input[type="reset"]:hover:enabled,
+input[type="button"]:hover:enabled,
+.button:focus:enabled,
+button:focus:enabled,
+input[type="submit"]:focus:enabled,
+input[type="reset"]:focus:enabled,
+input[type="button"]:focus:enabled {
+  border-color: @red;
+  color: @red;
+}
