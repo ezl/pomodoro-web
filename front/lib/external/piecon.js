@@ -10,7 +10,7 @@ const Piecon = {}
 
 let currentFavicon = null
 let originalFavicon = null
-let originalTitle = null
+let originalTitle = document.title
 let canvas = null
 let options = {}
 const defaults = {
@@ -154,6 +154,7 @@ Piecon.setOptions = function(custom) {
 }
 
 Piecon.setProgress = function(percentage) {
+  console.log('fff', document.title)
   if (!originalTitle) {
     originalTitle = document.title
   }

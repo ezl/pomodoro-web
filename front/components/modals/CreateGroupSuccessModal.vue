@@ -1,5 +1,5 @@
 <template>
-  <modal name="createGroupSuccessModal" height="auto" :scrollable="true">
+  <modal name="createGroupSuccessModal" height="auto" :scrollable="true" :adaptive="true">
     <div class="modal">
       <div class="modal-header">
         <h3>Start Group</h3>
