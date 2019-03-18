@@ -220,15 +220,19 @@ export default {
         timer.reset()
       }
     },
-    isDisconnected: {
+    isConnected: {
       handler: function(newValue, oldValue) {
         if (
-          newValue === true &&
-          oldValue === false &&
+          // user became disconnected
+          // and user *wants* to be in a session
+          newValue === false &&
+          oldValue === true &&
           this.$store.state.sessionName !== ''
         ) {
-          // somehow got disconnected and user *wants* to be in a session
           this.$modal.show('userDisconnectedModal')
+        } else if (newValue === true && oldValue === false) {
+          // user connected. if the 'disconnected' modal is showing, hide it
+          this.$modal.hide('userDisconnectedModal')
         }
       }
     }
