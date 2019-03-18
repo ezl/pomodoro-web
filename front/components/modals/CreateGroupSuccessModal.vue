@@ -15,7 +15,7 @@
           <li>entering this link directly in their browser: <a style="color: #ED6A5A;" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Click to copy link</a></li>
         </ol>
         <button class="u-full-width" @click="next">
-          Thank U, Next!
+          Next
         </button>
       </div>
     </div><!-- .modal -->
