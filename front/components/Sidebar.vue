@@ -12,11 +12,15 @@
 
     <Preferences />
 
-    <div class="side-menu-ad" style="display:none;">
-      <img src="https://via.placeholder.com/90x130">
-      <div class="side-menu-ad-text">
-        <p>Lorem ipsum dolor sit amet consectetur</p>
-        <a href="#">link</a>
+    <div class="side-menu-ad row">
+      <div class="twelve columns">
+        <img src="@/assets/images/eric-hey.png">
+        <div class="side-menu-ad-text">
+          <p>
+            Feedback, notes, bug reports appreciated!<br><br>
+            <a href="https://docs.google.com/document/d/1dPUTG1fjuSnQXPLk_YwF67VmJ2WV-vIGPutU6msCp8o/edit">Google Doc</a>
+          </p>
+        </div>
       </div>
     </div>
   </nav>
