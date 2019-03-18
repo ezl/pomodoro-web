@@ -46,7 +46,7 @@ export default {
       return isNullOrWhitespace(val)
     },
     joinSession() {
-      this.$modal.hide('joinGroupGetSessionNameModal')
+      this.$modal.hide('getSessionNameModal')
 
       if (this.$store.state.joinOrCreateModalMode === 'join') {
         this.$modal.show('getUserNameModal')

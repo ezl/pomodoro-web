@@ -41,12 +41,12 @@ export default {
     join() {
       this.$store.commit('setJoinOrCreateModalMode', 'join')
       this.hide('joinOrCreateGroupModal')
-      this.show('joinGroupGetSessionNameModal')
+      this.show('getSessionNameModal')
     },
     start() {
       this.$store.commit('setJoinOrCreateModalMode', 'create')
       this.hide('joinOrCreateGroupModal')
-      this.show('joinGroupGetSessionNameModal')
+      this.show('getSessionNameModal')
     },
     cancel() {
       this.hide('joinOrCreateGroupModal')
