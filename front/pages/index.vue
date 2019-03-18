@@ -144,7 +144,7 @@ const setValuesForCountdowns = function(duration) {
     (timeRemaining / this.currentDuration) * 100
   )
   const oneTick = (coDuration / this.currentDuration) * 100
-  Piecon.updateTitle(minutesRemaining)
+  Piecon.updateTitle(minutesRemaining + 'm : ')
   Piecon.setProgress(percentRemaining - oneTick)
   if (coDuration === 0) {
     countdown.set((percentRemaining - oneTick) / 100)
@@ -396,6 +396,7 @@ export default {
       if (broadcast === true && this.isConnected) {
         this.sendState()
       }
+      Piecon.reset()
     },
     showJoinOrCreateGroupModal() {
       this.openWebSocket()
