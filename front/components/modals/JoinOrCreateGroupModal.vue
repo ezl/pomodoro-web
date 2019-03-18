@@ -10,11 +10,11 @@
           <p>Do you want to start a new session or join an existing one?</p>
 
           <div class="row">
-            <button class="one-half column" @click="start">
-              Start
-            </button>
             <button class="one-half column" @click="join">
               Join
+            </button>
+            <button class="one-half column" @click="start">
+              Start
             </button>
           </div><!-- row -->
           <div class="row center">

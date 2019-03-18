@@ -35,7 +35,7 @@
         </div>
 
         <div v-else>
-          <a @click="showJoinOrCreateGroupModal">Start or Join a Pomodoro Party</a>
+          <a @click="showJoinOrCreateGroupModal">Join or Start a Pomodoro Party</a>
         </div>
       </section><!-- connect/disconnect instructions -->
 

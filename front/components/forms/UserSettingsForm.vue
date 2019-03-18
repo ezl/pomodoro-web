@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>Let anyone else in the session know who you are by entering your name below.</p>
+    <p>Let anyone else in the group session know who you are by entering your name below.</p>
     <p class="muted">
       This is optional. If you leave it blank, other group members will see your name as "Anonymous".
     </p>
@@ -13,7 +13,7 @@
       </div>
       <div class="row">
         <button class="u-full-width" @click="setUserName">
-          Go
+          Enter Session
         </button>
       </div>
     </section>
