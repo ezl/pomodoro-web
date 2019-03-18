@@ -1,8 +1,12 @@
 .side-menu {
   padding: 30px;
   background: @red;
+  display: flex;
+  flex-direction: column;
 
-  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5);
+  h1, h2, h3, label {
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5);
+  }
   button {
     background-color: @white;
   }
@@ -16,7 +20,7 @@
   }
 
   .side-menu-header {
-    margin-bottom: 60px;
+    margin-bottom: 30px;
 
     .main-header {
       font-size: @font-size-x-large;

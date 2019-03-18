@@ -1,6 +1,6 @@
 <template>
   <div>
-    <modal name="userDisconnectedModal" height="auto" :scrollable="true" :adaptive="true">
+    <modal name="userDisconnectedModal" height="auto" :scrollable="true" :adaptive="true" :clickToClose="false">
       <div class="modal">
         <div class="modal-header">
           <h3>Disconnected</h3>
