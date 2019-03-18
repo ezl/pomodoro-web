@@ -12,10 +12,10 @@
         </p>
         <ol>
           <li>using your session name <code><strong>{{ $store.state.sessionName }}</strong></code>, or</li>
-          <li>entering this link directly in their browser: <a style="color: #ED6A5A;" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Click to copy link</a></li>
+          <li>entering this link directly in their browser: <a target="_blank" style="color: #ED6A5A;" href="https://www.youtube.com/watch?v=oHg5SJYRHA0">Click to copy link</a></li>
         </ol>
         <button class="u-full-width" @click="next">
-          Thank U, Next!
+          Next
         </button>
       </div>
     </div><!-- .modal -->

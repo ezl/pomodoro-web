@@ -1,5 +1,5 @@
 <template>
-  <modal name="joinGroupGetSessionNameModal" height="auto" :scrollable="true">
+  <modal name="getSessionNameModal" height="auto" :scrollable="true">
     <div class="modal">
       <div class="modal-header">
         <h3 v-if="$store.state.joinOrCreateModalMode === 'join'">
@@ -19,7 +19,7 @@
 <script>
 import GroupSessionForm from '~/components/forms/GroupSessionForm.vue'
 export default {
-  name: 'JoinGroupGetSessionNameModal',
+  name: 'GetSessionNameModal',
   components: {
     GroupSessionForm
   }

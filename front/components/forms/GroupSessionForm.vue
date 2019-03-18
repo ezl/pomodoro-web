@@ -17,7 +17,7 @@
     </section>
     <section v-if="$store.state.joinOrCreateModalMode == 'create'">
       <p>Choose a name for your session, which will allow others to join your session.</p>
-      <p>If there is already a session with the same name, you'll be added to that session. If you don't want to be a part of that session, you can quit and create a different session. (i.e. I'm not going to handle name collisions or implement checking for existing sessions.)</p>
+      <p>If there is already a session with the same name, you'll be added to that session.</p>
       <div class="row">
         <div class="twelve columns">
           <label>What name do you want to use for your session?</label>
@@ -46,7 +46,7 @@ export default {
       return isNullOrWhitespace(val)
     },
     joinSession() {
-      this.$modal.hide('joinGroupGetSessionNameModal')
+      this.$modal.hide('getSessionNameModal')
 
       if (this.$store.state.joinOrCreateModalMode === 'join') {
         this.$modal.show('getUserNameModal')
