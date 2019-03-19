@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk')
 AWS.config.update({ region: process.env.AWS_REGION })
 const documentClient = new AWS.DynamoDB.DocumentClient()
+const CONNECTIONS_TABLE = process.env.CONNECTIONS_TABLE_NAME
 
 const generateRandomSessionName = function () {
   return 'session-' + (Math.random() * 10000).toFixed()
@@ -20,7 +21,7 @@ const sendChannelMembers = async function(event, sessionName) {
 
 const updateUserName = async (event, userName) => {
   var params = {
-    TableName: process.env.CONNECTIONS_TABLE_NAME,
+    TableName: CONNECTIONS_TABLE,
     Key: { connectionId: event.requestContext.connectionId },
     UpdateExpression: 'set #userName = :userName',
     ExpressionAttributeNames: {'#userName' : 'userName'},
@@ -39,7 +40,7 @@ const updateUserName = async (event, userName) => {
 
 const getUserSessionName = async (event) => {
   const params = {
-    TableName: process.env.CONNECTIONS_TABLE_NAME,
+    TableName: CONNECTIONS_TABLE,
     ExpressionAttributeValues: {
       ':connectionId': event.requestContext.connectionId
     },
@@ -60,7 +61,7 @@ const getUserSessionName = async (event) => {
 
 const getChannelMembers = async function(sessionName) {
   const params = {
-    TableName: process.env.CONNECTIONS_TABLE_NAME,
+    TableName: CONNECTIONS_TABLE,
     ExpressionAttributeValues: {
       ':sessionName': sessionName
     },
@@ -74,7 +75,7 @@ const broadcast = async (event, sessionName, message, excludeConnectionIds = [])
   // takes event just so it can tell gateway api
   // broadcasts a message to all connected sockets with a specific sessionName
   const params = {
-    TableName: process.env.CONNECTIONS_TABLE_NAME,
+    TableName: CONNECTIONS_TABLE,
     ExpressionAttributeValues: {
       ':sessionName': sessionName
     },
@@ -105,7 +106,7 @@ const broadcast = async (event, sessionName, message, excludeConnectionIds = [])
           console.log('Found stale connection, deleting ' + connectionId)
           try {
             await documentClient.delete({
-              TableName: process.env.CONNECTIONS_TABLE_NAME,
+              TableName: CONNECTIONS_TABLE,
               Key: {
                 connectionId: connectionId
               }
@@ -131,10 +132,11 @@ const broadcast = async (event, sessionName, message, excludeConnectionIds = [])
 const join = async (sessionName, event) => {
   // put an item on the connections table so we know that you exist
   const params = {
-    TableName: process.env.CONNECTIONS_TABLE_NAME,
+    TableName: CONNECTIONS_TABLE,
     Item: {
       connectionId: event.requestContext.connectionId,
-      sessionName: sessionName
+      sessionName: sessionName,
+      joinedAt: new Date().getTime()
     }
   }
 
@@ -159,7 +161,7 @@ const join = async (sessionName, event) => {
 
 const quit = async (sessionName, event) => {
   const params = {
-    TableName: process.env.CONNECTIONS_TABLE_NAME,
+    TableName: CONNECTIONS_TABLE,
     Key: {
       connectionId: event.requestContext.connectionId
     }
