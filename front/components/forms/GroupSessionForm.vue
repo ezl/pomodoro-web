@@ -1,12 +1,12 @@
 <template>
   <div>
-    <section v-if="$store.state.joinOrCreateModalMode == 'join'">
+    <section v-if="$store.state.joinOrCreateModalMode === 'join'">
       <p>To join an existing group, you need the name of the group's current session.</p>
       <p>If you don't have it, ask someone in the group to check their timer for the session name then enter it below.</p>
       <div class="row">
         <div class="twelve columns">
           <label>What is the session name for the group you want to join?</label>
-          <input v-model="groupSessionName" class="u-full-width" type="text"></input>
+          <input v-model="groupSessionName" class="u-full-width" type="text">
         </div>
       </div>
       <div class="row">
@@ -15,13 +15,13 @@
         </button>
       </div>
     </section>
-    <section v-if="$store.state.joinOrCreateModalMode == 'create'">
+    <section v-if="$store.state.joinOrCreateModalMode === 'create'">
       <p>Choose a name for your session, which will allow others to join your session.</p>
       <p>If there is already a session with the same name, you'll be added to that session.</p>
       <div class="row">
         <div class="twelve columns">
           <label>What name do you want to use for your session?</label>
-          <input v-model="groupSessionName" class="u-full-width" type="text"></input>
+          <input v-model="groupSessionName" class="u-full-width" type="text">
         </div>
       </div>
       <div class="row">
