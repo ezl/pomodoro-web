@@ -253,6 +253,7 @@ export default {
 
       switch (messageType) {
         case 'state':
+          console.log('state')
           const pomodoroTimerState = new PomodoroTimerState(
             data.isWorkState,
             data.millisecondsRemaining,
@@ -273,9 +274,6 @@ export default {
         case 'userJoined':
           console.log('user joined:', data)
           this.getChannelMembers()
-          // this.users.push(data)
-          // this.sendPreferences()
-          this.sendState()
           break
         case 'quit':
           console.log('user quit:', data)
@@ -284,8 +282,8 @@ export default {
           break
         case 'request':
           console.log('request')
-          this.$store.dispatch('sendPreferences', timer.preferences)
-          // this.sendState()
+          this.$store.dispatch('sendPreferences')
+          this.sendState()
           break
         case 'potato':
           break

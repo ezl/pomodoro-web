@@ -18,7 +18,6 @@ export const getters = {
 export const mutations = {
   setPreferences(state, newPreferences) {
     state.preferences = { ...newPreferences }
-    console.log("pref set", state.preferences)
   },
   setPreferencesFromMinutes(state, newPreferences) {
     state.preferences = {
