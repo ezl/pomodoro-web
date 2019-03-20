@@ -9,7 +9,7 @@ exports.handler = async (event, context) => {
   const sessionName = await utils.getUserSessionName(event)
 
   // handle special cases
-  if (message.messageType == 'joinRequest') {
+  if (message.messageType === 'joinRequest') {
     const oldSessionName = sessionName
     if (oldSessionName === null) {
       return await utils.join(generateRandomSessionName(), event)
@@ -18,12 +18,12 @@ exports.handler = async (event, context) => {
       const newSessionName = message.data.sessionName
       return await utils.join(newSessionName, event)
     }
-  } else if (message.messageType == 'identify') {
+  } else if (message.messageType === 'identify') {
     // get user current name
     await utils.updateUserName(event, message.data.userName)
     // send message to everyone connected that user changed name
     return await utils.sendChannelMembers(event, sessionName)
-  } else if (message.messageType == 'getChannelMembers') {
+  } else if (message.messageType === 'getChannelMembers') {
     const sessionName = await utils.getUserSessionName(event)
     return await utils.sendChannelMembers(event, sessionName)
   }

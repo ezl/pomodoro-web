@@ -1,4 +1,5 @@
 const MILLISECONDS_PER_MINUTE = 60 * 1000
+
 export const state = () => ({
   preferences: {},
   joinOrCreateModalMode: 'create',
@@ -17,6 +18,7 @@ export const getters = {
 export const mutations = {
   setPreferences(state, newPreferences) {
     state.preferences = { ...newPreferences }
+    console.log("pref set", state.preferences)
   },
   setPreferencesFromMinutes(state, newPreferences) {
     state.preferences = {
@@ -44,7 +46,7 @@ export const actions = {
     const payload = {
       action: 'sendMessage',
       messageType: 'preferences',
-      data: params
+      data: state.preferences
     }
     this.$socketManager.send(payload)
   }

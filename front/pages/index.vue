@@ -238,12 +238,14 @@ export default {
     }
   },
   created() {
+    this.$store.commit('setPreferences', timer.preferences)
     this.$socketManager.registerListener('onMessage', event => {
       const msg = event.data
       let response
       try {
         response = JSON.parse(msg)
       } catch (err) {
+        console.error(err)
         return
       }
       const data = response.data
@@ -261,8 +263,9 @@ export default {
           setStylesForCountdowns()
           break
         case 'preferences':
+          console.log('preferences', data, msg)
           this.$store.commit('setPreferences', data)
-          timer.preferences = { ...data }
+          // timer.preferences = { ...data }
           break
         case 'channelMembers':
           this.users = data.members
@@ -280,8 +283,9 @@ export default {
           this.getChannelMembers()
           break
         case 'request':
-          this.$store.dispatch('sendPreferences')
-          this.sendState()
+          console.log('request')
+          this.$store.dispatch('sendPreferences', timer.preferences)
+          // this.sendState()
           break
         case 'potato':
           break

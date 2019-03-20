@@ -3,7 +3,7 @@ AWS.config.update({ region: process.env.AWS_REGION })
 const documentClient = new AWS.DynamoDB.DocumentClient()
 const CONNECTIONS_TABLE = process.env.CONNECTIONS_TABLE_NAME
 
-const generateRandomSessionName = function () {
+const generateRandomSessionName = function() {
   return 'session-' + (Math.random() * 10000).toFixed()
 }
 
@@ -24,16 +24,16 @@ const updateUserName = async (event, userName) => {
     TableName: CONNECTIONS_TABLE,
     Key: { connectionId: event.requestContext.connectionId },
     UpdateExpression: 'set #userName = :userName',
-    ExpressionAttributeNames: {'#userName' : 'userName'},
+    ExpressionAttributeNames: { '#userName': 'userName' },
     ExpressionAttributeValues: {
-      ':userName' : userName,
+      ':userName': userName
     }
   }
 
   try {
     const data = await documentClient.update(params).promise()
   } catch (err) {
-    console.log("ERRRRRRRRRRRRRRR")
+    console.log('ERRRRRRRRRRRRRRR')
     console.log(err)
   }
 }
@@ -93,7 +93,7 @@ const broadcast = async (event, sessionName, message, excludeConnectionIds = [])
     const postParams = { Data: payload }
     for (const item of data.Items) {
       const connectionId = item.connectionId
-      if (excludeConnectionIds.includes(connectionId) ) {
+      if (excludeConnectionIds.includes(connectionId)) {
         continue
       }
       console.log('Trying to send a message to:', connectionId)
@@ -129,6 +129,36 @@ const broadcast = async (event, sessionName, message, excludeConnectionIds = [])
   return {}
 }
 
+const requestSessionState = async (event, sessionName) => {
+  const params = {
+    TableName: CONNECTIONS_TABLE,
+    ExpressionAttributeValues: {
+      ':sessionName': sessionName
+    },
+    FilterExpression: 'sessionName = :sessionName'
+  }
+  const data = await documentClient.scan(params).promise()
+  if (data.Items.length > 1) {
+    const firstUser = data.Items.reduce(function(p, v) {
+      return (p.joinedAt < v.joinedAt ? p : v)
+    })
+    const apigwManagementApi = new AWS.ApiGatewayManagementApi({
+      apiVersion: '2018-11-29',
+      endpoint: event.requestContext.domainName + '/' + event.requestContext.stage
+    })
+    // tell everyone else you joined
+    const message = {
+      action: 'sendMessage',
+      messageType: 'request',
+      data: {}
+    }
+    const payload = JSON.stringify(message)
+    const postParams = { Data: payload, ConnectionId: firstUser.connectionId }
+    await apigwManagementApi.postToConnection(postParams).promise()
+  }
+  return {}
+}
+
 const join = async (sessionName, event) => {
   // put an item on the connections table so we know that you exist
   const params = {
@@ -145,9 +175,11 @@ const join = async (sessionName, event) => {
   } catch (err) {
     return {
       statusCode: err ? 500 : 200,
-      body: err ? "Failed to connect: " + JSON.stringify(err) : "Connected."
+      body: err ? 'Failed to connect: ' + JSON.stringify(err) : 'Connected.'
     }
   }
+  await requestSessionState(event, sessionName)
+
   // tell everyone else you joined
   const message = {
     action: 'sendMessage',
@@ -172,10 +204,9 @@ const quit = async (sessionName, event) => {
   } catch (err) {
     return {
       statusCode: err ? 500 : 200,
-      body: err ? "Failed to connect: " + JSON.stringify(err) : "Connected."
+      body: err ? 'Failed to connect: ' + JSON.stringify(err) : 'Connected.'
     }
   }
-
   const message = {
     action: 'sendMessage',
     messageType: 'quit',
