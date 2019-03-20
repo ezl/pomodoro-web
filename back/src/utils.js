@@ -71,6 +71,32 @@ const getChannelMembers = async function(sessionName) {
   return data.Items
 }
 
+const postToConnectionAndClean = async (event, postParams) => {
+  try {
+    await apigwManagementApi.postToConnection(postParams).promise() // posttoconnection
+    console.log('Successfully posted to', postParams.ConnectionId)
+  } catch (err) {
+    if (err.statusCode === 410) { // remove 400, just for testing
+      console.log('Found stale connection, deleting ' + postParams.ConnectionId)
+      try {
+        await documentClient.delete({
+          TableName: CONNECTIONS_TABLE,
+          Key: {
+            connectionId: postParams.ConnectionId
+          }
+        }).promise()
+      } catch (deleteError) {
+        console.log(deleteError, deleteError.stack)
+      }
+    } else {
+      // error, but not statusCode == 410 (stale connection)
+      console.log('Failed to post. Error: ' + JSON.stringify(err))
+    }
+    return false
+  }
+  return true
+}
+
 const broadcast = async (event, sessionName, message, excludeConnectionIds = []) => {
   // takes event just so it can tell gateway api
   // broadcasts a message to all connected sockets with a specific sessionName
@@ -98,27 +124,7 @@ const broadcast = async (event, sessionName, message, excludeConnectionIds = [])
       }
       console.log('Trying to send a message to:', connectionId)
       postParams.ConnectionId = connectionId
-      try {
-        await apigwManagementApi.postToConnection(postParams).promise() // posttoconnection
-        console.log('Successfully posted to', connectionId)
-      } catch (err) {
-        if (err.statusCode === 410) { // remove 400, just for testing
-          console.log('Found stale connection, deleting ' + connectionId)
-          try {
-            await documentClient.delete({
-              TableName: CONNECTIONS_TABLE,
-              Key: {
-                connectionId: connectionId
-              }
-            }).promise()
-          } catch (deleteError) {
-            console.log(deleteError, deleteError.stack)
-          }
-        } else {
-          // error, but not statusCode == 410 (stale connection)
-          console.log('Failed to post. Error: ' + JSON.stringify(err))
-        }
-      }
+      await postToConnectionAndClean(event, postParams)
     }
   } catch (err) {
     return {
@@ -138,14 +144,11 @@ const requestSessionState = async (event, sessionName) => {
     FilterExpression: 'sessionName = :sessionName'
   }
   const data = await documentClient.scan(params).promise()
-  if (data.Items.length > 1) {
+  while (data.Items.length > 1) {
     const firstUser = data.Items.reduce(function(p, v) {
       return (p.joinedAt < v.joinedAt ? p : v)
     })
-    const apigwManagementApi = new AWS.ApiGatewayManagementApi({
-      apiVersion: '2018-11-29',
-      endpoint: event.requestContext.domainName + '/' + event.requestContext.stage
-    })
+
     // tell everyone else you joined
     const message = {
       action: 'sendMessage',
@@ -154,9 +157,12 @@ const requestSessionState = async (event, sessionName) => {
     }
     const payload = JSON.stringify(message)
     const postParams = { Data: payload, ConnectionId: firstUser.connectionId }
-    await apigwManagementApi.postToConnection(postParams).promise()
+    const success = await postToConnectionAndClean(event, postParams)
+    if (success) {
+      break
+    }
+    data.Items = data.Items.filter(e => e.connectionId !== firstUser.connectionId)
   }
-  return {}
 }
 
 const join = async (sessionName, event) => {
