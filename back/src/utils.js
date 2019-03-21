@@ -23,8 +23,7 @@ const updateUserName = async (event, userName) => {
   var params = {
     TableName: CONNECTIONS_TABLE,
     Key: { connectionId: event.requestContext.connectionId },
-    UpdateExpression: 'set #userName = :userName',
-    ExpressionAttributeNames: { '#userName': 'userName' },
+    UpdateExpression: 'set userName = :userName',
     ExpressionAttributeValues: {
       ':userName': userName
     }

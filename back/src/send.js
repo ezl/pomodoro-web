@@ -1,6 +1,5 @@
 const AWS = require("aws-sdk")
 AWS.config.update({ region: process.env.AWS_REGION })
-const documentClient = new AWS.DynamoDB.DocumentClient()
 
 const utils = require('./utils.js')
 
