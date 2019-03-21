@@ -11,7 +11,7 @@ exports.handler = async (event, context) => {
   if (message.messageType === 'joinRequest') {
     const oldSessionName = sessionName
     if (oldSessionName === null) {
-      return await utils.join(generateRandomSessionName(), event)
+      return await utils.join(utils.generateRandomSessionName(), event)
     } else {
       await utils.quit(oldSessionName, event)
       const newSessionName = message.data.sessionName
