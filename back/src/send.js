@@ -1,6 +1,5 @@
 const AWS = require("aws-sdk")
 AWS.config.update({ region: process.env.AWS_REGION })
-const documentClient = new AWS.DynamoDB.DocumentClient()
 
 const utils = require('./utils.js')
 
@@ -12,10 +11,10 @@ exports.handler = async (event, context) => {
   if (message.messageType === 'joinRequest') {
     const oldSessionName = sessionName
     if (oldSessionName === null) {
-      return await utils.join(generateRandomSessionName(), event)
+      return await utils.join(utils.generateRandomSessionName(), event)
     } else {
       await utils.quit(oldSessionName, event)
-      const newSessionName = message.data.sessionName
+      const newSessionName = message.data.sessionName.toLowerCase()
       return await utils.join(newSessionName, event)
     }
   } else if (message.messageType === 'identify') {
