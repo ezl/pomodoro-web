@@ -14,7 +14,7 @@ exports.handler = async (event, context) => {
       return await utils.join(utils.generateRandomSessionName(), event)
     } else {
       await utils.quit(oldSessionName, event)
-      const newSessionName = message.data.sessionName
+      const newSessionName = message.data.sessionName.toLowerCase()
       return await utils.join(newSessionName, event)
     }
   } else if (message.messageType === 'identify') {
