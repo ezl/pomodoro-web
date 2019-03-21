@@ -169,15 +169,20 @@ const join = async (sessionName, event) => {
   // put an item on the connections table so we know that you exist
   const params = {
     TableName: CONNECTIONS_TABLE,
-    Item: {
-      connectionId: event.requestContext.connectionId,
-      sessionName: sessionName,
-      joinedAt: new Date().getTime()
+    Key: { connectionId: event.requestContext.connectionId },
+    UpdateExpression: 'set #sessionName = :sessionName, #joinedAt = :joinedAt',
+    ExpressionAttributeNames: {
+      '#sessionName': 'sessionName',
+      '#joinedAt': 'joinedAt'
+    },
+    ExpressionAttributeValues: {
+      ':sessionName': sessionName,
+      ':joinedAt': new Date().getTime()
     }
   }
 
   try {
-    await documentClient.put(params).promise()
+    await documentClient.update(params).promise()
   } catch (err) {
     return {
       statusCode: err ? 500 : 200,
