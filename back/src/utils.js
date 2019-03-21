@@ -71,6 +71,10 @@ const getChannelMembers = async function(sessionName) {
 }
 
 const postToConnectionAndClean = async (event, postParams) => {
+  const apigwManagementApi = new AWS.ApiGatewayManagementApi({
+    apiVersion: '2018-11-29',
+    endpoint: event.requestContext.domainName + '/' + event.requestContext.stage
+  })
   try {
     await apigwManagementApi.postToConnection(postParams).promise() // posttoconnection
     console.log('Successfully posted to', postParams.ConnectionId)
@@ -108,10 +112,6 @@ const broadcast = async (event, sessionName, message, excludeConnectionIds = [])
   }
   try {
     const data = await documentClient.scan(params).promise()
-    const apigwManagementApi = new AWS.ApiGatewayManagementApi({
-      apiVersion: '2018-11-29',
-      endpoint: event.requestContext.domainName + '/' + event.requestContext.stage
-    })
 
     // get the object to broadcast ready for gw api
     const payload = JSON.stringify(message)
