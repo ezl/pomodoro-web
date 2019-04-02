@@ -9,21 +9,24 @@ exports.handler = async (event, context) => {
 
   // handle special cases
   if (message.messageType === 'joinRequest') {
-    const oldSessionName = sessionName
-    if (oldSessionName === null) {
-      return await utils.join(utils.generateRandomSessionName(), event)
-    } else {
-      await utils.quit(oldSessionName, event)
-      const newSessionName = message.data.sessionName.toLowerCase()
-      return await utils.join(newSessionName, event)
+    const newSessionName = message.data.sessionName.toLowerCase()
+    if (newSessionName && sessionName !== newSessionName) {
+        await utils.quit(sessionName, event)
     }
+    if (newSessionName) {
+      await utils.join(newSessionName, message.data.userName, event)
+    } else {
+      return await utils.join(utils.generateRandomSessionName(), null,  event)
+    }
+    return await utils.sendChannelMembers(event, sessionName)
   } else if (message.messageType === 'identify') {
     // get user current name
     await utils.updateUserName(event, message.data.userName)
-    // send message to everyone connected that user changed name
-    return await utils.sendChannelMembers(event, sessionName)
   } else if (message.messageType === 'getChannelMembers') {
-    const sessionName = await utils.getUserSessionName(event)
+    if (sessionName === null) {
+      console.error('Trying to send to non existing session', message, event.requestContext.connectionId)
+      return {}
+    }
     return await utils.sendChannelMembers(event, sessionName)
   }
 

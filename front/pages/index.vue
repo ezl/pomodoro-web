@@ -240,6 +240,7 @@ export default {
   created() {
     this.$store.commit('setPreferences', timer.preferences)
     this.$socketManager.registerListener('onMessage', event => {
+      console.log(event.data)
       const msg = event.data
       let response
       try {
@@ -293,31 +294,15 @@ export default {
       console.log('on open listener being executed')
       // whenever a socket is connected, if the expects to be in
       // a specific channel, join it.
-      if (this.$store.state.sessionName !== '') {
-        console.log(
-          'session name is non empty string, joining it',
-          this.$store.state.sessionName
-        )
-        const msg = {
-          action: 'sendMessage',
-          messageType: 'joinRequest',
-          data: { sessionName: this.$store.state.sessionName }
+      const msg = {
+        action: 'sendMessage',
+        messageType: 'joinRequest',
+        data: {
+          sessionName: this.$store.state.sessionName,
+          userName: this.$store.state.userName
         }
-        this.$socketManager.send(msg)
       }
-      if (this.$store.state.userName !== '') {
-        console.log(
-          'username is non empty string, it is',
-          this.$store.state.userName
-        )
-        console.log('XXXX this.store.username is:', this.$store.state.userName)
-        const msg = {
-          action: 'sendMessage',
-          messageType: 'identify',
-          data: { userName: this.$store.state.userName }
-        }
-        this.$socketManager.send(msg)
-      }
+      this.$socketManager.send(msg)
     })
     this.$socketManager.registerListener('onClose', () => {
       this.users = []
@@ -405,7 +390,9 @@ export default {
       Piecon.reset()
     },
     showJoinOrCreateGroupModal() {
-      this.openWebSocket()
+      if (!this.isConnected) {
+        this.openWebSocket()
+      }
       this.$modal.show('joinOrCreateGroupModal')
     },
     getChannelMembers: function() {

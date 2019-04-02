@@ -49,12 +49,7 @@ const getUserSessionName = async (event) => {
   if (data.Count === 1) {
     return data.Items[0].sessionName
   } else if (data.Count === 0) {
-    return generateRandomSessionName()
-    // we don't know that this person is connected, but they are.
-    // this means we cleaned their connectionId off the table, but
-    // they were still connected.
-    // we should probably readd them (but don't know what sessionname)
-    // handle later.
+    return null
   }
 }
 
@@ -164,20 +159,20 @@ const requestSessionState = async (event, sessionName) => {
   }
 }
 
-const join = async (sessionName, event) => {
+const join = async (sessionName, userName, event) => {
   // put an item on the connections table so we know that you exist
   const params = {
     TableName: CONNECTIONS_TABLE,
     Key: { connectionId: event.requestContext.connectionId },
-    UpdateExpression: 'set #sessionName = :sessionName, #joinedAt = :joinedAt',
-    ExpressionAttributeNames: {
-      '#sessionName': 'sessionName',
-      '#joinedAt': 'joinedAt'
-    },
+    UpdateExpression: 'set sessionName = :sessionName, joinedAt = :joinedAt',
     ExpressionAttributeValues: {
       ':sessionName': sessionName,
       ':joinedAt': new Date().getTime()
     }
+  }
+  if (userName) {
+    params.ExpressionAttributeValues[':userName'] = userName
+    params.UpdateExpression += ', userName = :userName'
   }
 
   try {
