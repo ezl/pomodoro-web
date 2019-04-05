@@ -1,14 +1,18 @@
 <template>
   <div>
-    <p>Let anyone else in the group session know who you are by entering your name below.</p>
+    <p>
+      Let anyone else in the group session know who you are by entering your
+      name below.
+    </p>
     <p class="muted">
-      This is optional. If you leave it blank, other group members will see your name as "Anonymous".
+      This is optional. If you leave it blank, other group members will see your
+      name as "Anonymous".
     </p>
     <section>
       <div class="row">
         <div class="twelve columns">
           <label>My name is:</label>
-          <input v-model="userName" class="u-full-width" type="text"></input>
+          <input v-model="userName" class="u-full-width" type="text" />
         </div>
       </div>
       <div class="row">

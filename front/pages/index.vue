@@ -7,7 +7,7 @@
         <div id="tomatoImage" />
       </div>
       <div id="timerModeDisplay">
-        {{ timer.isWorkState ? "Work Time" : "Rest Time" }}
+        {{ timer.isWorkState ? 'Work Time' : 'Rest Time' }}
       </div>
       <div id="timerButtons">
         <button @click="toggleTimer(true)">
@@ -23,33 +23,46 @@
       <section id="groupSessionLink" class="center">
         <div v-if="this.$store.state.sessionName !== ''">
           <div v-if="isConnected === true">
-            You are in session <code>{{ this.$store.state.sessionName }}</code>.
-            <br>
+            You are in session <code>{{ this.$store.state.sessionName }}</code
+            >.
+            <br />
             <a @click="quitSession">Click to quit.</a>
           </div>
           <div v-else>
-            You were disconnected while in session <code>{{ this.$store.state.sessionName }}</code>.
-            <br>
+            You were disconnected while in session
+            <code>{{ this.$store.state.sessionName }}</code
+            >.
+            <br />
             <a @click="openWebSocket">Click to reconnect.</a>
           </div>
         </div>
 
         <div v-else>
-          <a @click="showJoinOrCreateGroupModal">Join or Start a Pomodoro Party</a>
+          <a @click="showJoinOrCreateGroupModal"
+            >Join or Start a Pomodoro Party</a
+          >
         </div>
-      </section><!-- connect/disconnect instructions -->
+      </section>
+      <!-- connect/disconnect instructions -->
 
       <ConnectedUsers id="connectedUsers" :users="users" />
     </div>
 
-
     <div style="display:none">
       <span>Socket Connect / Disconnect</span>
       <no-ssr placeholder="Loading web socket buttons...">
-        <button id="connectButton" :disabled="isConnected || isPending" @click="openWebSocket">
+        <button
+          id="connectButton"
+          :disabled="isConnected || isPending"
+          @click="openWebSocket"
+        >
           Connect
         </button>
-        <button id="disconnectButton" :disabled="isDisconnected || isPending" @click="closeWebSocket">
+        <button
+          id="disconnectButton"
+          :disabled="isDisconnected || isPending"
+          @click="closeWebSocket"
+        >
           Disconnect
         </button>
       </no-ssr>
@@ -63,30 +76,66 @@
     <div style="display: none;">
       <span>Send Arbitrary State</span>
       <p>
-        <input id="secondsRemainingInput" v-model="secondsRemainingInputValue" type="number" min="0" step="1">
+        <input
+          id="secondsRemainingInput"
+          v-model="secondsRemainingInputValue"
+          type="number"
+          min="0"
+          step="1"
+        />
         <label for="secondsRemainingInput">secondsRemaining</label>
       </p>
       <p>
-        <input id="isWorkStateInput" v-model="isWorkStateCheckboxValue" type="checkbox">
+        <input
+          id="isWorkStateInput"
+          v-model="isWorkStateCheckboxValue"
+          type="checkbox"
+        />
         <label for="isWorkStateInput">isWorkState</label>
       </p>
       <p>
-        <input id="isRunningInput" v-model="isRunningCheckboxValue" type="checkbox">
+        <input
+          id="isRunningInput"
+          v-model="isRunningCheckboxValue"
+          type="checkbox"
+        />
         <label for="isRunningInput">isRunning</label>
       </p>
-      <button id="sendStateButton" :disabled="!isConnected" @click="sendArbitraryState">
+      <button
+        id="sendStateButton"
+        :disabled="!isConnected"
+        @click="sendArbitraryState"
+      >
         Send Arbitrary State
       </button>
     </div>
     <div style="display: none;">
       <table>
         <!-- #TODO: remove -->
-        <tr><td><span>isWorkState</span></td><td><span id="isWorkStateValue">{{ timer.isWorkState }}</span></td></tr>
-        <tr><td><span>secondsRemaining</span></td><td><span id="secondsRemainingValue">{{ timer.getMillisecondsRemaining() }}</span></td></tr>
-        <tr><td><span>isRunning</span></td><td><span id="isRunningValue">{{ timer.getIsRunning() }}</span></td></tr>
+        <tr>
+          <td><span>isWorkState</span></td>
+          <td>
+            <span id="isWorkStateValue">{{ timer.isWorkState }}</span>
+          </td>
+        </tr>
+        <tr>
+          <td><span>secondsRemaining</span></td>
+          <td>
+            <span id="secondsRemainingValue">{{
+              timer.getMillisecondsRemaining()
+            }}</span>
+          </td>
+        </tr>
+        <tr>
+          <td><span>isRunning</span></td>
+          <td>
+            <span id="isRunningValue">{{ timer.getIsRunning() }}</span>
+          </td>
+        </tr>
       </table>
     </div>
-  </div><!-- container -->
+  </div>
+  <!-- container -->
 </template>
 
 <script>
