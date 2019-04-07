@@ -222,11 +222,41 @@ const quit = async (sessionName, event) => {
   return await broadcast(event, sessionName, message, [event.requestContext.connectionId])
 }
 
+const cleanConnections = async (event) => {
+  const params = {
+    TableName: CONNECTIONS_TABLE
+  }
+
+  try {
+    const data = await documentClient.scan(params).promise()
+    const promises = []
+    for (const item of data.Items) {
+      const message = {
+        action: 'sendMessage',
+        messageType: 'potato',
+        data: {}
+      }
+      const payload = JSON.stringify(message)
+      const postParams = { Data: payload, ConnectionId: item.connectionId }
+      promises.push(postToConnectionAndClean(event, postParams))
+    }
+    await Promise.all(promises)
+  } catch (err) {
+    return {
+      statusCode: err ? 500 : 200,
+      body: err ? 'Failed to connect: ' + JSON.stringify(err) : 'Connected.'
+    }
+  }
+
+  return {}
+}
+
 module.exports = {
   sendChannelMembers,
   getUserSessionName,
   updateUserName,
   getChannelMembers,
+  cleanConnections,
   generateRandomSessionName,
   broadcast,
   join,
