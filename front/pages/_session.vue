@@ -389,14 +389,16 @@ export default {
     this.$store.commit('setPreferences', timer.preferences)
 
     // if this person had a session before, add it and try to connect
-    const sessionName = localStorage.getItem('sessionName')
+    const sessionName =
+      this.$route.params.session || localStorage.getItem('sessionName')
+
     const userName = localStorage.getItem('userName')
     if (userName) {
       this.$store.commit('setUserName', userName)
     }
 
     if (sessionName) {
-      this.$store.commit('setSessionName', sessionName)
+      this.$store.dispatch('setSession', sessionName)
       this.openWebSocket()
     }
   },

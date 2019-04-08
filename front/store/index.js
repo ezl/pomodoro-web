@@ -40,6 +40,15 @@ export const mutations = {
 }
 
 export const actions = {
+  setSession({ commit, state }, newSessionName) {
+    commit('setSessionName', newSessionName)
+    if (this.app.router.currentRoute.params.session !== newSessionName) {
+      this.app.router.replace({
+        name: 'session',
+        params: { session: newSessionName }
+      })
+    }
+  },
   sendPreferences({ commit, state }, params) {
     commit('setPreferences', params || state.preferences)
     const payload = {
