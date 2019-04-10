@@ -140,6 +140,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import randomWords from 'random-words'
 import ConnectedUsers from '~/components/ConnectedUsers.vue'
 import SocketStatusLight from '~/components/SocketStatusLight.vue'
 import {
@@ -390,17 +391,17 @@ export default {
 
     // if this person had a session before, add it and try to connect
     const sessionName =
-      this.$route.params.session || localStorage.getItem('sessionName')
+      this.$route.params.session ||
+      localStorage.getItem('sessionName') ||
+      randomWords({ exactly: 2, join: '-' })
 
     const userName = localStorage.getItem('userName')
     if (userName) {
       this.$store.commit('setUserName', userName)
     }
 
-    if (sessionName) {
-      this.$store.dispatch('setSession', sessionName)
-      this.openWebSocket()
-    }
+    this.$store.dispatch('setSession', sessionName)
+    this.openWebSocket()
   },
   methods: {
     quitSession: function() {
