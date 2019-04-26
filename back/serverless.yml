@@ -65,3 +65,7 @@ functions:
           route: sendMessage
     environment:
       CONNECTIONS_TABLE_NAME: ${env:CONNECTIONS_TABLE_NAME, 'pomodoro'}
+  cleanupSession:
+    handler: src/send.handler
+    events:
+      - schedule: rate(2 hours)

@@ -1,5 +1,10 @@
 <template>
-  <modal name="getUserNameModal" height="auto" :scrollable="true" :adaptive="true">
+  <modal
+    name="getUserNameModal"
+    height="auto"
+    :scrollable="true"
+    :adaptive="true"
+  >
     <div class="modal">
       <div class="modal-header">
         <h3>Introduce Yourself</h3>
@@ -7,7 +12,8 @@
       <div class="modal-body">
         <UserSettingsForm />
       </div>
-    </div><!-- .modal -->
+    </div>
+    <!-- .modal -->
   </modal>
 </template>
 

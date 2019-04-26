@@ -12,7 +12,8 @@
       <div class="modal-body">
         <GroupSessionForm />
       </div>
-    </div><!-- .modal -->
+    </div>
+    <!-- .modal -->
   </modal>
 </template>
 

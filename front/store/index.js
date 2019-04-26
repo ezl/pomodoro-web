@@ -1,4 +1,5 @@
 const MILLISECONDS_PER_MINUTE = 60 * 1000
+
 export const state = () => ({
   preferences: {},
   joinOrCreateModalMode: 'create',
@@ -39,12 +40,21 @@ export const mutations = {
 }
 
 export const actions = {
+  setSession({ commit, state }, newSessionName) {
+    commit('setSessionName', newSessionName)
+    if (this.app.router.currentRoute.params.session !== newSessionName) {
+      this.app.router.replace({
+        name: 'session',
+        params: { session: newSessionName }
+      })
+    }
+  },
   sendPreferences({ commit, state }, params) {
     commit('setPreferences', params || state.preferences)
     const payload = {
       action: 'sendMessage',
       messageType: 'preferences',
-      data: params
+      data: state.preferences
     }
     this.$socketManager.send(payload)
   }

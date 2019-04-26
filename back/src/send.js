@@ -1,6 +1,5 @@
 const AWS = require("aws-sdk")
 AWS.config.update({ region: process.env.AWS_REGION })
-const documentClient = new AWS.DynamoDB.DocumentClient()
 
 const utils = require('./utils.js')
 
@@ -9,22 +8,25 @@ exports.handler = async (event, context) => {
   const sessionName = await utils.getUserSessionName(event)
 
   // handle special cases
-  if (message.messageType == 'joinRequest') {
-    const oldSessionName = sessionName
-    if (oldSessionName === null) {
-      return await utils.join(generateRandomSessionName(), event)
-    } else {
-      await utils.quit(oldSessionName, event)
-      const newSessionName = message.data.sessionName
-      return await utils.join(newSessionName, event)
+  if (message.messageType === 'joinRequest') {
+    const newSessionName = message.data.sessionName.toLowerCase()
+    if (newSessionName && sessionName !== newSessionName) {
+        await utils.quit(sessionName, event)
     }
-  } else if (message.messageType == 'identify') {
+    if (newSessionName) {
+      await utils.join(newSessionName, message.data.userName, event)
+    } else {
+      return await utils.join(utils.generateRandomSessionName(), null,  event)
+    }
+    return await utils.sendChannelMembers(event, sessionName)
+  } else if (message.messageType === 'identify') {
     // get user current name
     await utils.updateUserName(event, message.data.userName)
-    // send message to everyone connected that user changed name
-    return await utils.sendChannelMembers(event, sessionName)
-  } else if (message.messageType == 'getChannelMembers') {
-    const sessionName = await utils.getUserSessionName(event)
+  } else if (message.messageType === 'getChannelMembers') {
+    if (sessionName === null) {
+      console.error('Trying to send to non existing session', message, event.requestContext.connectionId)
+      return {}
+    }
     return await utils.sendChannelMembers(event, sessionName)
   }
 

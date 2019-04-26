@@ -5,31 +5,54 @@
       <div class="row">
         <div class="six columns">
           <label>Work time</label>
-          <input v-model="preferencesForm.workDuration" class="u-full-width" type="number">
+          <input
+            v-model="preferencesForm.workDuration"
+            class="u-full-width"
+            type="number"
+          />
         </div>
         <div class="six columns">
           <label>Rest time</label>
-          <input v-model="preferencesForm.restDuration" class="u-full-width" type="number">
+          <input
+            v-model="preferencesForm.restDuration"
+            class="u-full-width"
+            type="number"
+          />
         </div>
       </div>
       <div class="row">
         <label>
-          <input v-model="preferencesForm.autoStartNextSession" type="checkbox">
+          <input
+            v-model="preferencesForm.autoStartNextSession"
+            type="checkbox"
+          />
           <span class="label-body">Automatically start next session</span>
         </label>
       </div>
       <div class="row">
         <div class="six columns">
-          <button class="u-full-width" :disabled="!formIsDirty" @click="savePreferences(true)">
+          <button
+            class="u-full-width"
+            :disabled="!formIsDirty"
+            @click="savePreferences(true)"
+          >
             Save
           </button>
         </div>
         <div class="six columns">
-          <button class="u-full-width" :disabled="!formIsDirty" @click="cancelChangingPreferences">
+          <button
+            class="u-full-width"
+            :disabled="!formIsDirty"
+            @click="cancelChangingPreferences"
+          >
             Cancel
           </button>
         </div>
-        <button class="u-full-width" style="display: none;" @click="sendPreferences">
+        <button
+          class="u-full-width"
+          style="display: none;"
+          @click="sendPreferences"
+        >
           Send Preferences
         </button>
       </div>
@@ -72,7 +95,9 @@ export default {
     savePreferences: function(broadcast = false) {
       console.log('clicked save preferences', broadcast)
       this.$store.commit('setPreferencesFromMinutes', this.preferencesForm)
-      this.sendPreferences()
+      if (this.$store.state.sockets.isConnected) {
+        this.sendPreferences()
+      }
     },
     cancelChangingPreferences: function() {
       console.log('clicked cancel preferences')

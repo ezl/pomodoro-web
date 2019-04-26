@@ -54,7 +54,7 @@ class SocketManager {
     this.websocket.close()
   }
 
-  triggerListeners(evenType) {
+  triggerListeners(evenType, event) {
     for (const listener of this.listeners[evenType]) {
       listener(event)
     }
