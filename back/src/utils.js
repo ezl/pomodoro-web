@@ -16,11 +16,11 @@ const sendChannelMembers = async function(event, sessionName) {
       members: members
     }
   }
-  return await broadcast(event, sessionName, message)
+  return broadcast(event, sessionName, message)
 }
 
 const updateUserName = async (event, userName) => {
-  var params = {
+  const params = {
     TableName: CONNECTIONS_TABLE,
     Key: { connectionId: event.requestContext.connectionId },
     UpdateExpression: 'set userName = :userName',
@@ -37,7 +37,7 @@ const updateUserName = async (event, userName) => {
   }
 }
 
-const getUserSessionName = async (event) => {
+const getUserSessionName = async event => {
   const params = {
     TableName: CONNECTIONS_TABLE,
     ExpressionAttributeValues: {
@@ -74,15 +74,18 @@ const postToConnectionAndClean = async (event, postParams) => {
     await apigwManagementApi.postToConnection(postParams).promise() // posttoconnection
     console.log('Successfully posted to', postParams.ConnectionId)
   } catch (err) {
-    if (err.statusCode === 410) { // remove 400, just for testing
+    if (err.statusCode === 410) {
+      // remove 400, just for testing
       console.log('Found stale connection, deleting ' + postParams.ConnectionId)
       try {
-        await documentClient.delete({
-          TableName: CONNECTIONS_TABLE,
-          Key: {
-            connectionId: postParams.ConnectionId
-          }
-        }).promise()
+        await documentClient
+          .delete({
+            TableName: CONNECTIONS_TABLE,
+            Key: {
+              connectionId: postParams.ConnectionId
+            }
+          })
+          .promise()
       } catch (deleteError) {
         console.log(deleteError, deleteError.stack)
       }
@@ -95,7 +98,12 @@ const postToConnectionAndClean = async (event, postParams) => {
   return true
 }
 
-const broadcast = async (event, sessionName, message, excludeConnectionIds = []) => {
+const broadcast = async (
+  event,
+  sessionName,
+  message,
+  excludeConnectionIds = []
+) => {
   // takes event just so it can tell gateway api
   // broadcasts a message to all connected sockets with a specific sessionName
   const params = {
@@ -140,7 +148,7 @@ const requestSessionState = async (event, sessionName) => {
   const data = await documentClient.scan(params).promise()
   while (data.Items.length > 1) {
     const firstUser = data.Items.reduce(function(p, v) {
-      return (p.joinedAt < v.joinedAt ? p : v)
+      return p.joinedAt < v.joinedAt ? p : v
     })
 
     // tell everyone else you joined
@@ -155,7 +163,9 @@ const requestSessionState = async (event, sessionName) => {
     if (success) {
       break
     }
-    data.Items = data.Items.filter(e => e.connectionId !== firstUser.connectionId)
+    data.Items = data.Items.filter(
+      e => e.connectionId !== firstUser.connectionId
+    )
   }
 }
 
@@ -193,7 +203,9 @@ const join = async (sessionName, userName, event) => {
       connectionId: event.requestContext.connectionId
     }
   }
-  return await broadcast(event, sessionName, message, [event.requestContext.connectionId])
+  return broadcast(event, sessionName, message, [
+    event.requestContext.connectionId
+  ])
 }
 
 const quit = async (sessionName, event) => {
@@ -219,10 +231,12 @@ const quit = async (sessionName, event) => {
       connectionId: event.requestContext.connectionId
     }
   }
-  return await broadcast(event, sessionName, message, [event.requestContext.connectionId])
+  return broadcast(event, sessionName, message, [
+    event.requestContext.connectionId
+  ])
 }
 
-const cleanConnections = async (event) => {
+const cleanConnections = async event => {
   const params = {
     TableName: CONNECTIONS_TABLE
   }
