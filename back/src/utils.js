@@ -16,7 +16,23 @@ const sendChannelMembers = async function(event, sessionName) {
       members: members
     }
   }
+  await sendUserInfo(event)
+
   return broadcast(event, sessionName, message)
+}
+
+const sendUserInfo = function(event) {
+  return postToConnectionAndClean(
+    event,
+    {
+      action: 'sendMessage',
+      messageType: 'userInfo',
+      data: {
+        userId: event.requestContext.connectionId
+      }
+    },
+    event.requestContext.connectionId
+  )
 }
 
 const updateUserName = async (event, userName) => {
@@ -65,24 +81,28 @@ const getChannelMembers = async function(sessionName) {
   return data.Items
 }
 
-const postToConnectionAndClean = async (event, postParams) => {
+const postToConnectionAndClean = async (event, payload, connectionId) => {
+  const postParams = {
+    Data: JSON.stringify(payload),
+    ConnectionId: connectionId
+  }
   const apigwManagementApi = new AWS.ApiGatewayManagementApi({
     apiVersion: '2018-11-29',
     endpoint: event.requestContext.domainName + '/' + event.requestContext.stage
   })
   try {
     await apigwManagementApi.postToConnection(postParams).promise() // posttoconnection
-    console.log('Successfully posted to', postParams.ConnectionId)
+    console.log('Successfully posted to', connectionId)
   } catch (err) {
     if (err.statusCode === 410) {
       // remove 400, just for testing
-      console.log('Found stale connection, deleting ' + postParams.ConnectionId)
+      console.log('Found stale connection, deleting ' + connectionId)
       try {
         await documentClient
           .delete({
             TableName: CONNECTIONS_TABLE,
             Key: {
-              connectionId: postParams.ConnectionId
+              connectionId: connectionId
             }
           })
           .promise()
@@ -117,16 +137,13 @@ const broadcast = async (
     const data = await documentClient.scan(params).promise()
 
     // get the object to broadcast ready for gw api
-    const payload = JSON.stringify(message)
-    const postParams = { Data: payload }
     for (const item of data.Items) {
       const connectionId = item.connectionId
       if (excludeConnectionIds.includes(connectionId)) {
         continue
       }
       console.log('Trying to send a message to:', connectionId)
-      postParams.ConnectionId = connectionId
-      await postToConnectionAndClean(event, postParams)
+      await postToConnectionAndClean(event, message, connectionId)
     }
   } catch (err) {
     return {
@@ -157,9 +174,11 @@ const requestSessionState = async (event, sessionName) => {
       messageType: 'request',
       data: {}
     }
-    const payload = JSON.stringify(message)
-    const postParams = { Data: payload, ConnectionId: firstUser.connectionId }
-    const success = await postToConnectionAndClean(event, postParams)
+    const success = await postToConnectionAndClean(
+      event,
+      message,
+      firstUser.connectionId
+    )
     if (success) {
       break
     }
@@ -250,9 +269,8 @@ const cleanConnections = async event => {
         messageType: 'potato',
         data: {}
       }
-      const payload = JSON.stringify(message)
-      const postParams = { Data: payload, ConnectionId: item.connectionId }
-      promises.push(postToConnectionAndClean(event, postParams))
+
+      promises.push(postToConnectionAndClean(event, message, item.connectionId))
     }
     await Promise.all(promises)
   } catch (err) {
@@ -274,5 +292,6 @@ module.exports = {
   generateRandomSessionName,
   broadcast,
   join,
+  sendUserInfo,
   quit
 }

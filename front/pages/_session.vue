@@ -315,7 +315,6 @@ export default {
           setStylesForCountdowns()
           break
         case 'preferences':
-          console.log('preferences', data, msg)
           this.$store.commit('setPreferences', data)
           // timer.preferences = { ...data }
           break
@@ -325,6 +324,9 @@ export default {
         case 'userJoined':
           console.log('user joined:', data)
           this.getChannelMembers()
+          break
+        case 'userInfo':
+          this.$store.commit('setUserId', data.userId)
           break
         case 'quit':
           console.log('user quit:', data)
@@ -398,6 +400,8 @@ export default {
     const userName = localStorage.getItem('userName')
     if (userName) {
       this.$store.commit('setUserName', userName)
+    } else if (userName === null) {
+      this.$modal.show('getUserNameModal')
     }
 
     this.$store.dispatch('setSession', sessionName)

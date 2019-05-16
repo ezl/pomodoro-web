@@ -13,11 +13,11 @@ exports.handler = async (event, context) => {
     if (newSessionName && sessionName !== newSessionName) {
       await utils.quit(sessionName, event)
     }
-    if (newSessionName) {
-      await utils.join(newSessionName, message.data.userName, event)
-    } else {
-      return utils.join(utils.generateRandomSessionName(), null, event)
-    }
+    await utils.join(
+      newSessionName || utils.generateRandomSessionName(),
+      message.data.userName,
+      event
+    )
     return utils.sendChannelMembers(event, sessionName)
   } else if (message.messageType === 'identify') {
     // get user current name
