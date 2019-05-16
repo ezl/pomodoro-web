@@ -4,4 +4,3 @@ exports.handler = async (event, context) => {
   await utils.cleanConnections(event)
   return {}
 }
-

@@ -42,7 +42,9 @@ export default {
           messageType: 'identify',
           data: { userName: this.userName }
         }
+        console.log('fffff', msg)
         this.$socketManager.send(msg)
+        console.log('send')
       } else {
         // white space or null. set store value back to null.
         this.$store.commit('setUserName', '')

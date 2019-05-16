@@ -16,11 +16,27 @@ const sendChannelMembers = async function(event, sessionName) {
       members: members
     }
   }
-  return await broadcast(event, sessionName, message)
+  await sendUserInfo(event)
+
+  return broadcast(event, sessionName, message)
+}
+
+const sendUserInfo = function(event) {
+  return postToConnectionAndClean(
+    event,
+    {
+      action: 'sendMessage',
+      messageType: 'userInfo',
+      data: {
+        userId: event.requestContext.connectionId
+      }
+    },
+    event.requestContext.connectionId
+  )
 }
 
 const updateUserName = async (event, userName) => {
-  var params = {
+  const params = {
     TableName: CONNECTIONS_TABLE,
     Key: { connectionId: event.requestContext.connectionId },
     UpdateExpression: 'set userName = :userName',
@@ -37,7 +53,7 @@ const updateUserName = async (event, userName) => {
   }
 }
 
-const getUserSessionName = async (event) => {
+const getUserSessionName = async event => {
   const params = {
     TableName: CONNECTIONS_TABLE,
     ExpressionAttributeValues: {
@@ -65,24 +81,31 @@ const getChannelMembers = async function(sessionName) {
   return data.Items
 }
 
-const postToConnectionAndClean = async (event, postParams) => {
+const postToConnectionAndClean = async (event, payload, connectionId) => {
+  const postParams = {
+    Data: JSON.stringify(payload),
+    ConnectionId: connectionId
+  }
   const apigwManagementApi = new AWS.ApiGatewayManagementApi({
     apiVersion: '2018-11-29',
     endpoint: event.requestContext.domainName + '/' + event.requestContext.stage
   })
   try {
     await apigwManagementApi.postToConnection(postParams).promise() // posttoconnection
-    console.log('Successfully posted to', postParams.ConnectionId)
+    console.log('Successfully posted to', connectionId)
   } catch (err) {
-    if (err.statusCode === 410) { // remove 400, just for testing
-      console.log('Found stale connection, deleting ' + postParams.ConnectionId)
+    if (err.statusCode === 410) {
+      // remove 400, just for testing
+      console.log('Found stale connection, deleting ' + connectionId)
       try {
-        await documentClient.delete({
-          TableName: CONNECTIONS_TABLE,
-          Key: {
-            connectionId: postParams.ConnectionId
-          }
-        }).promise()
+        await documentClient
+          .delete({
+            TableName: CONNECTIONS_TABLE,
+            Key: {
+              connectionId: connectionId
+            }
+          })
+          .promise()
       } catch (deleteError) {
         console.log(deleteError, deleteError.stack)
       }
@@ -95,7 +118,12 @@ const postToConnectionAndClean = async (event, postParams) => {
   return true
 }
 
-const broadcast = async (event, sessionName, message, excludeConnectionIds = []) => {
+const broadcast = async (
+  event,
+  sessionName,
+  message,
+  excludeConnectionIds = []
+) => {
   // takes event just so it can tell gateway api
   // broadcasts a message to all connected sockets with a specific sessionName
   const params = {
@@ -109,16 +137,13 @@ const broadcast = async (event, sessionName, message, excludeConnectionIds = [])
     const data = await documentClient.scan(params).promise()
 
     // get the object to broadcast ready for gw api
-    const payload = JSON.stringify(message)
-    const postParams = { Data: payload }
     for (const item of data.Items) {
       const connectionId = item.connectionId
       if (excludeConnectionIds.includes(connectionId)) {
         continue
       }
       console.log('Trying to send a message to:', connectionId)
-      postParams.ConnectionId = connectionId
-      await postToConnectionAndClean(event, postParams)
+      await postToConnectionAndClean(event, message, connectionId)
     }
   } catch (err) {
     return {
@@ -140,7 +165,7 @@ const requestSessionState = async (event, sessionName) => {
   const data = await documentClient.scan(params).promise()
   while (data.Items.length > 1) {
     const firstUser = data.Items.reduce(function(p, v) {
-      return (p.joinedAt < v.joinedAt ? p : v)
+      return p.joinedAt < v.joinedAt ? p : v
     })
 
     // tell everyone else you joined
@@ -149,13 +174,17 @@ const requestSessionState = async (event, sessionName) => {
       messageType: 'request',
       data: {}
     }
-    const payload = JSON.stringify(message)
-    const postParams = { Data: payload, ConnectionId: firstUser.connectionId }
-    const success = await postToConnectionAndClean(event, postParams)
+    const success = await postToConnectionAndClean(
+      event,
+      message,
+      firstUser.connectionId
+    )
     if (success) {
       break
     }
-    data.Items = data.Items.filter(e => e.connectionId !== firstUser.connectionId)
+    data.Items = data.Items.filter(
+      e => e.connectionId !== firstUser.connectionId
+    )
   }
 }
 
@@ -193,7 +222,9 @@ const join = async (sessionName, userName, event) => {
       connectionId: event.requestContext.connectionId
     }
   }
-  return await broadcast(event, sessionName, message, [event.requestContext.connectionId])
+  return broadcast(event, sessionName, message, [
+    event.requestContext.connectionId
+  ])
 }
 
 const quit = async (sessionName, event) => {
@@ -219,10 +250,12 @@ const quit = async (sessionName, event) => {
       connectionId: event.requestContext.connectionId
     }
   }
-  return await broadcast(event, sessionName, message, [event.requestContext.connectionId])
+  return broadcast(event, sessionName, message, [
+    event.requestContext.connectionId
+  ])
 }
 
-const cleanConnections = async (event) => {
+const cleanConnections = async event => {
   const params = {
     TableName: CONNECTIONS_TABLE
   }
@@ -236,9 +269,8 @@ const cleanConnections = async (event) => {
         messageType: 'potato',
         data: {}
       }
-      const payload = JSON.stringify(message)
-      const postParams = { Data: payload, ConnectionId: item.connectionId }
-      promises.push(postToConnectionAndClean(event, postParams))
+
+      promises.push(postToConnectionAndClean(event, message, item.connectionId))
     }
     await Promise.all(promises)
   } catch (err) {
@@ -260,5 +292,6 @@ module.exports = {
   generateRandomSessionName,
   broadcast,
   join,
+  sendUserInfo,
   quit
 }

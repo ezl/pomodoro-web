@@ -4,7 +4,8 @@ export const state = () => ({
   preferences: {},
   joinOrCreateModalMode: 'create',
   sessionName: '',
-  userName: ''
+  userName: '',
+  userId: null
 })
 
 export const getters = {
@@ -17,6 +18,7 @@ export const getters = {
 
 export const mutations = {
   setPreferences(state, newPreferences) {
+    console.log('sss', newPreferences)
     state.preferences = { ...newPreferences }
   },
   setPreferencesFromMinutes(state, newPreferences) {
@@ -36,6 +38,9 @@ export const mutations = {
   setUserName(state, value) {
     state.userName = value
     localStorage.setItem('userName', value)
+  },
+  setUserId(state, value) {
+    state.userId = value
   }
 }
 

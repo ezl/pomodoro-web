@@ -4,4 +4,3 @@ exports.handler = async (event, context) => {
   // const sessionName = utils.generateRandomSessionName()
   return {}
 }
-

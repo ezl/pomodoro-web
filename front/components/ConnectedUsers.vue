@@ -8,6 +8,12 @@
         :class="{ muted: user.userName === undefined }"
       >
         {{ user.userName || 'Anonymous' }}
+        <span
+          v-if="user.connectionId === $store.state.userId"
+          @click="$modal.show('getUserNameModal')"
+        >
+          change name
+        </span>
       </li>
     </ul>
   </div>
