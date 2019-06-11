@@ -10,6 +10,7 @@
         {{ user.userName || 'Anonymous' }}
         <span
           v-if="user.connectionId === $store.state.userId"
+          class="change-name"
           @click="$modal.show('getUserNameModal')"
         >
           change name
@@ -36,5 +37,11 @@ export default {
   list-style: circle;
   list-style-position: inside;
   margin-bottom: 0;
+}
+.change-name {
+  color: #bbb;
+  font-style: italic;
+  text-decoration: underline;
+  cursor: pointer;
 }
 </style>
