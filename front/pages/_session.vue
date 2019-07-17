@@ -160,6 +160,7 @@ const COLORS = {
 }
 const PATHWIDTH = 6
 const TRAILWIDTH = 1
+const KEEPALIVE_INTERVAL_MS = 300000
 
 const setStylesForCountdowns = function() {
   const primary = this.isWorkState ? COLORS.red : COLORS.green
@@ -237,6 +238,8 @@ const animateTimerSwitch = function() {
 }.bind(timer)
 
 export default {
+  keepAliveIntervalId: undefined,
+
   components: {
     ConnectedUsers,
     SocketStatusLight
@@ -406,7 +409,25 @@ export default {
 
     this.$store.dispatch('setSession', sessionName)
     this.openWebSocket()
+    this.keepAliveIntervalId = setInterval(
+      () => {
+        const msg = {
+          action: 'sendMessage',
+          messageType: 'keepAlive'
+        }
+        this.$socketManager.send(msg)
+      },
+      KEEPALIVE_INTERVAL_MS,
+      this
+    )
   },
+  destroyed() {
+    if (this.keepAliveIntervalId) {
+      clearInterval(this.keepAliveIntervalId)
+      this.keepAliveIntervalId = undefined
+    }
+  },
+
   methods: {
     quitSession: function() {
       this.$store.commit('setSessionName', '')
