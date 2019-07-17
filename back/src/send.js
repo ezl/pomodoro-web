@@ -33,6 +33,8 @@ exports.handler = async (event, context) => {
       return {}
     }
     return utils.sendChannelMembers(event, sessionName)
+  } else if (message.messageType === 'keepAlive') {
+    return {}
   }
 
   // Echo the message (default behavior unless otherwise handled)
