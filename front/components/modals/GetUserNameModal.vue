@@ -8,6 +8,7 @@
     <div class="modal">
       <div class="modal-header">
         <h3>Introduce Yourself</h3>
+        <i class="fa fa-times close-modal" @click="cancel"></i>
       </div>
       <div class="modal-body">
         <UserSettingsForm />
@@ -23,6 +24,14 @@ export default {
   name: 'GetUserNameModal',
   components: {
     UserSettingsForm
+  },
+  methods: {
+    hide(modalName) {
+      this.$modal.hide(modalName)
+    },
+    cancel() {
+      this.hide('getUserNameModal')
+    }
   }
 }
 </script>
