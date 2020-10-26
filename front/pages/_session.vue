@@ -141,6 +141,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import randomWords from 'random-words'
+import Piecon from '@/lib/external/piecon'
+import ProgressBar from 'progressbar.js'
 import ConnectedUsers from '~/components/ConnectedUsers.vue'
 import SocketStatusLight from '~/components/SocketStatusLight.vue'
 import {
@@ -148,8 +150,6 @@ import {
   PomodoroState as PomodoroTimerState
 } from '~/lib/timer'
 
-import Piecon from '@/lib/external/piecon'
-import ProgressBar from 'progressbar.js'
 let countdown
 
 const COLORS = {
@@ -308,6 +308,7 @@ export default {
       switch (messageType) {
         case 'state':
           console.log('state')
+          // eslint-disable-next-line
           const pomodoroTimerState = new PomodoroTimerState(
             data.isWorkState,
             data.millisecondsRemaining,
