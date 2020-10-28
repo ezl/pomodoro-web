@@ -9,6 +9,7 @@
       <div class="modal">
         <div class="modal-header">
           <h3>Start or Join A Group Pomodoro</h3>
+          <i class="fa fa-times close-modal" @click="cancel"></i>
         </div>
         <div class="modal-body">
           <p>
