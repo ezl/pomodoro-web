@@ -147,6 +147,7 @@ Piecon.setOptions = function(custom) {
   options = {}
 
   for (const key in defaults) {
+    // eslint-disable-next-line
     options[key] = custom.hasOwnProperty(key) ? custom[key] : defaults[key]
   }
 
