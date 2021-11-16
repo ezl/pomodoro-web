@@ -8,6 +8,6 @@
         "serverless": "^1.42.2"
     },
     "dependencies": {
-        "aws-sdk": "^2.453.0"
+        "aws-sdk": "^2.814.0"
     }
 }
