@@ -17,11 +17,15 @@
         <img src="@/assets/images/eric-hey.png" />
         <div class="side-menu-ad-text">
           <p>
-            Feedback, notes, bug reports appreciated!<br /><br />
+            Hi, I'm Eric!
+            <br /><br />
             <a
-              href="https://docs.google.com/document/d/1dPUTG1fjuSnQXPLk_YwF67VmJ2WV-vIGPutU6msCp8o/edit"
-              >Google Doc</a
+              href="mailto:pomodoro@fattyfatfat.com
+            ?subject=Pomodoro%20Party
+            &amp;body=Hi!"
+              >Email me</a
             >
+            with any feedback, notes, bugs, or requests!
           </p>
         </div>
       </div>
