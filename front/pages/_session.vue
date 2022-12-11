@@ -16,16 +16,27 @@
         <button :disabled="timer.getIsRunning()" @click="resetTimer(true)">
           Reset
         </button>
-        <div>
+      </div>
+
+      <div id="notificationsStuff">
+        <hr />
+        <label for="allowNotifications">
           <input
             id="allowNotifications"
+            v-model="allowNotificationsValue"
+            class="label-body"
             type="checkbox"
             name="allowNotifications"
-            v-model="allowNotificationsValue"
             @change="allowNotificationsToggled"
           />
-          <label for="allowNotifications">Allow browser notifications</label>
-        </div>
+          <span style="margin-left:0.5em;">Allow browser notifications</span>
+        </label>
+        <button
+          :disabled="!allowNotificationsValue"
+          @click="triggerNotification"
+        >
+          Trigger Notification
+        </button>
       </div>
     </div>
 
@@ -440,6 +451,13 @@ export default {
   },
 
   methods: {
+    triggerNotification: function() {
+      const title = `Pomodoro Party`
+      const text = `Your work session is over.`
+      const notification = new Notification(title, { body: text })
+      setTimeout(notification.close(), 3000)
+      console.log('Triggered notification.')
+    },
     allowNotificationsToggled: function() {
       console.log(this.allowNotificationsValue)
       Notification.requestPermission().then(result => {
