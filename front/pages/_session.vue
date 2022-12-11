@@ -16,6 +16,16 @@
         <button :disabled="timer.getIsRunning()" @click="resetTimer(true)">
           Reset
         </button>
+        <div>
+          <input
+            id="allowNotifications"
+            type="checkbox"
+            name="allowNotifications"
+            v-model="allowNotificationsValue"
+            @change="allowNotificationsToggled"
+          />
+          <label for="allowNotifications">Allow browser notifications</label>
+        </div>
       </div>
     </div>
 
@@ -247,6 +257,7 @@ export default {
   data: function() {
     return {
       message: 'Hello World',
+      allowNotificationsValue: true,
       timer: timer,
       isWorkStateCheckbox: false,
       isRunningCheckbox: false,
@@ -429,6 +440,12 @@ export default {
   },
 
   methods: {
+    allowNotificationsToggled: function() {
+      console.log(this.allowNotificationsValue)
+      Notification.requestPermission().then(result => {
+        console.log(result)
+      })
+    },
     quitSession: function() {
       this.$store.commit('setSessionName', '')
       this.closeWebSocket()
