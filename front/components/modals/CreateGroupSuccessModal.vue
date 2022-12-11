@@ -8,6 +8,7 @@
     <div class="modal">
       <div class="modal-header">
         <h3>Start Group</h3>
+        <i class="fa fa-times close-modal" @click="cancel"></i>
       </div>
       <div class="modal-body">
         <p><strong>Hooray!</strong> 🎉🎉🎉</p>
@@ -48,6 +49,9 @@ export default {
     next: function() {
       this.$modal.hide('createGroupSuccessModal')
       this.$modal.show('getUserNameModal')
+    },
+    cancel() {
+      this.$modal.hide('createGroupSuccessModal')
     }
   }
 }

@@ -8,6 +8,7 @@
         <h3 v-if="$store.state.joinOrCreateModalMode === 'create'">
           Start Group
         </h3>
+        <i class="fa fa-times close-modal" @click="cancel"></i>
       </div>
       <div class="modal-body">
         <GroupSessionForm />
@@ -23,6 +24,14 @@ export default {
   name: 'GetSessionNameModal',
   components: {
     GroupSessionForm
+  },
+  methods: {
+    hide(modalName) {
+      this.$modal.hide(modalName)
+    },
+    cancel() {
+      this.hide('getSessionNameModal')
+    }
   }
 }
 </script>

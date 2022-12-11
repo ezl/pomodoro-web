@@ -17,6 +17,27 @@
           Reset
         </button>
       </div>
+
+      <div id="notificationsStuff">
+        <hr />
+        <label for="allowNotifications">
+          <input
+            id="allowNotifications"
+            v-model="allowNotificationsValue"
+            class="label-body"
+            type="checkbox"
+            name="allowNotifications"
+            @change="allowNotificationsToggled"
+          />
+          <span style="margin-left:0.5em;">Allow browser notifications</span>
+        </label>
+        <button
+          :disabled="!allowNotificationsValue"
+          @click="triggerNotification"
+        >
+          Trigger Notification
+        </button>
+      </div>
     </div>
 
     <div id="groups">
@@ -247,6 +268,7 @@ export default {
   data: function() {
     return {
       message: 'Hello World',
+      allowNotificationsValue: true,
       timer: timer,
       isWorkStateCheckbox: false,
       isRunningCheckbox: false,
@@ -429,6 +451,19 @@ export default {
   },
 
   methods: {
+    triggerNotification: function() {
+      const title = `Pomodoro Party`
+      const text = `Your work session is over.`
+      const notification = new Notification(title, { body: text })
+      setTimeout(notification.close(), 3000)
+      console.log('Triggered notification.')
+    },
+    allowNotificationsToggled: function() {
+      console.log(this.allowNotificationsValue)
+      Notification.requestPermission().then(result => {
+        console.log(result)
+      })
+    },
     quitSession: function() {
       this.$store.commit('setSessionName', '')
       this.closeWebSocket()
