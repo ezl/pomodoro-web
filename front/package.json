@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "cross-env": "^5.2.0",
-    "nuxt": "^2.7.1",
+    "nuxt": "^2.15.8",
     "progressbar.js": "^1.0.1",
     "random-words": "^1.1.0",
     "node-fetch": "^2.5.0",
