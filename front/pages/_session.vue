@@ -212,6 +212,14 @@ const setValuesForCountdowns = function(duration) {
   countdown.setText(timeString)
 }.bind(timer)
 
+const notifyStateChange = function() {
+  console.log('STATE CHANGE')
+  const stateChangeAlert = timer.isWorkState
+    ? 'change from work to rest'
+    : 'change from rest to work'
+  console.log(stateChangeAlert)
+}
+
 const animateTimerSwitch = function() {
   const delayBetweenCycles = this.delayBetweenCycles
   const fromColor = timer.isWorkState ? COLORS.lightgreen : COLORS.lightred
@@ -366,6 +374,7 @@ export default {
     timer.registerListener('onStateChange', () => setValuesForCountdowns(0))
     timer.registerListener('onStateChange', setStylesForCountdowns)
     timer.registerListener('onFinish', animateTimerSwitch)
+    timer.registerListener('onFinish', notifyStateChange)
     this.$store.subscribeAction({
       after: (action, state) => {
         if (action.type === 'sendPreferences') {
