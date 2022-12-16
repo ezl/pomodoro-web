@@ -20,15 +20,27 @@
           />
         </div>
       </div>
-      <div class="row">
-        <label>
+
+      <div id="notificationsStuff" class="row">
+        <label for="allowNotifications">
           <input
-            v-model="preferencesForm.autoStartNextSession"
+            id="allowNotifications"
+            v-model="allowNotificationsValue"
             type="checkbox"
+            name="allowNotifications"
+            @change="allowNotificationsToggled"
           />
-          <span class="label-body">Automatically start next session</span>
+          <span class="label-body">Allow browser notifications</span>
         </label>
+        <button
+          :disabled="!allowNotificationsValue"
+          class="hidden"
+          @click="triggerNotification"
+        >
+          Trigger Notification
+        </button>
       </div>
+
       <div class="row">
         <div class="six columns">
           <button
@@ -65,6 +77,7 @@ export default {
   components: {},
   data: function() {
     return {
+      allowNotificationsValue: false,
       preferencesForm: {}
     }
   },
@@ -88,6 +101,19 @@ export default {
     }
   },
   methods: {
+    triggerNotification: function() {
+      const title = `Pomodoro Party`
+      const text = `Your work session is over.`
+      const notification = new Notification(title, { body: text })
+      setTimeout(notification.close(), 3000)
+      console.log('Triggered notification.')
+    },
+    allowNotificationsToggled: function() {
+      console.log(this.allowNotificationsValue)
+      Notification.requestPermission().then(result => {
+        console.log(result)
+      })
+    },
     sendPreferences: function() {
       console.log('clicked send preferences')
       this.$store.dispatch('sendPreferences', this.$store.state.preferences)
