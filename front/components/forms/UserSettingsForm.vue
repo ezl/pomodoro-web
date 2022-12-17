@@ -12,7 +12,13 @@
       <div class="row">
         <div class="twelve columns">
           <label>My name is:</label>
-          <input v-model="userName" class="u-full-width" type="text" />
+          <input
+            ref="userName"
+            v-model="userName"
+            v-on:keyup.enter="setUserName"
+            class="u-full-width"
+            type="text"
+          />
         </div>
       </div>
       <div class="row">
@@ -31,6 +37,9 @@ export default {
     return {
       userName: this.$store.state.userName
     }
+  },
+  mounted() {
+    this.$refs.userName.focus()
   },
   methods: {
     setUserName() {
