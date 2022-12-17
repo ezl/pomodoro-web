@@ -218,6 +218,15 @@ const notifyStateChange = function() {
     ? 'change from work to rest'
     : 'change from rest to work'
   console.log(stateChangeAlert)
+  triggerNotification()
+  playStateChangeSound()
+}
+const triggerNotification = function() {
+  const title = `Pomodoro Party`
+  const text = `Your work session is over.`
+  const notification = new Notification(title, { body: text })
+  setTimeout(notification.close(), 3000)
+  console.log('Triggered notification.')
 }
 
 const playStateChangeSound = function() {
@@ -381,7 +390,6 @@ export default {
     timer.registerListener('onStateChange', setStylesForCountdowns)
     timer.registerListener('onFinish', animateTimerSwitch)
     timer.registerListener('onFinish', notifyStateChange)
-    timer.registerListener('onFinish', playStateChangeSound)
     this.$store.subscribeAction({
       after: (action, state) => {
         if (action.type === 'sendPreferences') {

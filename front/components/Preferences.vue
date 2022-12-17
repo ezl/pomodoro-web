@@ -32,13 +32,6 @@
           />
           <span class="label-body">Allow browser notifications</span>
         </label>
-        <button
-          :disabled="!allowNotificationsValue"
-          class="hidden"
-          @click="triggerNotification"
-        >
-          Trigger Notification
-        </button>
       </div>
 
       <div class="row">
@@ -101,13 +94,6 @@ export default {
     }
   },
   methods: {
-    triggerNotification: function() {
-      const title = `Pomodoro Party`
-      const text = `Your work session is over.`
-      const notification = new Notification(title, { body: text })
-      setTimeout(notification.close(), 3000)
-      console.log('Triggered notification.')
-    },
     allowNotificationsToggled: function() {
       console.log(this.allowNotificationsValue)
       Notification.requestPermission().then(result => {
