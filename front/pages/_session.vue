@@ -220,6 +220,12 @@ const notifyStateChange = function() {
   console.log(stateChangeAlert)
 }
 
+const playStateChangeSound = function() {
+  const audioPath = require('@/assets/audio/sound.mp3').default
+  const audio = new Audio(audioPath)
+  audio.play()
+}
+
 const animateTimerSwitch = function() {
   const delayBetweenCycles = this.delayBetweenCycles
   const fromColor = timer.isWorkState ? COLORS.lightgreen : COLORS.lightred
@@ -375,6 +381,7 @@ export default {
     timer.registerListener('onStateChange', setStylesForCountdowns)
     timer.registerListener('onFinish', animateTimerSwitch)
     timer.registerListener('onFinish', notifyStateChange)
+    timer.registerListener('onFinish', playStateChangeSound)
     this.$store.subscribeAction({
       after: (action, state) => {
         if (action.type === 'sendPreferences') {
