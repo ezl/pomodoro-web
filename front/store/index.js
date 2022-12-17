@@ -5,10 +5,15 @@ export const state = () => ({
   joinOrCreateModalMode: 'create',
   sessionName: '',
   userName: '',
+  notificationPreferences: {
+    playSound: false,
+    displayAlert: false
+  },
   userId: null
 })
 
 export const getters = {
+  getNotificationPreferences: state => state.notificationPreferences,
   preferencesInMinutes: state => ({
     autoStartNextSession: state.preferences.autoStartNextSession,
     workDuration: state.preferences.workDuration / MILLISECONDS_PER_MINUTE,
@@ -17,8 +22,10 @@ export const getters = {
 }
 
 export const mutations = {
+  setNotificationPreferences(state, newNotificationPreferences) {
+    state.notificationPreferences = { ...newNotificationPreferences }
+  },
   setPreferences(state, newPreferences) {
-    console.log('sss', newPreferences)
     state.preferences = { ...newPreferences }
   },
   setPreferencesFromMinutes(state, newPreferences) {

@@ -15,9 +15,9 @@
           <input
             ref="userName"
             v-model="userName"
-            v-on:keyup.enter="setUserName"
             class="u-full-width"
             type="text"
+            @keyup.enter="setUserName"
           />
         </div>
       </div>

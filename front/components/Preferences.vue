@@ -9,6 +9,7 @@
             v-model="preferencesForm.workDuration"
             class="u-full-width"
             type="number"
+            @keyup.enter="savePreferences(true)"
           />
         </div>
         <div class="six columns">
@@ -17,15 +18,29 @@
             v-model="preferencesForm.restDuration"
             class="u-full-width"
             type="number"
+            @keyup.enter="savePreferences(true)"
           />
         </div>
+      </div>
+
+      <div class="row">
+        <label for="playSoundOnChange">
+          <input
+            id="playSoundOnChange"
+            v-model="notificationPreferences.playSound"
+            type="checkbox"
+            name="playSoundOnChange"
+            @change="playSoundOnChangeToggled"
+          />
+          <span class="label-body">Play sound on state change</span>
+        </label>
       </div>
 
       <div id="notificationsStuff" class="row">
         <label for="allowNotifications">
           <input
             id="allowNotifications"
-            v-model="allowNotificationsValue"
+            v-model="notificationPreferences.displayAlert"
             type="checkbox"
             name="allowNotifications"
             @change="allowNotificationsToggled"
@@ -70,7 +85,10 @@ export default {
   components: {},
   data: function() {
     return {
-      allowNotificationsValue: false,
+      notificationPreferences: {
+        displayAlert: false,
+        playSound: false
+      },
       preferencesForm: {}
     }
   },
@@ -94,25 +112,31 @@ export default {
     }
   },
   methods: {
+    playSoundOnChangeToggled: function() {
+      this.$store.commit(
+        'setNotificationPreferences',
+        this.notificationPreferences
+      )
+    },
     allowNotificationsToggled: function() {
-      console.log(this.allowNotificationsValue)
+      this.$store.commit(
+        'setNotificationPreferences',
+        this.notificationPreferences
+      )
       Notification.requestPermission().then(result => {
         console.log(result)
       })
     },
     sendPreferences: function() {
-      console.log('clicked send preferences')
       this.$store.dispatch('sendPreferences', this.$store.state.preferences)
     },
     savePreferences: function(broadcast = false) {
-      console.log('clicked save preferences', broadcast)
       this.$store.commit('setPreferencesFromMinutes', this.preferencesForm)
       if (this.$store.state.sockets.isConnected) {
         this.sendPreferences()
       }
     },
     cancelChangingPreferences: function() {
-      console.log('clicked cancel preferences')
       this.preferencesForm = { ...this.$store.getters.preferencesInMinutes }
     }
   }

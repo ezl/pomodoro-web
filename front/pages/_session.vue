@@ -212,29 +212,6 @@ const setValuesForCountdowns = function(duration) {
   countdown.setText(timeString)
 }.bind(timer)
 
-const notifyStateChange = function() {
-  console.log('STATE CHANGE')
-  const stateChangeAlert = timer.isWorkState
-    ? 'change from work to rest'
-    : 'change from rest to work'
-  console.log(stateChangeAlert)
-  triggerNotification()
-  playStateChangeSound()
-}
-const triggerNotification = function() {
-  const title = `Pomodoro Party`
-  const text = `Your work session is over.`
-  const notification = new Notification(title, { body: text })
-  setTimeout(notification.close(), 3000)
-  console.log('Triggered notification.')
-}
-
-const playStateChangeSound = function() {
-  const audioPath = require('@/assets/audio/sound.mp3').default
-  const audio = new Audio(audioPath)
-  audio.play()
-}
-
 const animateTimerSwitch = function() {
   const delayBetweenCycles = this.delayBetweenCycles
   const fromColor = timer.isWorkState ? COLORS.lightgreen : COLORS.lightred
@@ -283,6 +260,9 @@ export default {
     preferences() {
       return this.$store.state.preferences
     },
+    notificationPreferences() {
+      return this.$store.state.notificationPreferences
+    },
     ...mapGetters({
       isConnected: 'sockets/isConnected',
       isDisconnected: 'sockets/isDisconnected',
@@ -316,7 +296,6 @@ export default {
   created() {
     this.$store.commit('setPreferences', timer.preferences)
     this.$socketManager.registerListener('onMessage', event => {
-      console.log(event.data)
       const msg = event.data
       let response
       try {
@@ -330,7 +309,6 @@ export default {
 
       switch (messageType) {
         case 'state':
-          console.log('state')
           const pomodoroTimerState = new PomodoroTimerState(
             data.isWorkState,
             data.millisecondsRemaining,
@@ -348,19 +326,16 @@ export default {
           this.users = data.members
           break
         case 'userJoined':
-          console.log('user joined:', data)
           this.getChannelMembers()
           break
         case 'userInfo':
           this.$store.commit('setUserId', data.userId)
           break
         case 'quit':
-          console.log('user quit:', data)
           // this.users.splice(this.users.indexOf(data), 1)
           this.getChannelMembers()
           break
         case 'request':
-          console.log('request')
           this.$store.dispatch('sendPreferences')
           this.sendState()
           break
@@ -369,7 +344,6 @@ export default {
       }
     })
     this.$socketManager.registerListener('onOpen', event => {
-      console.log('on open listener being executed')
       // whenever a socket is connected, if the expects to be in
       // a specific channel, join it.
       const msg = {
@@ -389,7 +363,7 @@ export default {
     timer.registerListener('onStateChange', () => setValuesForCountdowns(0))
     timer.registerListener('onStateChange', setStylesForCountdowns)
     timer.registerListener('onFinish', animateTimerSwitch)
-    timer.registerListener('onFinish', notifyStateChange)
+    timer.registerListener('onFinish', this.notifyStateChange)
     this.$store.subscribeAction({
       after: (action, state) => {
         if (action.type === 'sendPreferences') {
@@ -524,6 +498,28 @@ export default {
         data: state
       }
       this.$socketManager.send(payload)
+    },
+
+    triggerNotification() {
+      const title = `Pomodoro Party`
+      const text = `Your work session is over.`
+      const notification = new Notification(title, { body: text })
+      setTimeout(notification.close(), 3000)
+    },
+
+    playStateChangeSound() {
+      const audioPath = require('@/assets/audio/sound.mp3').default
+      const audio = new Audio(audioPath)
+      audio.play()
+    },
+
+    notifyStateChange() {
+      if (this.notificationPreferences.displayAlert === true) {
+        this.triggerNotification()
+      }
+      if (this.notificationPreferences.playSound === true) {
+        this.playStateChangeSound()
+      }
     }
   }
 }
